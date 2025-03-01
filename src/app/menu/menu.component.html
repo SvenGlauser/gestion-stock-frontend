@@ -1,0 +1,10 @@
+<mat-nav-list>
+  @for (link of links; track link.name) {
+    <mat-list-item [activated]="link.isActive">
+      <a matListItemTitle [routerLink]="link.url">
+        <mat-icon>{{ link.icon }}</mat-icon>
+        {{ link.name }}
+      </a>
+    </mat-list-item>
+  }
+</mat-nav-list>

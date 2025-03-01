@@ -1,0 +1,19 @@
+mat-nav-list mat-list-item {
+  margin-bottom: 10px;
+
+  &.mdc-list-item--activated {
+    background-color: var(--mat-sys-primary);
+
+    a {
+      color: var(--mat-sys-on-primary);
+    }
+  }
+
+  a {
+    display: grid;
+    grid-template-columns: min-content auto;
+    grid-gap: 20px;
+
+    text-decoration: none;
+  }
+}
