@@ -38,9 +38,20 @@
   }
 }
 
+.closed {
+  display: none;
+}
+
 .mdc-data-table__row:last-child > .mat-mdc-cell {
   border-bottom-color: var(--mat-table-row-item-outline-color, var(--mat-sys-outline, rgba(0, 0, 0, 0.12)));
   border-bottom-width: var(--mat-table-row-item-outline-width, 1px);
   border-bottom-style: solid;
 }
 
+.mat-mdc-row {
+  cursor: pointer;
+
+  &:hover {
+    background: var(--mat-sys-surface-container);
+  }
+}

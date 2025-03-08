@@ -1,5 +1,5 @@
 import {Order, Type} from '../search/filter';
-import {AutocompleteMethod} from './autocomplete/autocomplete';
+import {AutocompleteMethod} from '../input/autocomplete/autocomplete';
 
 /**
  * Colonne générée automatiquement dans le tableau
@@ -132,11 +132,12 @@ export class AutocompleteFilter<T> extends ColumnFilter {
 
   private constructor(filterField: any,
                       filterValue: any,
-                      filterType: Type,
                       autocompleteMethod: AutocompleteMethod<T>,
                       autocompleteIdField: string,
                       autocompleteNameField: string) {
-    super(filterField, filterValue, filterType)
+
+    super(filterField, filterValue, Type.EQUAL);
+
     this.autocompleteMethod = autocompleteMethod;
     this.autocompleteIdField = autocompleteIdField;
     this.autocompleteNameField = autocompleteNameField;
@@ -158,7 +159,6 @@ export class AutocompleteFilter<T> extends ColumnFilter {
     return new AutocompleteFilter<T>(
       filterField,
       filterValue,
-      Type.EQUAL,
       autocompleteMethod,
       autocompleteIdField,
       autocompleteNameField,
@@ -170,10 +170,9 @@ export class AutocompleteFilter<T> extends ColumnFilter {
  * Filtre avec un simple input
  */
 export class InputFilter extends ColumnFilter {
-  private constructor(filterField: any,
-                     filterValue: any,
-                     filterType: Type) {
-    super(filterField, filterValue, filterType)
+
+  constructor(filterField: any, filterValue: any) {
+    super(filterField, filterValue, Type.STRING_LIKE);
   }
 
   /**
@@ -182,6 +181,6 @@ export class InputFilter extends ColumnFilter {
    * @param filterValue Valeur initiale [initial = null]
    */
   public static of(filterField: any, filterValue: any = null): InputFilter {
-    return new InputFilter(filterField, filterValue, Type.STRING_LIKE);
+    return new InputFilter(filterField, filterValue);
   }
 }

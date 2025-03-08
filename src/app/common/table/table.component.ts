@@ -12,16 +12,23 @@ import {
   MatTable
 } from "@angular/material/table";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
-import {SearchResult} from '../../search/searchResult';
-import {AutocompleteFilter, Column, ColumnFilter, InputFilter} from '../column';
-import {SearchRequest} from '../../search/searchRequest';
-import {Filter, Order} from '../../search/filter';
+import {SearchResult} from '../search/searchResult';
+import {AutocompleteFilter, Column, ColumnFilter, InputFilter} from './column';
+import {SearchRequest} from '../search/searchRequest';
+import {Filter, Order} from '../search/filter';
 import {debounceTime, mergeMap, Observable, tap} from 'rxjs';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
 import {MatFormField, MatInput} from '@angular/material/input';
 import {FormsModule} from '@angular/forms';
-import {AutocompleteComponent} from '../autocomplete/autocomplete.component';
+import {AutocompleteComponent} from '../input/autocomplete/autocomplete.component';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {MatIcon} from '@angular/material/icon';
+import {MatIconButton} from '@angular/material/button';
+import {NgClass} from '@angular/common';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {DialogData, DialogType} from '../dialog/dialog-data';
+import {MatDialog} from '@angular/material/dialog';
+import {ComponentType} from '@angular/cdk/portal';
 
 @Component({
   selector: 'app-table',
@@ -43,28 +50,48 @@ import {MatProgressSpinner} from '@angular/material/progress-spinner';
     MatFormField,
     FormsModule,
     AutocompleteComponent,
-    MatProgressSpinner
+    MatProgressSpinner,
+    MatIcon,
+    MatIconButton,
+    NgClass,
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
 })
-export class TableComponent<T> implements OnInit, AfterViewInit {
+export class TableComponent<T extends Record<string, any>> implements OnInit, AfterViewInit {
+  // Constantes
+  protected readonly DialogType = DialogType;
 
+  // Configuration des colonnes
   @Input({required: true})
   public columns: Column[] = [];
 
+  // Méthode de mise à jour
   @Input({required: true})
-  public updateMethod: ((searchRequest: SearchRequest) => Observable<SearchResult<T>>) | undefined;
+  public updateMethod: ((searchRequest: SearchRequest) => Observable<SearchResult<T>>) | null = null;
 
+  // Composant à afficher dans le dialog
+  @Input({required: true})
+  public dialogComponent: ComponentType<unknown> | null = null;
+
+  // Composant de pagination
   @ViewChild(MatPaginator)
   protected paginator: MatPaginator | undefined;
 
+  // Données pour la MatTable
   protected data: SearchResult<T> | undefined;
-  protected displayedColumns: string[] = [];
+  protected displayedColumns: string[] = ["actions"];
 
+  // Configuration de l'affichage
   protected isLoadingData: boolean = false;
+  protected viewFilter: boolean = true;
 
+  // Événement de recherche
   private readonly searchEvent: EventEmitter<void> = new EventEmitter();
+
   // Champ dans lequel sont stockés les filtres pour la prochaine requête
   private readonly searchRequest: SearchRequest = {
     page: 0,
@@ -72,8 +99,12 @@ export class TableComponent<T> implements OnInit, AfterViewInit {
     filters: []
   };
 
-  constructor(private readonly cd: ChangeDetectorRef) {}
+  constructor(private readonly cd: ChangeDetectorRef,
+              private readonly matDialog: MatDialog) {}
 
+  /**
+   * Initialise la data table
+   */
   public ngOnInit(): void {
     // Initialise l'événement qui doit s'exécuter lors d'une recherche
     this.searchEvent
@@ -125,7 +156,7 @@ export class TableComponent<T> implements OnInit, AfterViewInit {
     })
 
     // Génère la liste des colonnes à afficher
-    this.displayedColumns = this.columns.map(column => column.field);
+    this.displayedColumns = this.columns.map(column => column.field).concat(this.displayedColumns);
   }
 
   /**
@@ -277,5 +308,30 @@ export class TableComponent<T> implements OnInit, AfterViewInit {
     this.paginator!.pageIndex = searchResult.currentPage;
     this.paginator!.pageSize = searchResult.pageSize;
     this.paginator!.length = searchResult.totalElements;
+  }
+
+  /**
+   * Ouvre un dialog
+   * @param element Élément à afficher dans le dialog
+   * @param type Type de dialog
+   */
+  public openDialog(element: T, type: DialogType): void {
+    if (!this.dialogComponent) {
+      return;
+    }
+
+    const dialogRef = this.matDialog.open(this.dialogComponent, {
+      maxWidth: 1000,
+      data: <DialogData>{
+        type : type,
+        id: element['id'],
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(modification => {
+      if (modification) {
+        this.searchEvent.emit();
+      }
+    });
   }
 }

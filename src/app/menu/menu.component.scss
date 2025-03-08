@@ -1,15 +1,15 @@
-mat-nav-list mat-list-item {
+mat-nav-list a {
   margin-bottom: 10px;
 
   &.mdc-list-item--activated {
     background-color: var(--mat-sys-primary);
 
-    a {
+    .mat-list-item-content {
       color: var(--mat-sys-on-primary);
     }
   }
 
-  a {
+  .mat-list-item-content {
     display: grid;
     grid-template-columns: min-content auto;
     grid-gap: 20px;

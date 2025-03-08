@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MatListItem, MatNavList} from '@angular/material/list';
+import {MatListItem, MatListItemTitle, MatNavList} from '@angular/material/list';
 import {MatIcon} from '@angular/material/icon';
 import {Link} from './link';
 import {NavigationStart, Router, RouterLink} from '@angular/router';
@@ -11,36 +11,39 @@ import {filter} from 'rxjs';
     MatNavList,
     MatListItem,
     MatIcon,
-    RouterLink
+    RouterLink,
+    MatListItemTitle
   ],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss'
 })
 export class MenuComponent implements OnInit {
-  protected links: Link[] = [];
+  protected links: Link[] = [
+    {
+      name: "Accueil",
+      icon: "home",
+      isActive: false,
+      url: "/",
+    }, {
+      name: "Localités",
+      icon: "location_city",
+      isActive: false,
+      url: "/localites",
+    }, {
+      name: "Pays",
+      icon: "flag",
+      isActive: false,
+      url: "/pays",
+    },
+  ];
 
   constructor(private readonly router: Router) {}
 
+  /**
+   * Instancie le composant
+   */
   public ngOnInit(): void {
-    this.links = [
-      {
-        name: "Accueil",
-        icon: "home",
-        isActive: false,
-        url: "/",
-      }, {
-        name: "Localités",
-        icon: "location_city",
-        isActive: false,
-        url: "/localites",
-      }, {
-        name: "Pays",
-        icon: "flag",
-        isActive: false,
-        url: "/pays",
-      },
-    ];
-
+    // Catch les changements de page
     this.router.events
       .pipe(filter(event => event instanceof NavigationStart))
       .subscribe(event => {
@@ -50,6 +53,10 @@ export class MenuComponent implements OnInit {
     this.updateActivated(this.router.url);
   }
 
+  /**
+   * Met à jour l'item actif dans le menu
+   * @param url Nouvelle URL
+   */
   private updateActivated(url: string): void {
     this.links = this.links.map(item => {
       item.isActive = item.url === url;

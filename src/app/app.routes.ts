@@ -1,6 +1,6 @@
 import {Routes} from '@angular/router';
 import {AccueilComponent} from './accueil/accueil.component';
-import {PaysComponent} from './pays/pays.component';
+import {PaysTableComponent} from './pays/table/pays-table.component';
 import {LocaliteComponent} from './localite/localite.component';
 
 export const routes: Routes = [
@@ -14,7 +14,7 @@ export const routes: Routes = [
     children: [],
   }, {
     path: 'pays',
-    component: PaysComponent,
+    component: PaysTableComponent,
     children: [],
   }
 ];

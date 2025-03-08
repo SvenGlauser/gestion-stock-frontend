@@ -1,0 +1,31 @@
+form {
+  padding: 20px 0;
+
+  display: grid;
+  grid-template-columns: repeat(2, 250px);
+  grid-gap: 20px;
+  align-items: flex-start;
+
+  --mdc-outlined-text-field-disabled-input-text-color: color-mix(in srgb, var(--mat-sys-on-surface) 60%, transparent);
+  --mdc-outlined-text-field-disabled-label-text-color: color-mix(in srgb, var(--mat-sys-on-surface) 60%, transparent);
+  --mdc-outlined-text-field-disabled-outline-color:color-mix(in srgb, var(--mat-sys-on-surface) 60%, transparent);
+
+  .principal-error {
+    grid-column: span 2;
+    margin-bottom: 10px;
+  }
+
+  .error {
+    margin-top: 10px;
+  }
+
+  .principal-error,
+  .error {
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+
+    color: var(--mat-sys-on-error-container);
+    background: var(--mat-sys-error-container);
+  }
+}

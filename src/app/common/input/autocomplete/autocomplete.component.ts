@@ -88,7 +88,7 @@ export class AutocompleteComponent<T extends Record<string, any>> implements OnI
         if (!this.autoCompleteFormControl.value || typeof this.autoCompleteFormControl.value === "string") {
           // Réinitialiser la valeur
           this.autoCompleteFormControl.setValue(null);
-          this.valueChange.emit(null);
+          this.emitValue(null);
         }
       }
     });
@@ -99,7 +99,19 @@ export class AutocompleteComponent<T extends Record<string, any>> implements OnI
    * @param event Événement du <mat-autocomplete/>
    */
   protected selectValue(event: MatAutocompleteSelectedEvent): void {
-    this.valueChange.emit(event.option.value);
+    this.emitValue(event.option.value);
+  }
+
+  /**
+   * Émet la valeur
+   * @param value Valeur à émettre
+   */
+  private emitValue(value: T | null): void {
+    if (value === this.value) {
+      return;
+    }
+
+    this.valueChange.emit(value);
   }
 
   /**

@@ -1,0 +1,23 @@
+@if (this.formGroup) {
+  <form [formGroup]="this.formGroup">
+    @if (this.formGroup.hasError("validation")) {
+      <div class="principal-error">
+        {{this.formGroup.getError("validation")}}
+      </div>
+    }
+
+    @for (control of this.forms; track control.field) {
+      @if (control.isInputFormField()) {
+        <mat-form-field>
+          <mat-label>{{ control.label }}</mat-label>
+          <input matInput [formControl]="control.formControl" />
+          @if (control.formControl.hasError("validation")) {
+            <mat-error class="error">
+              {{control.formControl.getError("validation")}}
+            </mat-error>
+          }
+        </mat-form-field>
+      }
+    }
+  </form>
+}
