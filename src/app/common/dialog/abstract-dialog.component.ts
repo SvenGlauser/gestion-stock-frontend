@@ -74,7 +74,7 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
       this.data.type === DialogType.DELETE) {
 
       // Récupère l'objet
-      this.getDataMethod(this.data.id).subscribe(data => {
+      this.getDataMethod(this.data.id!).subscribe(data => {
         this.oldObject = data;
 
         if (!this.oldObject) {
@@ -118,7 +118,7 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
    * Supprime l'élément et ferme le dialog
    */
   protected delete(): void {
-    this.executeAndTraiterErreurAndClose(this.deleteDataMethod(this.data.id));
+    this.executeAndTraiterErreurAndClose(this.deleteDataMethod(this.data.id!));
   }
 
   /**

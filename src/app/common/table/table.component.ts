@@ -23,12 +23,13 @@ import {FormsModule} from '@angular/forms';
 import {AutocompleteComponent} from '../input/autocomplete/autocomplete.component';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatIcon} from '@angular/material/icon';
-import {MatIconButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {NgClass} from '@angular/common';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {DialogData, DialogType} from '../dialog/dialog-data';
 import {MatDialog} from '@angular/material/dialog';
 import {ComponentType} from '@angular/cdk/portal';
+import {ActionColumnInfo} from './action-column.info';
 
 @Component({
   selector: 'app-table',
@@ -56,7 +57,8 @@ import {ComponentType} from '@angular/cdk/portal';
     NgClass,
     MatMenuTrigger,
     MatMenu,
-    MatMenuItem
+    MatMenuItem,
+    MatButton
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
@@ -75,7 +77,15 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
 
   // Composant à afficher dans le dialog
   @Input({required: true})
-  public dialogComponent: ComponentType<unknown> | null = null;
+  public actionColumnInfo: ActionColumnInfo = {
+    dialogComponent: null,
+    idField: '',
+    clicOnLine: false,
+    created: false,
+    delete: false,
+    modify: false,
+    read: false
+  };
 
   // Composant de pagination
   @ViewChild(MatPaginator)
@@ -315,16 +325,16 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
    * @param element Élément à afficher dans le dialog
    * @param type Type de dialog
    */
-  public openDialog(element: T, type: DialogType): void {
-    if (!this.dialogComponent) {
+  public openDialog(element: T | null, type: DialogType): void {
+    if (!this.actionColumnInfo.dialogComponent) {
       return;
     }
 
-    const dialogRef = this.matDialog.open(this.dialogComponent, {
+    const dialogRef = this.matDialog.open(this.actionColumnInfo.dialogComponent, {
       maxWidth: 1000,
       data: <DialogData>{
         type : type,
-        id: element['id'],
+        id: element ? element[this.actionColumnInfo.idField] : null,
       },
     });
 

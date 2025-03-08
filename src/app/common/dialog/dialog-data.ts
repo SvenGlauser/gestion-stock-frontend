@@ -2,7 +2,7 @@
  * Données transmises dans le dialog
  */
 export interface DialogData {
-  id: number;
+  id: number | null;
   type: DialogType;
 }
 

@@ -1,3 +1,9 @@
+@if (this.actionColumnInfo.created) {
+  <div class="header-actions">
+    <button mat-flat-button (click)="openDialog(null, DialogType.CREATE)">Créer</button>
+  </div>
+}
+
 <div class="table-encapsulation">
   @if (this.isLoadingData) {
     <mat-spinner [diameter]="50"></mat-spinner>
@@ -47,17 +53,25 @@
       <td mat-cell
           *matCellDef="let element"
           [style.text-align]="'right'">
-        <button mat-icon-button
-                [matMenuTriggerFor]="menu"
-                (keydown.enter)="$event.stopPropagation()"
-                (click)="$event.stopPropagation()">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="openDialog(element, DialogType.READ)">Afficher</button>
-          <button mat-menu-item (click)="openDialog(element, DialogType.MODIFY)">Modifier</button>
-          <button mat-menu-item (click)="openDialog(element, DialogType.DELETE)">Supprimer</button>
-        </mat-menu>
+        @if (this.actionColumnInfo.read || this.actionColumnInfo.modify || this.actionColumnInfo.delete) {
+          <button mat-icon-button
+                  [matMenuTriggerFor]="menu"
+                  (keydown.enter)="$event.stopPropagation()"
+                  (click)="$event.stopPropagation()">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            @if (this.actionColumnInfo.read) {
+              <button mat-menu-item (click)="openDialog(element, DialogType.READ)">Afficher</button>
+            }
+            @if (this.actionColumnInfo.modify) {
+              <button mat-menu-item (click)="openDialog(element, DialogType.MODIFY)">Modifier</button>
+            }
+            @if (this.actionColumnInfo.delete) {
+              <button mat-menu-item (click)="openDialog(element, DialogType.DELETE)">Supprimer</button>
+            }
+          </mat-menu>
+        }
       </td>
     </ng-container>
 
@@ -94,10 +108,16 @@
     <tr mat-header-row
         *matHeaderRowDef="['filters']"
         [ngClass]="{'closed': !viewFilter}"></tr>
-    <tr mat-row
-        *matRowDef="let row; columns: displayedColumns;"
-        (keydown.enter)="openDialog(row, DialogType.READ)"
-        (click)="openDialog(row, DialogType.READ)"></tr>
+
+    @if (this.actionColumnInfo.clicOnLine) {
+      <tr mat-row
+          *matRowDef="let row; columns: displayedColumns;"
+          class="mat-row-clickable"
+          (keydown.enter)="openDialog(row, DialogType.READ)"
+          (click)="openDialog(row, DialogType.READ)"></tr>
+    } @else {
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    }
   </table>
 
   <mat-paginator [pageSizeOptions]="[10, 20, 50]"
