@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>{{ this.getTitle() }}</h2>
+
+<mat-dialog-content>
+  <app-form [forms]="this.forms"/>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  @switch (this.data.type) {
+    @case (DialogType.CREATE) {
+      <button mat-button
+              (click)="create()">
+        Modifier
+      </button>
+    }
+    @case (DialogType.MODIFY) {
+      <button mat-button
+              (click)="modify()">
+        Modifier
+      </button>
+    }
+    @case (DialogType.DELETE) {
+      <button mat-button
+              (click)="delete()">
+        Supprimer
+      </button>
+    }
+  }
+  <button mat-button
+          mat-dialog-close
+          cdkTrapFocus
+          [cdkTrapFocusAutoCapture]="true">
+    Annuler
+  </button>
+</mat-dialog-actions>
