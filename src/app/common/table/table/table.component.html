@@ -1,0 +1,68 @@
+<div class="table-encapsulation">
+  @if (this.isLoadingData) {
+    <mat-spinner [diameter]="50"></mat-spinner>
+    <div class="ui-hide"></div>
+  }
+
+  <table mat-table
+         [dataSource]="data ? data.elements : []"
+         matSort
+         (matSortChange)="sort($event)"
+         [matSortActive]="getDefaultSort()"
+         [matSortDirection]="getDefaultOrder()">
+
+    @for (column of columns; track column.field) {
+      <ng-container [matColumnDef]="column.field">
+        <th mat-header-cell
+            *matHeaderCellDef
+            [mat-sort-header]="column.field"
+            [disabled]="!column.sortable"
+            [style.width]="column.width">
+          {{ column.label }}
+        </th>
+        <td mat-cell
+            *matCellDef="let element">
+          {{ getValue(element, column.field) }}
+        </td>
+      </ng-container>
+    }
+
+    <ng-container [matColumnDef]="'filters'">
+      <th mat-header-cell
+          *matHeaderCellDef
+          [colSpan]="displayedColumns.length"
+          class="filters-cell">
+
+        @for (column of columns; track column.field) {
+          <div [style.width]="column.width">
+            @for (columnFilter of column.filters; track columnFilter.filterField) {
+              @if (columnFilter.isInputFilter()) {
+                <mat-form-field>
+                  <input matInput placeholder="Filtre"
+                         [(ngModel)]="columnFilter.filterValue"
+                         (input)="filter()">
+                </mat-form-field>
+              } @else if (columnFilter.isAutocompleteFilter()) {
+                <app-autocomplete
+                  [autocompleteMethod]="columnFilter.getAutocompleteFilter()?.autocompleteMethod ?? null"
+                  [autocompleteIdField]="columnFilter.getAutocompleteFilter()?.autocompleteIdField ?? null"
+                  [autocompleteNameField]="columnFilter.getAutocompleteFilter()?.autocompleteNameField ?? null"
+                  [(value)]="columnFilter.filterValue"
+                  (valueChange)="filter()"/>
+              }
+            }
+          </div>
+        }
+      </th>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-header-row *matHeaderRowDef="['filters']"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[10, 20, 50]"
+                 (page)="changePage($event)"
+                 showFirstLastButtons>
+  </mat-paginator>
+</div>

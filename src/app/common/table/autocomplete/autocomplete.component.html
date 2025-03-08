@@ -1,0 +1,20 @@
+<mat-form-field>
+  <input
+    type="text"
+    placeholder="Sélection"
+    matInput
+    [formControl]="autoCompleteFormControl"
+    [matAutocomplete]="auto"/>
+  <mat-autocomplete
+    autoActiveFirstOption
+    [displayWith]="displayName.bind(this)"
+    (optionSelected)="selectValue($event)"
+    #auto="matAutocomplete">
+    @if (this.autocompleteMethod && this.autocompleteNameField && this.autocompleteIdField) {
+      @for (option of results; track option[this.autocompleteIdField]) {
+        <mat-option [value]="option">{{option[this.autocompleteNameField]}}</mat-option>
+      }
+    }
+  </mat-autocomplete>
+</mat-form-field>
+

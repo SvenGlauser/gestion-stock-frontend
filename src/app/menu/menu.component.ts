@@ -17,7 +17,7 @@ import {filter} from 'rxjs';
   styleUrl: './menu.component.scss'
 })
 export class MenuComponent implements OnInit {
-  protected links?: Link[];
+  protected links: Link[] = [];
 
   constructor(private readonly router: Router) {}
 
@@ -28,11 +28,16 @@ export class MenuComponent implements OnInit {
         icon: "home",
         isActive: false,
         url: "/",
-      },{
+      }, {
         name: "Localités",
         icon: "location_city",
         isActive: false,
         url: "/localites",
+      }, {
+        name: "Pays",
+        icon: "flag",
+        isActive: false,
+        url: "/pays",
       },
     ];
 
@@ -46,7 +51,7 @@ export class MenuComponent implements OnInit {
   }
 
   private updateActivated(url: string): void {
-    this.links = this.links!.map(item => {
+    this.links = this.links.map(item => {
       item.isActive = item.url === url;
       return item;
     });

@@ -6,14 +6,16 @@ html {
     typography: Roboto,
     density: 0,
   ));
-
-  font: var(--mat-sys-body-large);
-  height: 100%;
 }
 
-body {
-  margin: 0;
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  font: var(--mat-sys-body-large);
   height: 100%;
+  margin: 0;
 }
 
 h1 {

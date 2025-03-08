@@ -1,0 +1,281 @@
+import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, ViewChild} from '@angular/core';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable
+} from "@angular/material/table";
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
+import {SearchResult} from '../../search/searchResult';
+import {AutocompleteFilter, Column, ColumnFilter, InputFilter} from '../column';
+import {SearchRequest} from '../../search/searchRequest';
+import {Filter, Order} from '../../search/filter';
+import {debounceTime, mergeMap, Observable, tap} from 'rxjs';
+import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
+import {MatFormField, MatInput} from '@angular/material/input';
+import {FormsModule} from '@angular/forms';
+import {AutocompleteComponent} from '../autocomplete/autocomplete.component';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+
+@Component({
+  selector: 'app-table',
+  imports: [
+    MatCell,
+    MatCellDef,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatPaginator,
+    MatRow,
+    MatRowDef,
+    MatTable,
+    MatHeaderCellDef,
+    MatSort,
+    MatSortHeader,
+    MatInput,
+    MatFormField,
+    FormsModule,
+    AutocompleteComponent,
+    MatProgressSpinner
+  ],
+  templateUrl: './table.component.html',
+  styleUrl: './table.component.scss'
+})
+export class TableComponent<T> implements OnInit, AfterViewInit {
+
+  @Input({required: true})
+  public columns: Column[] = [];
+
+  @Input({required: true})
+  public updateMethod: ((searchRequest: SearchRequest) => Observable<SearchResult<T>>) | undefined;
+
+  @ViewChild(MatPaginator)
+  protected paginator: MatPaginator | undefined;
+
+  protected data: SearchResult<T> | undefined;
+  protected displayedColumns: string[] = [];
+
+  protected isLoadingData: boolean = false;
+
+  private readonly searchEvent: EventEmitter<void> = new EventEmitter();
+  // Champ dans lequel sont stockés les filtres pour la prochaine requête
+  private readonly searchRequest: SearchRequest = {
+    page: 0,
+    pageSize: null,
+    filters: []
+  };
+
+  constructor(private readonly cd: ChangeDetectorRef) {}
+
+  public ngOnInit(): void {
+    // Initialise l'événement qui doit s'exécuter lors d'une recherche
+    this.searchEvent
+      .pipe(
+        tap(() => {
+          this.isLoadingData = true;
+          this.cd.detectChanges();
+        }),
+        debounceTime(500),
+        mergeMap(() => {
+          return this.updateMethod!(this.searchRequest);
+        }))
+      .subscribe((result) => {
+        this.isLoadingData = false;
+        this.updateTable(result);
+      });
+
+    // Crée tous les filtres
+    this.searchRequest.filters = this.columns
+      .filter(column => column.filters.length != 0)
+      .flatMap(column => column.filters)
+      .map(columnFilter => {
+        return <Filter>{
+          field: columnFilter.filterField,
+          value: this.getFilterValueFromFilter(columnFilter),
+          type: columnFilter.filterType,
+          order: undefined,
+        }
+      });
+
+    // Ajoute le tri
+    this.columns.filter(column => column.sortable).forEach(column => {
+      let founded = false;
+
+      this.searchRequest.filters.forEach((filter) => {
+        if (filter.field === column.field) {
+          founded = true;
+          filter.order = column.sortDefaultValue ?? undefined;
+        }
+      });
+
+      // Crée un nouveau filtre si aucun de trouvé
+      if (!founded) {
+        this.searchRequest.filters.push({
+          field: column.field,
+          order: column.sortDefaultValue ?? undefined,
+        });
+      }
+    })
+
+    // Génère la liste des colonnes à afficher
+    this.displayedColumns = this.columns.map(column => column.field);
+  }
+
+  /**
+   * Recherche initiale après que tout a été initialisé
+   */
+  public ngAfterViewInit(): void {
+    this.searchEvent.emit();
+  }
+
+  /**
+   * Recherche en fonction de la nouvelle page
+   * @param page Nouvelle page
+   */
+  protected changePage(page: PageEvent): void {
+    this.searchRequest.page = page.pageIndex;
+    this.searchRequest.pageSize = page.pageSize;
+    this.searchEvent.emit();
+  }
+
+  /**
+   * Récupère la valeur d'un champ d'un objet en cascade
+   * @param object Objet concerné
+   * @param attribut Attribut à récupérer
+   */
+  protected getValue(object: any, attribut: string): any {
+    return attribut.split(".").reduce((obj, key) => obj[key], object);
+  }
+
+  /**
+   * Récupère le premier tri
+   */
+  protected getDefaultSort(): string {
+    let column: Column | null = this.getFirstSortableColum();
+
+    if (column) {
+      return column.field;
+    }
+
+    return "";
+  }
+
+  /**
+   * Récupère le premier ordre de tri
+   */
+  protected getDefaultOrder(): "asc" | "desc" | "" {
+    let column: Column | null = this.getFirstSortableColum();
+
+    if (column) {
+      switch (column.sortDefaultValue) {
+        case Order.ASC: return "asc";
+        case Order.DESC: return "desc";
+        default: return "";
+      }
+    }
+
+    return "";
+  }
+
+  /**
+   * Récupère la première colonne à ordrer
+   */
+  private getFirstSortableColum(): Column | null {
+    if (!this.columns) {
+      return null;
+    }
+
+    let columns: Column[] = this.columns.filter(column => column.sortable);
+    if (columns.length > 0) {
+      return columns[0];
+    }
+
+    return null;
+  }
+
+  /**
+   * Tri la table
+   * @param sort Nouveau trie
+   */
+  protected sort(sort: Sort): void {
+    this.searchRequest.page = 0;
+
+    this.searchRequest.filters = this.searchRequest.filters.map(filter => {
+      if (filter.field === sort.active) {
+        switch (sort.direction) {
+          case "asc":
+            filter.order = Order.ASC;
+            break;
+          case "desc":
+            filter.order = Order.DESC;
+            break;
+          case "":
+            filter.order = undefined;
+            break;
+        }
+      } else {
+        filter.order = undefined;
+      }
+
+      return filter;
+    });
+    this.searchEvent.emit();
+  }
+
+  /**
+   * Filtre la table
+   */
+  protected filter(): void {
+    this.searchRequest.page = 0;
+
+    this.searchRequest.filters = this.searchRequest.filters.map(filter => {
+      let columnFilter: ColumnFilter | undefined = this.columns.flatMap(column => column.filters).find(columnFilter => columnFilter.filterField === filter.field);
+
+      if (!columnFilter) {
+        return filter;
+      }
+
+      filter.value = this.getFilterValueFromFilter(columnFilter);
+
+      return filter;
+    });
+    this.searchEvent.emit();
+  }
+
+  /**
+   * Récupère la valeur de filtre
+   * @param columnFilter Filtre de colonne
+   * @return La valeur à envoyer à l'API
+   */
+  private getFilterValueFromFilter(columnFilter: ColumnFilter): any {
+    if (columnFilter instanceof AutocompleteFilter) {
+      if (columnFilter.filterValue) {
+        return columnFilter.filterValue[columnFilter.autocompleteIdField];
+      } else {
+        return null;
+      }
+    } else if (columnFilter instanceof InputFilter) {
+      return columnFilter.filterValue;
+    }
+
+    return null;
+  }
+
+  /**
+   * Met à jour les données affichées dans la table
+   * @param searchResult Résultat de la recherche
+   */
+  private updateTable(searchResult: SearchResult<T>): void {
+    this.data = searchResult;
+    this.paginator!.pageIndex = searchResult.currentPage;
+    this.paginator!.pageSize = searchResult.pageSize;
+    this.paginator!.length = searchResult.totalElements;
+  }
+}
