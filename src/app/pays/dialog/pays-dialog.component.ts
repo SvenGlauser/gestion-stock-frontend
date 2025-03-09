@@ -23,13 +23,12 @@ import {MODEL_ID} from '../../common/model';
     ReactiveFormsModule,
     FormComponent
   ],
-  templateUrl: './pays-dialog.component.html',
-  styleUrl: './pays-dialog.component.scss'
+  templateUrl: '../../common/dialog/abstract-dialog.component.html',
+  styleUrl: '../../common/dialog/abstract-dialog.component.scss'
 })
 export class PaysDialogComponent extends AbstractDialogComponent<PaysDialogComponent, Pays> {
   // Constantes
   protected readonly ID_FIELD: string = MODEL_ID;
-  protected readonly DialogType: typeof DialogType = DialogType;
 
   // Définition des champs de formulaire
   protected forms: FormField[] = [

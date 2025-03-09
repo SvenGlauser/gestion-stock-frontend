@@ -18,6 +18,13 @@
           }
         </mat-form-field>
       }
+      @if (control.isAutocompleteFormField()) {
+        <app-autocomplete [label]="control.label"
+                          [autoCompleteFormControl]="control.formControl"
+                          [autocompleteMethod]="control.getAutocompleteFormField()!.autocompleteMethod"
+                          [autocompleteIdField]="control.getAutocompleteFormField()!.autocompleteIdField"
+                          [autocompleteNameField]="control.getAutocompleteFormField()!.autocompleteNameField"/>
+      }
     }
   </form>
 }

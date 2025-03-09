@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../common/search/searchResult';
-import {Pays} from './pays.model';
-import {Observable} from 'rxjs';
+import {Pays, PAYS_NOM} from './pays.model';
+import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../common/search/searchRequest';
 import {BASE_URL} from '../common/http-client.configuration';
+import {Order, Type} from '../common/search/filter';
 
 @Injectable({
   providedIn: 'root'
@@ -33,5 +34,18 @@ export class PaysService {
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<Pays>> {
     return this.http.post<SearchResult<Pays>>(this.URL_WITH_SLASH + "search", searchRequest);
+  }
+
+  public autocomplete(value: string): Observable<Pays[]> {
+    return this.search({
+      page: 0,
+      pageSize: 25,
+      filters: [{
+        field: PAYS_NOM,
+        value: value,
+        type: Type.STRING_LIKE,
+        order: Order.ASC
+      }]
+    }).pipe(map((result: SearchResult<Pays>) => result.elements));
   }
 }

@@ -3,6 +3,7 @@ import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {FormField} from './form-field';
+import {AutocompleteComponent} from '../input/autocomplete/autocomplete.component';
 
 @Component({
   selector: 'app-form',
@@ -11,7 +12,8 @@ import {FormField} from './form-field';
     MatInput,
     MatLabel,
     ReactiveFormsModule,
-    MatError
+    MatError,
+    AutocompleteComponent
   ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'

@@ -29,15 +29,15 @@
 .filters-cell {
   padding: 0;
 
+  --mat-form-field-container-vertical-padding: 6px;
+  --mat-form-field-container-height: 36;
+
   & > div {
     padding: 16px;
     display: inline-block;
 
-    & > mat-form-field {
+    & mat-form-field {
       width: 100%;
-
-      --mat-form-field-container-vertical-padding: 6px;
-      --mat-form-field-container-height: 36;
     }
   }
 }

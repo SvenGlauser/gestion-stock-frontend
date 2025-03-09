@@ -15,6 +15,9 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
   // Constantes que le parent doit déclarer
   protected readonly abstract ID_FIELD: string;
 
+  // Constantes pour HTML
+  protected readonly DialogType: typeof DialogType = DialogType;
+
   // Utilisé pour modifier les erreurs sur le formGroup
   @ViewChild(FormComponent)
   protected formComponent: FormComponent | null = null;
@@ -128,11 +131,7 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
     let element: Record<string, any> = {};
 
     for (const control of this.forms) {
-      if (control instanceof InputFormField) {
-        element[control.field] = control.formControl.value;
-      }
-
-      // TODO implémenter autocomplete ou methode dans control
+      element[control.field] = control.getValue();
     }
 
     return element;

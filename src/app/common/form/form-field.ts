@@ -50,6 +50,11 @@ export abstract class FormField {
 
     return null;
   }
+
+  /**
+   * Récupère la valeur pour l'envoyer auu backend
+   */
+  public abstract getValue(): any;
 }
 
 /**
@@ -78,6 +83,10 @@ export class InputFormField extends FormField {
                                       field: string,
                                       formControl: FormControl): InputFormField {
     return new InputFormField(label, field, formControl);
+  }
+
+  public override getValue(): any {
+    return this.formControl.value;
   }
 }
 
@@ -151,5 +160,9 @@ export class AutocompleteFormField<T> extends FormField {
       autocompleteNameField,
       formControl,
     );
+  }
+
+  public override getValue(): any {
+    return this.formControl.value;
   }
 }

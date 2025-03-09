@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {MatFormField} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {
   MatAutocomplete,
@@ -20,7 +20,9 @@ import {debounceTime, mergeMap, of, startWith} from 'rxjs';
     ReactiveFormsModule,
     MatAutocomplete,
     MatOption,
-    MatAutocompleteTrigger
+    MatAutocompleteTrigger,
+    MatError,
+    MatLabel
   ],
   templateUrl: './autocomplete.component.html',
   styleUrl: './autocomplete.component.scss'
@@ -34,14 +36,18 @@ export class AutocompleteComponent<T extends Record<string, any>> implements OnI
   public autocompleteNameField: string | null = null;
 
   @Input()
-  public value: T | null = null; // FIXME à implémenter
+  public label: string | null = null;
+
+  @Input()
+  public value: T | null = null;
   @Output()
   public valueChange: EventEmitter<T | null> = new EventEmitter<T | null>();
 
+  @Input()
+  public autoCompleteFormControl = new FormControl<string | T | null>(null);
+
   @ViewChild(MatAutocompleteTrigger)
   public trigger: MatAutocompleteTrigger | null = null;
-
-  protected autoCompleteFormControl = new FormControl<string | T | null>(null);
 
   protected results: T[] = [];
 
@@ -49,6 +55,11 @@ export class AutocompleteComponent<T extends Record<string, any>> implements OnI
    * Initialise les events listeners
    */
   public ngOnInit(): void {
+    // Sélectionne la valeur par défaut
+    if (this.value) {
+      this.autoCompleteFormControl.setValue(this.value);
+    }
+
     this.autoCompleteFormControl.valueChanges.pipe(
       startWith(""), // Valeur initiale
       debounceTime(500), // Ne fait une nouvelle requête que toutes les 500 ms
