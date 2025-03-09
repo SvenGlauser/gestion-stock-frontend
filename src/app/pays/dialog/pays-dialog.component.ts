@@ -4,7 +4,6 @@ import {DialogType} from '../../common/dialog/dialog-data';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {AbstractDialogComponent} from '../../common/dialog/abstract-dialog.component';
-import {CdkTrapFocus} from '@angular/cdk/a11y';
 import {FormComponent} from '../../common/form/form.component';
 import {FormField, InputFormField} from '../../common/form/form-field';
 import {PaysService} from '../pays.service';
@@ -21,7 +20,6 @@ import {MODEL_ID} from '../../common/model';
     MatDialogActions,
     MatButton,
     MatDialogClose,
-    CdkTrapFocus,
     ReactiveFormsModule,
     FormComponent
   ],

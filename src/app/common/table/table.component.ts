@@ -28,7 +28,6 @@ import {NgClass} from '@angular/common';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {DialogData, DialogType} from '../dialog/dialog-data';
 import {MatDialog} from '@angular/material/dialog';
-import {ComponentType} from '@angular/cdk/portal';
 import {ActionColumnInfo} from './action-column.info';
 
 @Component({

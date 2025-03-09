@@ -1,7 +1,7 @@
 import {Routes} from '@angular/router';
 import {AccueilComponent} from './accueil/accueil.component';
 import {PaysTableComponent} from './pays/table/pays-table.component';
-import {LocaliteComponent} from './localite/localite.component';
+import {LocaliteComponent} from './localite/table/localite.component';
 
 export const routes: Routes = [
   {

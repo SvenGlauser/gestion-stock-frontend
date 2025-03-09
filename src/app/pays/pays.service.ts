@@ -4,31 +4,34 @@ import {SearchResult} from '../common/search/searchResult';
 import {Pays} from './pays.model';
 import {Observable} from 'rxjs';
 import {SearchRequest} from '../common/search/searchRequest';
+import {BASE_URL} from '../common/http-client.configuration';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaysService {
+  private readonly URL: string = BASE_URL + 'pays';
+  private readonly URL_WITH_SLASH: string = this.URL + '/';
 
   constructor(private readonly http: HttpClient) {}
 
   public get(id: number): Observable<Pays> {
-    return this.http.get<Pays>("http://localhost:8080/pays/" + id);
+    return this.http.get<Pays>(this.URL_WITH_SLASH + id);
   }
 
   public delete(id: number): Observable<void> {
-    return this.http.delete<void>("http://localhost:8080/pays/" + id);
+    return this.http.delete<void>(this.URL_WITH_SLASH + id);
   }
 
   public create(pays: Pays): Observable<Pays> {
-    return this.http.post<Pays>("http://localhost:8080/pays", pays);
+    return this.http.post<Pays>(this.URL, pays);
   }
 
   public modify(pays: Pays): Observable<Pays> {
-    return this.http.put<Pays>("http://localhost:8080/pays", pays);
+    return this.http.put<Pays>(this.URL, pays);
   }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<Pays>> {
-    return this.http.post<SearchResult<Pays>>("http://localhost:8080/pays/search", searchRequest);
+    return this.http.post<SearchResult<Pays>>(this.URL_WITH_SLASH + "search", searchRequest);
   }
 }

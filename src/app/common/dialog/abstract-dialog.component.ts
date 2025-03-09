@@ -6,7 +6,7 @@ import {FormField, InputFormField} from '../form/form-field';
 import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
 import {FormComponent} from '../form/form.component';
 
-@Component({template: ''}) // Obligatoire car implémente OnInit
+@Component({template: ''}) // Obligatoire, car implémente OnInit
 export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<T, E>, E extends Record<string, any>> implements OnInit {
   // Données du dialog
   private readonly dialogRef: MatDialogRef<T> = inject(MatDialogRef<T>);
