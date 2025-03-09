@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {AbstractDialogComponent} from '../../../common/dialog/abstract-dialog.component';
 import {MODEL_ID} from '../../../common/model';
-import {AutocompleteEnumFormField, FormField, InputFormField} from '../../../common/form/form-field';
+import {FormField} from '../../../common/form/field/form-field';
 import {Observable} from 'rxjs';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -17,9 +17,11 @@ import {
   CATEGORIE_NOM_LABEL
 } from '../categorie.model';
 import {CategorieService} from '../categorie.service';
+import {InputFormField} from '../../../common/form/field/input-form-field';
+import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete-enum-form-field';
 
 @Component({
-  selector: 'app-localite-dialog',
+  selector: 'app-categorie-dialog',
   imports: [
     MatDialogTitle,
     MatDialogContent,

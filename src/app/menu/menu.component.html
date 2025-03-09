@@ -1,5 +1,12 @@
 <mat-nav-list>
   @for (link of links; track link.name) {
+    @if (link.separatorBefore) {
+      <div class="separator">
+        <div class="separator-title">{{link.separatorBefore}}</div>
+        <div class="separator-line"></div>
+      </div>
+    }
+
     <a mat-list-item
        [activated]="link.isActive"
        [routerLink]="link.url">

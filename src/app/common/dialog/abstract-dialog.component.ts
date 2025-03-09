@@ -2,9 +2,10 @@ import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DialogData, DialogType} from './dialog-data';
 import {Observable} from 'rxjs';
-import {FormField} from '../form/form-field';
+import {FormField} from '../form/field/form-field';
 import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
 import {FormComponent} from '../form/form.component';
+import {getValueFromAttributeInCascade, setValueOfAttributeInCascade} from '../utils/function.utils';
 
 @Component({template: ''}) // Obligatoire, car implémente OnInit
 export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<T, E>, E extends Record<string, any>> implements OnInit {
@@ -86,7 +87,7 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
 
         // Rempli le formulaire avec les nouvelles données
         this.forms.forEach((form: FormField) => {
-          let oldValue: any = this.oldObject![form.field];
+          let oldValue: any = getValueFromAttributeInCascade(form.field, this.oldObject);
 
           if (oldValue !== null) {
             form.formControl.setValue(oldValue);
@@ -131,7 +132,7 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
     let element: Record<string, any> = {};
 
     for (const control of this.forms) {
-      element[control.field] = control.getValue();
+      setValueOfAttributeInCascade(control.field, element, control.getValue());
     }
 
     return element;

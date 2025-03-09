@@ -25,10 +25,32 @@ export class MenuComponent implements OnInit {
       isActive: false,
       url: "/",
     }, {
+      name: "Pièces",
+      icon: "settings_suggest",
+      isActive: false,
+      url: "/pieces",
+      separatorBefore: "Actions principales",
+    }, {
+      name: "Machines",
+      icon: "agriculture",
+      isActive: false,
+      url: "/machines",
+    }, {
+      name: "Clients",
+      icon: "person_apron",
+      isActive: false,
+      url: "/clients",
+    }, {
+      name: "Fournisseurs",
+      icon: "local_shipping",
+      isActive: false,
+      url: "/fournisseurs",
+    }, {
       name: "Catégories",
       icon: "category",
       isActive: false,
       url: "/categories",
+      separatorBefore: "Configuration",
     }, {
       name: "Localités",
       icon: "location_city",

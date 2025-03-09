@@ -4,12 +4,13 @@ import {PaysService} from '../pays.service';
 import {SearchRequest} from '../../../common/search/searchRequest';
 import {TableComponent} from '../../../common/table/table.component';
 import {Observable} from 'rxjs';
-import {Column} from '../../../common/table/column';
+import {Column} from '../../../common/table/column/column';
 import {SearchResult} from '../../../common/search/searchResult';
 import {Order} from '../../../common/search/filter';
 import {PaysDialogComponent} from '../dialog/pays-dialog.component';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {MODEL_ID} from '../../../common/model';
+import {ClassicColumn} from '../../../common/table/column/classic-column';
 
 @Component({
   selector: 'app-pays',
@@ -22,11 +23,11 @@ import {MODEL_ID} from '../../../common/model';
 export class PaysTableComponent {
   // Définition des colonnes
   protected readonly columns: Column[] = [
-    Column
+    ClassicColumn
       .of(PAYS_NOM_LABEL, PAYS_NOM, "45%")
       .sort(Order.ASC)
       .inputFilterOnSameField(),
-    Column.of(PAYS_ABREVIATION_LABEL, PAYS_ABREVIATION, "45%"),
+    ClassicColumn.of(PAYS_ABREVIATION_LABEL, PAYS_ABREVIATION, "45%"),
   ]
 
   // Définition des actions possibles

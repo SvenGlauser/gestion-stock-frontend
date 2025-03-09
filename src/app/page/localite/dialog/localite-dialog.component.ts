@@ -10,7 +10,7 @@ import {
   LOCALITE_PAYS_LABEL
 } from '../localite.model';
 import {MODEL_ID} from '../../../common/model';
-import {AutocompleteFormField, FormField, InputFormField} from '../../../common/form/form-field';
+import {FormField} from '../../../common/form/field/form-field';
 import {PaysService} from '../../pays/pays.service';
 import {Observable} from 'rxjs';
 import {LocaliteService} from '../localite.service';
@@ -19,6 +19,8 @@ import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {FormComponent} from '../../../common/form/form.component';
+import {InputFormField} from '../../../common/form/field/input-form-field';
+import {AutocompleteFormField} from '../../../common/form/field/autocomplete-form-field';
 
 @Component({
   selector: 'app-localite-dialog',

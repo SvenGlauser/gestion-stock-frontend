@@ -4,11 +4,12 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {AbstractDialogComponent} from '../../../common/dialog/abstract-dialog.component';
 import {FormComponent} from '../../../common/form/form.component';
-import {FormField, InputFormField} from '../../../common/form/form-field';
+import {FormField} from '../../../common/form/field/form-field';
 import {PaysService} from '../pays.service';
 import {Observable} from 'rxjs';
 import {Pays, PAYS_ABREVIATION, PAYS_ABREVIATION_LABEL, PAYS_NOM, PAYS_NOM_LABEL} from '../pays.model';
 import {MODEL_ID} from '../../../common/model';
+import {InputFormField} from "../../../common/form/field/input-form-field";
 
 @Component({
   selector: 'app-dialog',

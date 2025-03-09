@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {TableComponent} from "../../../common/table/table.component";
-import {Column} from '../../../common/table/column';
 import {Order} from '../../../common/search/filter';
 import {PaysService} from '../../pays/pays.service';
 import {SearchRequest} from '../../../common/search/searchRequest';
@@ -20,6 +19,7 @@ import {
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {MODEL_ID} from '../../../common/model';
 import {LocaliteDialogComponent} from '../dialog/localite-dialog.component';
+import {ClassicColumn} from '../../../common/table/column/classic-column';
 
 @Component({
   selector: 'app-localite',
@@ -32,15 +32,15 @@ import {LocaliteDialogComponent} from '../dialog/localite-dialog.component';
 export class LocaliteTableComponent {
   // Définition des colonnes
   protected columns = [
-    Column
+    ClassicColumn
       .of(LOCALITE_NOM_LABEL, LOCALITE_NOM, "40%")
       .sort(Order.ASC)
       .inputFilterOnSameField(),
-    Column
+    ClassicColumn
       .of(LOCALITE_NPA_LABEL, LOCALITE_NPA, "25%")
       .sort()
       .inputFilterOnSameField(),
-    Column
+    ClassicColumn
       .of(LOCALITE_PAYS_LABEL, LOCALITE_PAYS.concat(".", PAYS_NOM), "25%")
       .sort()
       .autocompleteFilter(

@@ -3,4 +3,5 @@ export interface Link {
   icon: string;
   isActive: boolean;
   url: string;
+  separatorBefore?: string;
 }

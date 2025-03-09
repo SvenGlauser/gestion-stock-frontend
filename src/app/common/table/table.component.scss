@@ -74,3 +74,7 @@
     background: var(--mat-sys-surface-container);
   }
 }
+
+.multi-lines {
+  white-space: pre-wrap;
+}

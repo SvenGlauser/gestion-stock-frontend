@@ -17,3 +17,28 @@ mat-nav-list a {
     text-decoration: none;
   }
 }
+
+.separator {
+  margin: 20px 0;
+
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+
+  .separator-title {
+    z-index: 10;
+    padding: 0 5px;
+    color: var(--mat-sys-outline);
+    background: var(--mat-sys-primary-container);
+  }
+
+  .separator-line {
+    position: absolute;
+    height: 2px;
+    border-radius: 1px;
+    width: 100%;
+    top: calc(50% - 1px);
+    background: var(--mat-sys-outline);
+  }
+}

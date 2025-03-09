@@ -31,9 +31,8 @@
           {{ column.label }}
         </th>
         <td mat-cell
-            *matCellDef="let element">
-          {{ getValue(element, column) }}
-        </td>
+            *matCellDef="let element"
+            class="multi-lines">{{column.getValue(element)}}</td>
       </ng-container>
     }
 
@@ -88,17 +87,17 @@
         @for (column of columns; track column.field) {
           <div [style.width]="column.width">
             @for (columnFilter of column.filters; track columnFilter.filterField) {
-              @if (columnFilter.isInputFilter()) {
+              @if (InputFilter.isInstanceOf(columnFilter)) {
                 <mat-form-field>
                   <input matInput
                          [(ngModel)]="columnFilter.filterValue"
                          (input)="filter()">
                 </mat-form-field>
-              } @else if (columnFilter.isAutocompleteFilter()) {
+              } @else if (AutocompleteFilter.isInstanceOf(columnFilter)) {
                 <app-autocomplete
-                  [autocompleteMethod]="columnFilter.getAutocompleteFilter()?.autocompleteMethod ?? null"
-                  [autocompleteIdField]="columnFilter.getAutocompleteFilter()?.autocompleteIdField ?? null"
-                  [autocompleteNameField]="columnFilter.getAutocompleteFilter()?.autocompleteNameField ?? null"
+                  [autocompleteMethod]="AutocompleteFilter.cast(columnFilter)?.autocompleteMethod ?? null"
+                  [autocompleteIdField]="AutocompleteFilter.cast(columnFilter)?.autocompleteIdField ?? null"
+                  [autocompleteNameField]="AutocompleteFilter.cast(columnFilter)?.autocompleteNameField ?? null"
                   [(value)]="columnFilter.filterValue"
                   (valueChange)="filter()"/>
               }
@@ -109,7 +108,7 @@
              [style.text-align]="'right'">
           <button mat-icon-button
                   (click)="this.clearAllFilters()">
-            <mat-icon>delete</mat-icon>
+            <mat-icon>close</mat-icon>
           </button>
         </div>
       </th>

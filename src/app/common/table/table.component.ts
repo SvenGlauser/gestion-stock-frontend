@@ -13,7 +13,7 @@ import {
 } from "@angular/material/table";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {SearchResult} from '../search/searchResult';
-import {AutocompleteFilter, Column, ColumnFilter, InputFilter} from './column';
+import {Column} from './column/column';
 import {SearchRequest} from '../search/searchRequest';
 import {Filter, Order} from '../search/filter';
 import {debounceTime, mergeMap, Observable, tap} from 'rxjs';
@@ -29,6 +29,9 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {DialogData, DialogType} from '../dialog/dialog-data';
 import {MatDialog} from '@angular/material/dialog';
 import {ActionColumnInfo} from './action-column.info';
+import {ColumnFilter} from './column/filter/column-filter';
+import {InputFilter} from './column/filter/input-column-filter';
+import {AutocompleteFilter} from './column/filter/autocomplete-column-filter';
 
 @Component({
   selector: 'app-table',
@@ -65,6 +68,8 @@ import {ActionColumnInfo} from './action-column.info';
 export class TableComponent<T extends Record<string, any>> implements OnInit, AfterViewInit {
   // Constantes
   protected readonly DialogType = DialogType;
+  protected readonly InputFilter = InputFilter;
+  protected readonly AutocompleteFilter = AutocompleteFilter;
 
   @Input()
   public title: string = "";
@@ -186,28 +191,6 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
     this.searchRequest.page = page.pageIndex;
     this.searchRequest.pageSize = page.pageSize;
     this.searchEvent.emit();
-  }
-
-  /**
-   * Récupère la valeur d'un champ d'un objet en cascade
-   * @param object Objet concerné
-   * @param column Colonne à récupérer
-   */
-  protected getValue(object: any, column: Column): any {
-    if (column.method) {
-      return column.method(...column.methodFields.map(field => this.getValueFromAttributeInCascade(field, object)));
-    } else {
-      return this.getValueFromAttributeInCascade(column.field, object);
-    }
-  }
-
-  /**
-   * Récupère la valeur d'un champ d'un objet en cascade
-   * @param object Objet concerné
-   * @param attribut Attribut à récupérer
-   */
-  private getValueFromAttributeInCascade(attribut: string, object: any): any {
-    return attribut.split(".").reduce((obj, key) => obj[key], object);
   }
 
   /**
