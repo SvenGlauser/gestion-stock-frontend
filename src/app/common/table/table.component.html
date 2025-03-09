@@ -86,7 +86,7 @@
             @for (columnFilter of column.filters; track columnFilter.filterField) {
               @if (columnFilter.isInputFilter()) {
                 <mat-form-field>
-                  <input matInput placeholder="Filtre"
+                  <input matInput
                          [(ngModel)]="columnFilter.filterValue"
                          (input)="filter()">
                 </mat-form-field>
