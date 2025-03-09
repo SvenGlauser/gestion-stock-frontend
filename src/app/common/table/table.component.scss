@@ -1,5 +1,9 @@
 .header-actions {
-  margin-bottom: 10px
+  margin-bottom: 10px;
+
+  button {
+    box-shadow: var(--mat-sys-level2);
+  }
 }
 
 .table-encapsulation {
