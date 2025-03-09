@@ -66,6 +66,9 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   // Constantes
   protected readonly DialogType = DialogType;
 
+  @Input()
+  public title: string = "";
+
   // Configuration des colonnes
   @Input({required: true})
   public columns: Column[] = [];

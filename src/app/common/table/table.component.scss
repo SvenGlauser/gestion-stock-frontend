@@ -1,8 +1,19 @@
-.header-actions {
-  margin-bottom: 10px;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  button {
-    box-shadow: var(--mat-sys-level2);
+  h2 {
+    font: var(--mat-sys-headline-small);
+    margin: 0;
+  }
+
+  .header-actions {
+    margin-bottom: 10px;
+
+    button {
+      box-shadow: var(--mat-sys-level2);
+    }
   }
 }
 

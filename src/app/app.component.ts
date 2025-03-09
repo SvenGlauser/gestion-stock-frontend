@@ -12,6 +12,4 @@ import {MenuComponent} from './menu/menu.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  title = 'gestion-stock-frontend';
-}
+export class AppComponent {}
