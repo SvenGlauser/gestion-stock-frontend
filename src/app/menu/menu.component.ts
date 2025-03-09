@@ -25,6 +25,11 @@ export class MenuComponent implements OnInit {
       isActive: false,
       url: "/",
     }, {
+      name: "Catégories",
+      icon: "category",
+      isActive: false,
+      url: "/categories",
+    }, {
       name: "Localités",
       icon: "location_city",
       isActive: false,

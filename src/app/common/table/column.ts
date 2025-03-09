@@ -65,7 +65,7 @@ export class Column {
    * @param autocompleteNameField Champ du text à afficher
    * @param filterValue Valeur initiale
    */
-  public autocompleteFilter<T>(filterField: any,
+  public autocompleteFilter<T extends Record<string, any>>(filterField: any,
                             autocompleteMethod: AutocompleteMethod<T>,
                             autocompleteIdField: string,
                             autocompleteNameField: string,
@@ -113,7 +113,7 @@ export abstract class ColumnFilter {
     return this instanceof AutocompleteFilter;
   }
 
-  public getAutocompleteFilter<T>(): AutocompleteFilter<T> | null {
+  public getAutocompleteFilter<T extends Record<string, any>>(): AutocompleteFilter<T> | null {
     if (this instanceof AutocompleteFilter) {
       return <AutocompleteFilter<T>>this;
     }
@@ -125,7 +125,7 @@ export abstract class ColumnFilter {
 /**
  * Filtre avec autocompletion
  */
-export class AutocompleteFilter<T> extends ColumnFilter {
+export class AutocompleteFilter<T extends Record<string, any>> extends ColumnFilter {
   public autocompleteMethod: AutocompleteMethod<T>;
   public autocompleteIdField: string;
   public autocompleteNameField: string;
@@ -151,7 +151,7 @@ export class AutocompleteFilter<T> extends ColumnFilter {
    * @param autocompleteNameField Champ du text à afficher
    * @param filterValue Valeur initiale [initial = null]
    */
-  public static of<T>(filterField: any,
+  public static of<T extends Record<string, any>>(filterField: any,
                    autocompleteMethod: AutocompleteMethod<T>,
                    autocompleteIdField: string,
                    autocompleteNameField: string,

@@ -43,7 +43,7 @@ export abstract class FormField {
   /**
    * Récupère le type AutocompleteFormField
    */
-  public getAutocompleteFormField<T>(): AutocompleteFormField<T> | null {
+  public getAutocompleteFormField<T extends Record<string, any>>(): AutocompleteFormField<T> | null {
     if (this instanceof AutocompleteFormField) {
       return <AutocompleteFormField<T>>this;
     }
@@ -93,7 +93,7 @@ export class InputFormField extends FormField {
 /**
  * Classe pour les champs de saisie avec autocomplétion complexe
  */
-export class AutocompleteFormField<T> extends FormField {
+export class AutocompleteFormField<T extends Record<string, any>> extends FormField {
   public autocompleteMethod: AutocompleteMethod<T>;
   public autocompleteIdField: string;
   public autocompleteNameField: string;
@@ -121,7 +121,7 @@ export class AutocompleteFormField<T> extends FormField {
    * @param autocompleteNameField Nom à utiliser pour l'affichage
    * @param value Valeur initiale
    */
-  public static ofValue<T>(label: string,
+  public static ofValue<T extends Record<string, any>>(label: string,
                         field: string,
                         autocompleteMethod: AutocompleteMethod<T>,
                         autocompleteIdField: string,
@@ -146,7 +146,7 @@ export class AutocompleteFormField<T> extends FormField {
    * @param autocompleteNameField Nom à utiliser pour l'affichage
    * @param formControl FormControl
    */
-  public static ofFormControl<T>(label: string,
+  public static ofFormControl<T extends Record<string, any>>(label: string,
                            field: string,
                            autocompleteMethod: AutocompleteMethod<T>,
                            autocompleteIdField: string,
