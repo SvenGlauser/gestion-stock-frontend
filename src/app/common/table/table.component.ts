@@ -20,7 +20,7 @@ import {debounceTime, mergeMap, Observable, tap} from 'rxjs';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
 import {MatFormField, MatInput} from '@angular/material/input';
 import {FormsModule} from '@angular/forms';
-import {AutocompleteComponent} from '../input/autocomplete/autocomplete.component';
+import {AutocompleteComponent} from '../form/input/autocomplete/autocomplete.component';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatIcon} from '@angular/material/icon';
 import {MatButton, MatIconButton} from '@angular/material/button';

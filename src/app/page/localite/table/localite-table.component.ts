@@ -1,11 +1,11 @@
 import {Component} from '@angular/core';
-import {TableComponent} from "../../common/table/table.component";
-import {Column} from '../../common/table/column';
-import {Order, Type} from '../../common/search/filter';
+import {TableComponent} from "../../../common/table/table.component";
+import {Column} from '../../../common/table/column';
+import {Order, Type} from '../../../common/search/filter';
 import {PaysService} from '../../pays/pays.service';
-import {SearchRequest} from '../../common/search/searchRequest';
+import {SearchRequest} from '../../../common/search/searchRequest';
 import {map, Observable} from 'rxjs';
-import {SearchResult} from '../../common/search/searchResult';
+import {SearchResult} from '../../../common/search/searchResult';
 import {Pays, PAYS_NOM} from '../../pays/pays.model';
 import {LocaliteService} from '../localite.service';
 import {
@@ -17,8 +17,8 @@ import {
   LOCALITE_PAYS, LOCALITE_PAYS_LABEL
 } from '../localite.model';
 import {PaysDialogComponent} from '../../pays/dialog/pays-dialog.component';
-import {ActionColumnInfo} from '../../common/table/action-column.info';
-import {MODEL_ID} from '../../common/model';
+import {ActionColumnInfo} from '../../../common/table/action-column.info';
+import {MODEL_ID} from '../../../common/model';
 import {LocaliteDialogComponent} from '../dialog/localite-dialog.component';
 
 @Component({

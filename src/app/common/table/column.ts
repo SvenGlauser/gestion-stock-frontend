@@ -1,5 +1,5 @@
 import {Order, Type} from '../search/filter';
-import {AutocompleteMethod} from '../input/autocomplete/autocomplete';
+import {AutocompleteMethod} from '../form/input/autocomplete/autocomplete';
 
 /**
  * Colonne générée automatiquement dans le tableau

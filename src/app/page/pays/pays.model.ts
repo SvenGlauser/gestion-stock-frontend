@@ -1,4 +1,4 @@
-import {Model} from '../common/model';
+import {Model} from '../../common/model';
 
 /**
  * Interface représentant un pays

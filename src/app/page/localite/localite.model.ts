@@ -1,4 +1,4 @@
-import {Model} from '../common/model';
+import {Model} from '../../common/model';
 import {Pays} from '../pays/pays.model';
 
 export interface Localite extends Model {

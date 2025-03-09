@@ -1,5 +1,5 @@
 import {FormControl} from '@angular/forms';
-import {AutocompleteMethod} from '../input/autocomplete/autocomplete';
+import {AutocompleteMethod} from './input/autocomplete/autocomplete';
 
 /**
  * Classe abstraite pour les champs de formulaire
