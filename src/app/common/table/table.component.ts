@@ -343,4 +343,17 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
       }
     });
   }
+
+  /**
+   * Efface les filtres
+   */
+  protected clearAllFilters(): void {
+    this.columns
+      .flatMap(column => column.filters)
+      .forEach((filter) => {
+        filter.filterValue = null;
+      });
+
+    this.filter();
+  }
 }

@@ -1,4 +1,14 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {
@@ -27,7 +37,7 @@ import {debounceTime, mergeMap, of, startWith} from 'rxjs';
   templateUrl: './autocomplete.component.html',
   styleUrl: './autocomplete.component.scss'
 })
-export class AutocompleteComponent<T extends Record<string, any>> implements OnInit, AfterViewInit {
+export class AutocompleteComponent<T extends Record<string, any>> implements OnInit, AfterViewInit, OnChanges {
   @Input({required: true})
   public autocompleteMethod: AutocompleteMethod<T> | null = null;
   @Input({required: true})
@@ -103,6 +113,19 @@ export class AutocompleteComponent<T extends Record<string, any>> implements OnI
         }
       }
     });
+  }
+
+  /**
+   * Catch les changements de valeur et update le formcontrol
+   * @param changes Changement de valeur
+   */
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes['value']) {
+      if (this.autoCompleteFormControl.value !== this.value) {
+        this.autoCompleteFormControl.setValue(this.value);
+        console.log("changed")
+      }
+    }
   }
 
   /**

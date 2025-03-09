@@ -101,6 +101,13 @@
             }
           </div>
         }
+        <div [style.width]="'10%'"
+             [style.text-align]="'right'">
+          <button mat-icon-button
+                  (click)="this.clearAllFilters()">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
       </th>
     </ng-container>
 
