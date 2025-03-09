@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
-import {DialogType} from '../../../common/dialog/dialog-data';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {AbstractDialogComponent} from '../../../common/dialog/abstract-dialog.component';

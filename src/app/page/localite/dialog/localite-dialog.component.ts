@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {AbstractDialogComponent} from '../../../common/dialog/abstract-dialog.component';
 import {
   Localite,
   LOCALITE_NOM,
   LOCALITE_NOM_LABEL,
   LOCALITE_NPA,
-  LOCALITE_NPA_LABEL, LOCALITE_PAYS,
+  LOCALITE_NPA_LABEL,
+  LOCALITE_PAYS,
   LOCALITE_PAYS_LABEL
 } from '../localite.model';
-import { MODEL_ID } from '../../../common/model';
+import {MODEL_ID} from '../../../common/model';
 import {AutocompleteFormField, FormField, InputFormField} from '../../../common/form/form-field';
 import {PaysService} from '../../pays/pays.service';
 import {Observable} from 'rxjs';

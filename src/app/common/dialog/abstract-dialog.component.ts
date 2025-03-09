@@ -2,7 +2,7 @@ import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DialogData, DialogType} from './dialog-data';
 import {Observable} from 'rxjs';
-import {FormField, InputFormField} from '../form/form-field';
+import {FormField} from '../form/form-field';
 import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
 import {FormComponent} from '../form/form.component';
 
