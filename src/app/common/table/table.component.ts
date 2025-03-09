@@ -188,9 +188,22 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   /**
    * Récupère la valeur d'un champ d'un objet en cascade
    * @param object Objet concerné
+   * @param column Colonne à récupérer
+   */
+  protected getValue(object: any, column: Column): any {
+    if (column.method) {
+      return column.method(...column.methodFields.map(field => this.getValueFromAttributeInCascade(field, object)));
+    } else {
+      return this.getValueFromAttributeInCascade(column.field, object);
+    }
+  }
+
+  /**
+   * Récupère la valeur d'un champ d'un objet en cascade
+   * @param object Objet concerné
    * @param attribut Attribut à récupérer
    */
-  protected getValue(object: any, attribut: string): any {
+  private getValueFromAttributeInCascade(attribut: string, object: any): any {
     return attribut.split(".").reduce((obj, key) => obj[key], object);
   }
 

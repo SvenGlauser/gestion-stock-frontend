@@ -20,10 +20,15 @@
       }
       @if (control.isAutocompleteFormField()) {
         <app-autocomplete [label]="control.label"
-                          [autoCompleteFormControl]="control.formControl"
+                          [autocompleteFormControl]="control.formControl"
                           [autocompleteMethod]="control.getAutocompleteFormField()!.autocompleteMethod"
                           [autocompleteIdField]="control.getAutocompleteFormField()!.autocompleteIdField"
                           [autocompleteNameField]="control.getAutocompleteFormField()!.autocompleteNameField"/>
+      }
+      @if (control.isAutocompleteEnumFormField()) {
+        <app-autocomplete-enum [label]="control.label"
+                               [autocompleteFormControl]="control.formControl"
+                               [mapOfElements]="control.getAutocompleteEnumFormField()!.mapOfElements"/>
       }
     }
   </form>

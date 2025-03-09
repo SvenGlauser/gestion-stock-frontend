@@ -4,7 +4,7 @@ import {SearchResult} from '../../common/search/searchResult';
 import {Pays, PAYS_NOM} from './pays.model';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
-import {BASE_URL} from '../../common/http-client.configuration';
+import {BASE_URL} from '../../common/utils/http-client.configuration';
 import {Order, Type} from '../../common/search/filter';
 
 @Injectable({

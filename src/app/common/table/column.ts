@@ -7,6 +7,8 @@ import {AutocompleteMethod} from '../form/input/autocomplete/autocomplete';
 export class Column {
   public label: string;
   public field: string;
+  public method: ((...value: any) => string) | null = null;
+  public methodFields: string[] = [];
   public filters: ColumnFilter[] = [];
   public sortable: boolean = false;
   public sortDefaultValue: Order | null = null;
@@ -26,6 +28,17 @@ export class Column {
    */
   public static of(label: string, field: string, width: string): Column {
     return new Column(label, field, width)
+  }
+
+  /**
+   * Ajoute une méthode pour un champ calculé sur la base d'un autre champ
+   * @param method Méthode pour le calcul
+   * @param methodFields Champs passés en paramètres
+   */
+  public valueMethod(method: (...value: any) => string, ...methodFields: string[]): this {
+    this.method = method;
+    this.methodFields = methodFields;
+    return this;
   }
 
   /**

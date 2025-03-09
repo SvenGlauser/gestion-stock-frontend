@@ -4,6 +4,7 @@ import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {FormField} from './form-field';
 import {AutocompleteComponent} from './input/autocomplete/autocomplete.component';
+import {AutocompleteEnumComponent} from './input/autocomplete-enum/autocomplete-enum.component';
 
 @Component({
   selector: 'app-form',
@@ -13,7 +14,8 @@ import {AutocompleteComponent} from './input/autocomplete/autocomplete.component
     MatLabel,
     ReactiveFormsModule,
     MatError,
-    AutocompleteComponent
+    AutocompleteComponent,
+    AutocompleteEnumComponent
   ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'

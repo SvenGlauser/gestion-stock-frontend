@@ -17,12 +17,12 @@ import {
   MatAutocompleteTrigger,
   MatOption
 } from '@angular/material/autocomplete';
-import {AutocompleteMethod} from './autocomplete';
 import {MatInput} from '@angular/material/input';
-import {debounceTime, mergeMap, of, startWith} from 'rxjs';
+import {debounceTime, map, startWith} from 'rxjs';
+import {KeyValuePipe} from '@angular/common';
 
 @Component({
-  selector: 'app-autocomplete',
+  selector: 'app-autocomplete-enum',
   imports: [
     MatFormField,
     FormsModule,
@@ -32,67 +32,72 @@ import {debounceTime, mergeMap, of, startWith} from 'rxjs';
     MatOption,
     MatAutocompleteTrigger,
     MatError,
-    MatLabel
+    MatLabel,
+    KeyValuePipe
   ],
-  templateUrl: './autocomplete.component.html',
-  styleUrl: './autocomplete.component.scss'
+  templateUrl: './autocomplete-enum.component.html',
+  styleUrl: './autocomplete-enum.component.scss'
 })
-export class AutocompleteComponent<T extends Record<string, any>> implements OnInit, AfterViewInit, OnChanges {
+export class AutocompleteEnumComponent implements OnInit, AfterViewInit, OnChanges {
   @Input({required: true})
-  public autocompleteMethod: AutocompleteMethod<T> | null = null;
-  @Input({required: true})
-  public autocompleteIdField: string | null = null;
-  @Input({required: true})
-  public autocompleteNameField: string | null = null;
+  public mapOfElements: Map<any, string> | null = null;
 
   @Input()
   public label: string | null = null;
 
   @Input()
-  public value: T | null = null;
+  public value: any = null;
   @Output()
-  public valueChange: EventEmitter<T | null> = new EventEmitter<T | null>();
+  public valueChange: EventEmitter<any> = new EventEmitter<any>();
 
   @Input()
-  public autocompleteFormControl = new FormControl<string | T | null>(null);
+  public autocompleteFormControl = new FormControl<any>(null);
 
   @ViewChild(MatAutocompleteTrigger)
   public trigger: MatAutocompleteTrigger | null = null;
 
-  protected results: T[] = [];
+  protected results: Map<any, string> = new Map<any, string>();
 
   /**
    * Initialise les events listeners
    */
   public ngOnInit(): void {
     // Sélectionne la valeur par défaut
-    if (this.value) {
+    if (this.value !== null) {
       this.autocompleteFormControl.setValue(this.value);
     }
 
     this.autocompleteFormControl.valueChanges.pipe(
       startWith(""), // Valeur initiale
       debounceTime(500), // Ne fait une nouvelle requête que toutes les 500 ms
-      mergeMap(value => {
+      map(value => {
         // Si le composant n'est pas correctement initialisé
-        if (!this.autocompleteMethod || !this.autocompleteIdField || !this.autocompleteNameField) {
-          return of([]);
+        if (!this.mapOfElements) {
+          return new Map<any, string>();
         }
 
         let stringValue: string | null;
 
         // Si la valeur n'est pas null et pas de type string
-        if (!value) {
-          stringValue = "";
+        if (value === null) {
+          stringValue = null;
         } else if (typeof value === 'string') {
           stringValue = value;
         } else {
           // Récupère la valeur affichée pour faire la recherche
-          stringValue = value[this.autocompleteNameField];
+          stringValue = this.mapOfElements.get(value) ?? null;
+        }
+
+        let result: Map<any, string> = new Map<any, string>();
+
+        for (let [key, value] of this.mapOfElements) {
+          if (value.toLowerCase().includes(stringValue?.toLowerCase() ?? "")) {
+            result.set(key, value);
+          }
         }
 
         // Exécute la recherche
-        return this.autocompleteMethod(stringValue ?? "");
+        return result;
       }))
       .subscribe(result => this.results = result);
   }
@@ -106,7 +111,7 @@ export class AutocompleteComponent<T extends Record<string, any>> implements OnI
       if (!event?.source) {
 
         // Et que le type n'est pas un objet
-        if (!this.autocompleteFormControl.value || typeof this.autocompleteFormControl.value === "string") {
+        if (this.autocompleteFormControl.value === null || typeof this.autocompleteFormControl.value === "string") {
           // Réinitialiser la valeur
           this.autocompleteFormControl.setValue(null);
           this.emitValue(null);
@@ -139,7 +144,7 @@ export class AutocompleteComponent<T extends Record<string, any>> implements OnI
    * Émet la valeur
    * @param value Valeur à émettre
    */
-  private emitValue(value: T | null): void {
+  private emitValue(value: any): void {
     if (value === this.value) {
       return;
     }
@@ -151,15 +156,15 @@ export class AutocompleteComponent<T extends Record<string, any>> implements OnI
    * Récupère le nom pour l'affichage dans l'autocomplete
    * @param value Valeur
    */
-  protected displayName(value: T): string {
-    if (!this.autocompleteNameField) {
+  protected displayName(value: any): string {
+    if (!this.mapOfElements) {
       return "";
     }
 
-    if (!value) {
+    if (value === null) {
       return "";
     }
 
-    return value[this.autocompleteNameField] ?? "";
+    return this.mapOfElements.get(value) ?? "";
   }
 }

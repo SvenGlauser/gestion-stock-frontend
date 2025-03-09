@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../../common/search/searchResult';
 import {Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
-import {BASE_URL} from '../../common/http-client.configuration';
+import {BASE_URL} from '../../common/utils/http-client.configuration';
 import {Localite} from './localite.model';
 
 @Injectable({

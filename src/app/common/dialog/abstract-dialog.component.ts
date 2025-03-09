@@ -88,7 +88,7 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
         this.forms.forEach((form: FormField) => {
           let oldValue: any = this.oldObject![form.field];
 
-          if (oldValue) {
+          if (oldValue !== null) {
             form.formControl.setValue(oldValue);
           }
         })

@@ -52,6 +52,24 @@ export abstract class FormField {
   }
 
   /**
+   * Vérifie si le type est AutocompleteEnumFormField
+   */
+  public isAutocompleteEnumFormField(): boolean {
+    return this instanceof AutocompleteEnumFormField;
+  }
+
+  /**
+   * Récupère le type AutocompleteEnumFormField
+   */
+  public getAutocompleteEnumFormField(): AutocompleteEnumFormField | null {
+    if (this instanceof AutocompleteEnumFormField) {
+      return <AutocompleteEnumFormField>this;
+    }
+
+    return null;
+  }
+
+  /**
    * Récupère la valeur pour l'envoyer auu backend
    */
   public abstract getValue(): any;
@@ -126,8 +144,8 @@ export class AutocompleteFormField<T extends Record<string, any>> extends FormFi
                         autocompleteMethod: AutocompleteMethod<T>,
                         autocompleteIdField: string,
                         autocompleteNameField: string,
-                        value: any = null): InputFormField {
-    return new AutocompleteFormField(
+                        value: any = null): AutocompleteFormField<T> {
+    return this.ofFormControl(
       label,
       field,
       autocompleteMethod,
@@ -151,7 +169,7 @@ export class AutocompleteFormField<T extends Record<string, any>> extends FormFi
                            autocompleteMethod: AutocompleteMethod<T>,
                            autocompleteIdField: string,
                            autocompleteNameField: string,
-                           formControl: FormControl): InputFormField {
+                           formControl: FormControl): AutocompleteFormField<T> {
     return new AutocompleteFormField(
       label,
       field,
@@ -160,6 +178,68 @@ export class AutocompleteFormField<T extends Record<string, any>> extends FormFi
       autocompleteNameField,
       formControl,
     );
+  }
+
+  public override getValue(): any {
+    return this.formControl.value;
+  }
+}
+
+/**
+ * Classe pour les champs de saisie avec autocomplétion complexe
+ */
+export class AutocompleteEnumFormField extends FormField {
+  public mapOfElements: Map<any, string>;
+
+  constructor(label: string,
+              field: string,
+              formControl: FormControl) {
+
+    super(label, field, formControl);
+
+    this.mapOfElements = new Map<any, string>();
+  }
+
+  /**
+   * Récupère un champ de saisie avec autocomplétion
+   * @param label Label
+   * @param field Champ
+   * @param value Valeur initiale
+   */
+  public static ofValue(label: string,
+                        field: string,
+                        value: any = null): AutocompleteEnumFormField {
+    return this.ofFormControl(
+      label,
+      field,
+      new FormControl(value),
+    );
+  }
+
+  /**
+   * Récupère un champ de saisie avec autocomplétion
+   * @param label Label
+   * @param field Champ
+   * @param formControl FormControl
+   */
+  public static ofFormControl(label: string,
+                              field: string,
+                              formControl: FormControl): AutocompleteEnumFormField {
+    return new AutocompleteEnumFormField(
+      label,
+      field,
+      formControl,
+    );
+  }
+
+  /**
+   * Ajoute une valeur
+   * @param value Valeur
+   * @param label Label
+   */
+  public addValue(value: any, label: string): this {
+    this.mapOfElements.set(value, label);
+    return this;
   }
 
   public override getValue(): any {
