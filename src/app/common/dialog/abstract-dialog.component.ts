@@ -171,6 +171,7 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
       if (errorsAssignedToField.length > 0) {
         // Assignement du message
         form.formControl.setErrors({"validation": errorsMessages});
+        form.formControl.markAsTouched();
 
         // Suppression des erreurs dans la liste
         errors = errors.filter(error => !errorsAssignedToField.includes(error));
@@ -185,6 +186,7 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
 
         // Assignement du message
         this.formComponent.formGroup?.setErrors({"validation": errorsMessages});
+        this.formComponent.formGroup?.markAsTouched();
       }
     }
   }
