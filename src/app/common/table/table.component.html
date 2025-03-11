@@ -34,14 +34,24 @@
             *matCellDef="let element">
           @if (LinkColumn.isInstanceOf(column)) {
             @if (column.getValue(element)) {
-              <a [href]="column.getValue(element)"
-                 [target]="column.getValue(element).startsWith('http') ? '_blank' : '_self'"
-                 (keydown.enter)="$event.stopPropagation()"
-                 (click)="$event.stopPropagation()">
-                <button mat-icon-button>
-                  <mat-icon>open_in_new</mat-icon>
-                </button>
-              </a>
+              @if (column.getValue(element).startsWith('http')) {
+                <a [href]="column.getValue(element)"
+                   (keydown.enter)="$event.stopPropagation()"
+                   (click)="$event.stopPropagation()"
+                   target="_blank">
+                  <button mat-icon-button>
+                    <mat-icon>{{LinkColumn.cast(column)!.icon}}</mat-icon>
+                  </button>
+                </a>
+              } @else {
+                <a [routerLink]="column.getValue(element)"
+                   (keydown.enter)="$event.stopPropagation()"
+                   (click)="$event.stopPropagation()">
+                  <button mat-icon-button>
+                    <mat-icon>{{LinkColumn.cast(column)!.icon}}</mat-icon>
+                  </button>
+                </a>
+              }
             }
           } @else {
             <div class="multi-lines">{{ column.getValue(element) }}</div>

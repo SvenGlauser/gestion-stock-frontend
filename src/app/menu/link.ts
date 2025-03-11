@@ -1,7 +1,9 @@
 export interface Link {
   name: string;
   icon: string;
-  isActive: boolean;
   url: string;
+  activated?: boolean;
+  disabled?: boolean;
+  disabledLabel?: string;
   separatorBefore?: string;
 }

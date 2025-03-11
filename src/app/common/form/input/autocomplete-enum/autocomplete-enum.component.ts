@@ -111,7 +111,8 @@ export class AutocompleteEnumComponent implements OnInit, AfterViewInit, OnChang
       if (!event?.source) {
 
         // Et que le type n'est pas un objet
-        if (this.autocompleteFormControl.value === null || typeof this.autocompleteFormControl.value === "string") {
+        if (this.autocompleteFormControl.value === null ||
+            (typeof this.autocompleteFormControl.value === "string" && this.mapOfElements?.has(this.autocompleteFormControl.value) === false)) {
           // Réinitialiser la valeur
           this.autocompleteFormControl.setValue(null);
           this.emitValue(null);

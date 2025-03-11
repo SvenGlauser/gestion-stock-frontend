@@ -2,6 +2,7 @@ import {Column} from './column';
 
 export class LinkColumn extends Column {
   public link: (object: any) => string;
+  public icon: string;
 
   protected constructor(label: string,
                         field: string,
@@ -9,6 +10,7 @@ export class LinkColumn extends Column {
                         link: (object: any) => string) {
     super(label, field, width);
     this.link = link;
+    this.icon = "open_in_new";
   }
 
   /**
@@ -33,7 +35,28 @@ export class LinkColumn extends Column {
     return instance instanceof LinkColumn;
   }
 
+  /**
+   * Cast l'instance en LinkColumn
+   * @param instance Instance à vérifier
+   */
+  public static cast(instance: Column): LinkColumn | null {
+    if (instance instanceof LinkColumn) {
+      return instance;
+    }
+
+    return null;
+  }
+
   public override getValue(object: any): string {
     return this.link(object);
+  }
+
+  /**
+   * Change l'icône du lien
+   * @param icon Nouvelle icône
+   */
+  public withIcon(icon: string): this {
+    this.icon = icon;
+    return this;
   }
 }

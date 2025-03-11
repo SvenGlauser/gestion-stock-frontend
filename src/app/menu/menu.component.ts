@@ -4,6 +4,7 @@ import {MatIcon} from '@angular/material/icon';
 import {Link} from './link';
 import {NavigationStart, Router, RouterLink} from '@angular/router';
 import {filter} from 'rxjs';
+import {MatTooltip} from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-menu',
@@ -12,7 +13,8 @@ import {filter} from 'rxjs';
     MatListItem,
     MatIcon,
     RouterLink,
-    MatListItemTitle
+    MatListItemTitle,
+    MatTooltip
   ],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss'
@@ -22,44 +24,38 @@ export class MenuComponent implements OnInit {
     {
       name: "Accueil",
       icon: "home",
-      isActive: false,
       url: "/",
     }, {
       name: "Pièces",
       icon: "settings_suggest",
-      isActive: false,
       url: "/pieces",
       separatorBefore: "Actions principales",
     }, {
       name: "Machines",
       icon: "agriculture",
-      isActive: false,
-      url: "/machines",
+      disabled: true,
+      disabledLabel: "Pour accéder à cette page, utilisez la page des clients",
+      url: "/machines/",
     }, {
-      name: "Clients",
+      name: "Contacts",
       icon: "person_apron",
-      isActive: false,
-      url: "/clients",
+      url: "/contacts",
     }, {
       name: "Fournisseurs",
       icon: "local_shipping",
-      isActive: false,
       url: "/fournisseurs",
     }, {
       name: "Catégories",
       icon: "category",
-      isActive: false,
       url: "/categories",
       separatorBefore: "Configuration",
     }, {
       name: "Localités",
       icon: "location_city",
-      isActive: false,
       url: "/localites",
     }, {
       name: "Pays",
       icon: "flag",
-      isActive: false,
       url: "/pays",
     },
   ];
@@ -85,9 +81,24 @@ export class MenuComponent implements OnInit {
    * @param url Nouvelle URL
    */
   private updateActivated(url: string): void {
-    this.links = this.links.map(item => {
-      item.isActive = item.url === url;
-      return item;
-    });
+    let bestItem: Link | null = null;
+    let lastLength: number = 0;
+
+    for (const item of this.links) {
+      if(url.startsWith(item.url)) {
+        let length = item.url.length;
+
+        if (length > lastLength) {
+          bestItem = item;
+          lastLength = length;
+        }
+      }
+
+      item.activated = false;
+    }
+
+    if (bestItem) {
+      bestItem.activated = true;
+    }
   }
 }

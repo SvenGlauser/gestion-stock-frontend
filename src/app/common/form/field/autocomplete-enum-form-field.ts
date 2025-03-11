@@ -76,6 +76,17 @@ export class AutocompleteEnumFormField extends FormField {
     return this;
   }
 
+  /**
+   * Ajoute des valeurs
+   * @param values Valeurs
+   */
+  public addValues(values: Map<any, string>): this {
+    for (const [key, value] of values) {
+      this.mapOfElements.set(key, value);
+    }
+    return this;
+  }
+
   public override getValue(): any {
     return this.formControl.value;
   }

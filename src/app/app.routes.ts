@@ -4,11 +4,20 @@ import {PaysTableComponent} from './page/pays/table/pays-table.component';
 import {LocaliteTableComponent} from './page/localite/table/localite-table.component';
 import {CategorieTableComponent} from './page/categorie/table/categorie-table.component';
 import {FournisseurTableComponent} from './page/fournisseur/table/fournisseur-table.component';
+import {ContactTableComponent} from './page/contact/table/contact-table.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: AccueilComponent,
+    children: [],
+  }, {
+    path: 'machines/:id',
+    component: AccueilComponent,
+    children: [],
+  }, {
+    path: 'contacts',
+    component: ContactTableComponent,
     children: [],
   }, {
     path: 'fournisseurs',

@@ -8,8 +8,10 @@
     }
 
     <a mat-list-item
-       [activated]="link.isActive"
-       [routerLink]="link.url">
+       [activated]="link.activated ?? false"
+       [disabled]="link.disabled && !link.activated"
+       [routerLink]="!link.disabled ? link.url : null"
+       [matTooltip]="link.disabled && !link.activated && link.disabledLabel ? link.disabledLabel : null">
       <div matListItemTitle class="mat-list-item-content">
         <mat-icon>{{ link.icon }}</mat-icon>
         {{ link.name }}

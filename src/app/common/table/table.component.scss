@@ -47,6 +47,8 @@
   --mat-form-field-container-vertical-padding: 6px;
   --mat-form-field-container-height: 36;
 
+  --mat-form-field-container-text-size: var(--mat-sys-body-medium-size);
+
   & > div {
     padding: 16px;
     display: inline-block;

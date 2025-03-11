@@ -33,6 +33,7 @@ import {ColumnFilter} from './column/filter/column-filter';
 import {InputFilter} from './column/filter/input-column-filter';
 import {AutocompleteFilter} from './column/filter/autocomplete-column-filter';
 import {LinkColumn} from './column/link-column';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-table',
@@ -61,7 +62,8 @@ import {LinkColumn} from './column/link-column';
     MatMenuTrigger,
     MatMenu,
     MatMenuItem,
-    MatButton
+    MatButton,
+    RouterLink
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
