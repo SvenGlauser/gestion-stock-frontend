@@ -48,13 +48,15 @@ export class LocaliteDialogComponent extends AbstractDialogComponent<LocaliteDia
       [
         InputFormField.ofValue(LOCALITE_NOM_LABEL, LOCALITE_NOM),
         InputFormField.ofValue(LOCALITE_NPA_LABEL, LOCALITE_NPA),
-        AutocompleteFormField.ofValue(
-          LOCALITE_PAYS_LABEL,
-          LOCALITE_PAYS,
-          this.autocompletePays.bind(this),
-          MODEL_ID,
-          PAYS_NOM,
-        )
+        AutocompleteFormField
+          .ofValue(
+            LOCALITE_PAYS_LABEL,
+            LOCALITE_PAYS,
+            this.autocompletePays.bind(this),
+            MODEL_ID,
+            PAYS_NOM,
+          )
+          .setColspan(2),
       ],
     ]
   ]);

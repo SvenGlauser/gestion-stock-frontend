@@ -56,22 +56,30 @@ export class FournisseurDialogComponent extends AbstractDialogComponent<Fourniss
     [
       PANEL_DONNEES_GENERALES,
       [
-        InputFormField.ofValue(FOURNISSEUR_NOM_LABEL, FOURNISSEUR_NOM),
-        InputFormField.ofValue(FOURNISSEUR_DESCRIPTION_LABEL, FOURNISSEUR_DESCRIPTION),
-        InputFormField.ofValue(FOURNISSEUR_URL_LABEL, FOURNISSEUR_URL),
+        InputFormField
+          .ofValue(FOURNISSEUR_NOM_LABEL, FOURNISSEUR_NOM)
+          .setColspan(2),
+        InputFormField
+          .ofValue(FOURNISSEUR_DESCRIPTION_LABEL, FOURNISSEUR_DESCRIPTION)
+          .setColspan(2),
+        InputFormField
+          .ofValue(FOURNISSEUR_URL_LABEL, FOURNISSEUR_URL)
+          .setColspan(2),
       ],
     ], [
       PANEL_ADRESSE,
       [
         InputFormField.ofValue(ADRESSE_RUE_LABEL, FOURNISSEUR_ADRESSE.concat(".", ADRESSE_RUE)),
         InputFormField.ofValue(ADRESSE_NUMERO_LABEL, FOURNISSEUR_ADRESSE.concat(".", ADRESSE_NUMERO)),
-        AutocompleteFormField.ofValue(
-          ADRESSE_LOCALILTE_LABEL,
-          FOURNISSEUR_ADRESSE.concat(".", ADRESSE_LOCALILTE),
-          this.autocompleteLocalite.bind(this),
-          MODEL_ID,
-          LOCALITE_NOM,
-        ),
+        AutocompleteFormField
+          .ofValue(
+            ADRESSE_LOCALILTE_LABEL,
+            FOURNISSEUR_ADRESSE.concat(".", ADRESSE_LOCALILTE),
+            this.autocompleteLocalite.bind(this),
+            MODEL_ID,
+            LOCALITE_NOM,
+          )
+          .setColspan(2),
       ]
     ]
   ]);

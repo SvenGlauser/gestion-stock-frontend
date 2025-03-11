@@ -8,7 +8,7 @@ import {AutocompleteEnumComponent} from './input/autocomplete-enum/autocomplete-
 import {AutocompleteFormField} from './field/autocomplete-form-field';
 import {AutocompleteEnumFormField} from './field/autocomplete-enum-form-field';
 import {InputFormField} from './field/input-form-field';
-import {KeyValuePipe} from '@angular/common';
+import {KeyValuePipe, NgClass} from '@angular/common';
 import {
   MatAccordion,
   MatExpansionPanel,
@@ -30,7 +30,8 @@ import {
     MatAccordion,
     MatExpansionPanelHeader,
     MatExpansionPanel,
-    MatExpansionPanelTitle
+    MatExpansionPanelTitle,
+    NgClass
   ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'

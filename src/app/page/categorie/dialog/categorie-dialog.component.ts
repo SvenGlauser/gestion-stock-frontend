@@ -45,11 +45,13 @@ export class CategorieDialogComponent extends AbstractDialogComponent<CategorieD
       PANEL_DONNEES_GENERALES,
       [
         InputFormField.ofValue(CATEGORIE_NOM_LABEL, CATEGORIE_NOM),
-        InputFormField.ofValue(CATEGORIE_DESCRIPTION_LABEL, CATEGORIE_DESCRIPTION),
         AutocompleteEnumFormField
           .ofValue(CATEGORIE_ACTIF_LABEL, CATEGORIE_ACTIF)
           .addValue(true, "Oui")
           .addValue(false, "Non"),
+        InputFormField
+          .ofValue(CATEGORIE_DESCRIPTION_LABEL, CATEGORIE_DESCRIPTION)
+          .setColspan(2),
       ]
     ]
   ]);

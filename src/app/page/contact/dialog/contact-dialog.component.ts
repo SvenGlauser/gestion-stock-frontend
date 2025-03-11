@@ -68,7 +68,8 @@ export class ContactDialogComponent extends AbstractDialogComponent<ContactDialo
       [
         AutocompleteEnumFormField
           .ofValue(CONTACT_TITRE_LABEL, CONTACT_TITRE)
-          .addValues(TitreEnumValuesForAutocomplete),
+          .addValues(TitreEnumValuesForAutocomplete)
+          .setColspan(2),
         InputFormField.ofValue(CONTACT_NOM_LABEL, CONTACT_NOM),
         InputFormField.ofValue(CONTACT_PRENOM_LABEL, CONTACT_PRENOM),
       ],
@@ -83,18 +84,22 @@ export class ContactDialogComponent extends AbstractDialogComponent<ContactDialo
       [
         InputFormField.ofValue(ADRESSE_RUE_LABEL, CONTACT_ADRESSE.concat(".", ADRESSE_RUE)),
         InputFormField.ofValue(ADRESSE_NUMERO_LABEL, CONTACT_ADRESSE.concat(".", ADRESSE_NUMERO)),
-        AutocompleteFormField.ofValue(
-          ADRESSE_LOCALILTE_LABEL,
-          CONTACT_ADRESSE.concat(".", ADRESSE_LOCALILTE),
-          this.autocompleteLocalite.bind(this),
-          MODEL_ID,
-          LOCALITE_NOM,
-        ),
+        AutocompleteFormField
+          .ofValue(
+            ADRESSE_LOCALILTE_LABEL,
+            CONTACT_ADRESSE.concat(".", ADRESSE_LOCALILTE),
+            this.autocompleteLocalite.bind(this),
+            MODEL_ID,
+            LOCALITE_NOM,
+          )
+          .setColspan(2),
       ],
     ], [
       PANEL_INFORMATIONS_SUPPLEMENTAIRES,
       [
-        InputFormField.ofValue(CONTACT_REMARQUES_LABEL, CONTACT_REMARQUES),
+        InputFormField
+          .ofValue(CONTACT_REMARQUES_LABEL, CONTACT_REMARQUES)
+          .setColspan(2),
       ]
     ]
   ]);

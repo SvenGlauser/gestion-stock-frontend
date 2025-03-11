@@ -47,12 +47,12 @@ export class ContactTableComponent {
       .sort(Order.ASC)
       .inputFilterOnSameField(),
     ClassicColumn
-      .of(CONTACT_TELEPHONE_LABEL, CONTACT_TELEPHONE, "15%")
+      .of(CONTACT_TELEPHONE_LABEL, CONTACT_TELEPHONE, "20%")
       .inputFilterOnSameField(),
+    MethodColumn.of(CONTACT_ADRESSE_LABEL, CONTACT_ADRESSE, "20%", adresseToString),
     LinkColumn
       .of(CONTACT_MACHINES_LABEL, CONTACT_MACHINES, "10%", (contact: Contact) => "/machines/" + contact.id)
       .withIcon("agriculture"),
-    MethodColumn.of(CONTACT_ADRESSE_LABEL, CONTACT_ADRESSE, "20%", adresseToString),
   ]
 
   // Définition des actions possibles

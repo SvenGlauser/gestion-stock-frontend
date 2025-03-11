@@ -35,5 +35,13 @@ form {
     grid-template-columns: repeat(2, 250px);
     grid-gap: 20px;
     align-items: flex-start;
+
+    .colspan-1 {
+      grid-column: span 1;
+    }
+
+    .colspan-2 {
+      grid-column: span 2;
+    }
   }
 }
