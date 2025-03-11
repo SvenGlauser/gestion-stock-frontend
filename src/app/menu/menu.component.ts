@@ -34,7 +34,7 @@ export class MenuComponent implements OnInit {
       name: "Machines",
       icon: "agriculture",
       disabled: true,
-      disabledLabel: "Pour accéder à cette page, utilisez la page des clients",
+      disabledLabel: "Pour accéder à cette page, utilisez la page des contacts",
       url: "/machines/",
     }, {
       name: "Contacts",

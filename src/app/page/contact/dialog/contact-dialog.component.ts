@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {AbstractDialogComponent} from '../../../common/dialog/abstract-dialog.component';
-import {MODEL_ID} from '../../../common/model';
+import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
 import {Observable} from 'rxjs';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
@@ -21,7 +21,9 @@ import {
   CONTACT_TELEPHONE,
   CONTACT_TELEPHONE_LABEL,
   CONTACT_TITRE,
-  CONTACT_TITRE_LABEL
+  CONTACT_TITRE_LABEL,
+  PANEL_INFORMATIONS_CONTACT,
+  PANEL_INFORMATIONS_SUPPLEMENTAIRES
 } from '../contact.model';
 import {ContactService} from '../contact.service';
 import {LocaliteService} from '../../localite/localite.service';
@@ -32,7 +34,8 @@ import {
   ADRESSE_NUMERO,
   ADRESSE_NUMERO_LABEL,
   ADRESSE_RUE,
-  ADRESSE_RUE_LABEL
+  ADRESSE_RUE_LABEL,
+  PANEL_ADRESSE
 } from '../../adresse/adresse';
 import {InputFormField} from '../../../common/form/field/input-form-field';
 import {AutocompleteFormField} from '../../../common/form/field/autocomplete-form-field';
@@ -59,25 +62,42 @@ export class ContactDialogComponent extends AbstractDialogComponent<ContactDialo
   protected readonly ID_FIELD: string = MODEL_ID;
 
   // Définition des champs de formulaire
-  protected forms: FormField[] = [
-    AutocompleteEnumFormField
-      .ofValue(CONTACT_TITRE_LABEL, CONTACT_TITRE)
-      .addValues(TitreEnumValuesForAutocomplete),
-    InputFormField.ofValue(CONTACT_NOM_LABEL, CONTACT_NOM),
-    InputFormField.ofValue(CONTACT_PRENOM_LABEL, CONTACT_PRENOM),
-    InputFormField.ofValue(CONTACT_EMAIL_LABEL, CONTACT_EMAIL),
-    InputFormField.ofValue(CONTACT_TELEPHONE_LABEL, CONTACT_TELEPHONE),
-    InputFormField.ofValue(ADRESSE_RUE_LABEL, CONTACT_ADRESSE.concat(".", ADRESSE_RUE)),
-    InputFormField.ofValue(ADRESSE_NUMERO_LABEL, CONTACT_ADRESSE.concat(".", ADRESSE_NUMERO)),
-    AutocompleteFormField.ofValue(
-      ADRESSE_LOCALILTE_LABEL,
-      CONTACT_ADRESSE.concat(".", ADRESSE_LOCALILTE),
-      this.autocompleteLocalite.bind(this),
-      MODEL_ID,
-      LOCALITE_NOM,
-    ),
-    InputFormField.ofValue(CONTACT_REMARQUES_LABEL, CONTACT_REMARQUES),
-  ];
+  protected formsMap: Map<string, FormField[]> = new Map([
+    [
+      PANEL_DONNEES_GENERALES,
+      [
+        AutocompleteEnumFormField
+          .ofValue(CONTACT_TITRE_LABEL, CONTACT_TITRE)
+          .addValues(TitreEnumValuesForAutocomplete),
+        InputFormField.ofValue(CONTACT_NOM_LABEL, CONTACT_NOM),
+        InputFormField.ofValue(CONTACT_PRENOM_LABEL, CONTACT_PRENOM),
+      ],
+    ], [
+      PANEL_INFORMATIONS_CONTACT,
+      [
+        InputFormField.ofValue(CONTACT_EMAIL_LABEL, CONTACT_EMAIL),
+        InputFormField.ofValue(CONTACT_TELEPHONE_LABEL, CONTACT_TELEPHONE),
+      ],
+    ], [
+      PANEL_ADRESSE,
+      [
+        InputFormField.ofValue(ADRESSE_RUE_LABEL, CONTACT_ADRESSE.concat(".", ADRESSE_RUE)),
+        InputFormField.ofValue(ADRESSE_NUMERO_LABEL, CONTACT_ADRESSE.concat(".", ADRESSE_NUMERO)),
+        AutocompleteFormField.ofValue(
+          ADRESSE_LOCALILTE_LABEL,
+          CONTACT_ADRESSE.concat(".", ADRESSE_LOCALILTE),
+          this.autocompleteLocalite.bind(this),
+          MODEL_ID,
+          LOCALITE_NOM,
+        ),
+      ],
+    ], [
+      PANEL_INFORMATIONS_SUPPLEMENTAIRES,
+      [
+        InputFormField.ofValue(CONTACT_REMARQUES_LABEL, CONTACT_REMARQUES),
+      ]
+    ]
+  ]);
 
   constructor(private readonly categorieService: ContactService,
               private readonly localiteService: LocaliteService) {

@@ -14,6 +14,8 @@ export const ADRESSE_RUE_LABEL = "Rue";
 export const ADRESSE_NUMERO_LABEL = "Numéro de rue";
 export const ADRESSE_LOCALILTE_LABEL = "Localité";
 
+export const PANEL_ADRESSE = "Données de l'adresse";
+
 export const adresseToString: (adresse?: Adresse) => string = (adresse?: Adresse): string => {
   if (!adresse) {
     return "";

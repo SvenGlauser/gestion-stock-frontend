@@ -9,7 +9,7 @@ import {
   LOCALITE_PAYS,
   LOCALITE_PAYS_LABEL
 } from '../localite.model';
-import {MODEL_ID} from '../../../common/model';
+import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
 import {PaysService} from '../../pays/pays.service';
 import {Observable} from 'rxjs';
@@ -42,23 +42,26 @@ export class LocaliteDialogComponent extends AbstractDialogComponent<LocaliteDia
   protected readonly ID_FIELD: string = MODEL_ID;
 
   // Définition des champs de formulaire
-  protected forms: FormField[];
+  protected formsMap: Map<string, FormField[]> = new Map([
+    [
+      PANEL_DONNEES_GENERALES,
+      [
+        InputFormField.ofValue(LOCALITE_NOM_LABEL, LOCALITE_NOM),
+        InputFormField.ofValue(LOCALITE_NPA_LABEL, LOCALITE_NPA),
+        AutocompleteFormField.ofValue(
+          LOCALITE_PAYS_LABEL,
+          LOCALITE_PAYS,
+          this.autocompletePays.bind(this),
+          MODEL_ID,
+          PAYS_NOM,
+        )
+      ],
+    ]
+  ]);
 
   constructor(private readonly localiteService: LocaliteService,
               private readonly paysService: PaysService) {
     super();
-
-    this.forms = [
-      InputFormField.ofValue(LOCALITE_NOM_LABEL, LOCALITE_NOM),
-      InputFormField.ofValue(LOCALITE_NPA_LABEL, LOCALITE_NPA),
-      AutocompleteFormField.ofValue(
-        LOCALITE_PAYS_LABEL,
-        LOCALITE_PAYS,
-        this.autocompletePays.bind(this),
-        MODEL_ID,
-        PAYS_NOM,
-      ),
-    ]
   }
 
   /**

@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {AbstractDialogComponent} from '../../../common/dialog/abstract-dialog.component';
-import {MODEL_ID} from '../../../common/model';
+import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
 import {Observable} from 'rxjs';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
@@ -40,14 +40,19 @@ export class CategorieDialogComponent extends AbstractDialogComponent<CategorieD
   protected readonly ID_FIELD: string = MODEL_ID;
 
   // Définition des champs de formulaire
-  protected forms: FormField[] = [
-    InputFormField.ofValue(CATEGORIE_NOM_LABEL, CATEGORIE_NOM),
-    InputFormField.ofValue(CATEGORIE_DESCRIPTION_LABEL, CATEGORIE_DESCRIPTION),
-    AutocompleteEnumFormField
-      .ofValue(CATEGORIE_ACTIF_LABEL, CATEGORIE_ACTIF)
-      .addValue(true, "Oui")
-      .addValue(false, "Non"),
-  ];
+  protected formsMap: Map<string, FormField[]> = new Map([
+    [
+      PANEL_DONNEES_GENERALES,
+      [
+        InputFormField.ofValue(CATEGORIE_NOM_LABEL, CATEGORIE_NOM),
+        InputFormField.ofValue(CATEGORIE_DESCRIPTION_LABEL, CATEGORIE_DESCRIPTION),
+        AutocompleteEnumFormField
+          .ofValue(CATEGORIE_ACTIF_LABEL, CATEGORIE_ACTIF)
+          .addValue(true, "Oui")
+          .addValue(false, "Non"),
+      ]
+    ]
+  ]);
 
   constructor(private readonly categorieService: CategorieService) {
     super();

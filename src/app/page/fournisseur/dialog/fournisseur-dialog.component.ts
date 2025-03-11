@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {AbstractDialogComponent} from '../../../common/dialog/abstract-dialog.component';
-import {MODEL_ID} from '../../../common/model';
+import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
 import {Observable} from 'rxjs';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
@@ -26,7 +26,8 @@ import {
   ADRESSE_NUMERO,
   ADRESSE_NUMERO_LABEL,
   ADRESSE_RUE,
-  ADRESSE_RUE_LABEL
+  ADRESSE_RUE_LABEL,
+  PANEL_ADRESSE
 } from '../../adresse/adresse';
 import {InputFormField} from '../../../common/form/field/input-form-field';
 import {AutocompleteFormField} from '../../../common/form/field/autocomplete-form-field';
@@ -51,20 +52,29 @@ export class FournisseurDialogComponent extends AbstractDialogComponent<Fourniss
   protected readonly ID_FIELD: string = MODEL_ID;
 
   // Définition des champs de formulaire
-  protected forms: FormField[] = [
-    InputFormField.ofValue(FOURNISSEUR_NOM_LABEL, FOURNISSEUR_NOM),
-    InputFormField.ofValue(FOURNISSEUR_DESCRIPTION_LABEL, FOURNISSEUR_DESCRIPTION),
-    InputFormField.ofValue(FOURNISSEUR_URL_LABEL, FOURNISSEUR_URL),
-    InputFormField.ofValue(ADRESSE_RUE_LABEL, FOURNISSEUR_ADRESSE.concat(".", ADRESSE_RUE)),
-    InputFormField.ofValue(ADRESSE_NUMERO_LABEL, FOURNISSEUR_ADRESSE.concat(".", ADRESSE_NUMERO)),
-    AutocompleteFormField.ofValue(
-      ADRESSE_LOCALILTE_LABEL,
-      FOURNISSEUR_ADRESSE.concat(".", ADRESSE_LOCALILTE),
-      this.autocompleteLocalite.bind(this),
-      MODEL_ID,
-      LOCALITE_NOM,
-    ),
-  ];
+  protected formsMap: Map<string, FormField[]> = new Map([
+    [
+      PANEL_DONNEES_GENERALES,
+      [
+        InputFormField.ofValue(FOURNISSEUR_NOM_LABEL, FOURNISSEUR_NOM),
+        InputFormField.ofValue(FOURNISSEUR_DESCRIPTION_LABEL, FOURNISSEUR_DESCRIPTION),
+        InputFormField.ofValue(FOURNISSEUR_URL_LABEL, FOURNISSEUR_URL),
+      ],
+    ], [
+      PANEL_ADRESSE,
+      [
+        InputFormField.ofValue(ADRESSE_RUE_LABEL, FOURNISSEUR_ADRESSE.concat(".", ADRESSE_RUE)),
+        InputFormField.ofValue(ADRESSE_NUMERO_LABEL, FOURNISSEUR_ADRESSE.concat(".", ADRESSE_NUMERO)),
+        AutocompleteFormField.ofValue(
+          ADRESSE_LOCALILTE_LABEL,
+          FOURNISSEUR_ADRESSE.concat(".", ADRESSE_LOCALILTE),
+          this.autocompleteLocalite.bind(this),
+          MODEL_ID,
+          LOCALITE_NOM,
+        ),
+      ]
+    ]
+  ]);
 
   constructor(private readonly categorieService: FournisseurService,
               private readonly localiteService: LocaliteService) {

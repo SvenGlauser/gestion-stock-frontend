@@ -24,7 +24,7 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
   protected formComponent: FormComponent | null = null;
 
   // Force le parent à déclarer des champs de formulaire
-  protected abstract forms: FormField[];
+  protected abstract formsMap: Map<string, FormField[]>;
 
   // Ancien objet récupéré (sauf lors de la création)
   protected oldObject: E | null = null;
@@ -62,9 +62,12 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
   private disableFormIfNeeded(): void {
     if (this.data.type === DialogType.READ ||
       this.data.type === DialogType.DELETE) {
-      this.forms.forEach(form => {
-        form.formControl.disable();
-      })
+
+      for (const forms of this.formsMap.values()) {
+        forms.forEach(form => {
+          form.formControl.disable();
+        })
+      }
     }
   }
 
@@ -86,13 +89,15 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
         }
 
         // Rempli le formulaire avec les nouvelles données
-        this.forms.forEach((form: FormField) => {
-          let oldValue: any = getValueFromAttributeInCascade(form.field, this.oldObject);
+        for (const forms of this.formsMap.values()) {
+          forms.forEach((form: FormField) => {
+            let oldValue: any = getValueFromAttributeInCascade(form.field, this.oldObject);
 
-          if (oldValue !== null) {
-            form.formControl.setValue(oldValue);
-          }
-        })
+            if (oldValue !== null) {
+              form.formControl.setValue(oldValue);
+            }
+          });
+        }
       });
     }
   }
@@ -131,8 +136,10 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
   private getNewData(): Record<string, any> {
     let element: Record<string, any> = {};
 
-    for (const control of this.forms) {
-      setValueOfAttributeInCascade(control.field, element, control.getValue());
+    for (const forms of this.formsMap.values()) {
+      forms.forEach((form: FormField) => {
+        setValueOfAttributeInCascade(form.field, element, form.getValue());
+      });
     }
 
     return element;
@@ -161,23 +168,25 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
    */
   private traiterErreur(errors: { clazz: string, field: string, message: string }[]): void {
     // Traiter les erreurs liées à un champ connu
-    this.forms.forEach((form: FormField) => {
-      // Récupération des erreurs
-      let errorsAssignedToField = errors.filter(error => error.field == form.field)
+    for (const forms of this.formsMap.values()) {
+      forms.forEach((form: FormField) => {
+        // Récupération des erreurs
+        let errorsAssignedToField = errors.filter(error => error.field == form.field)
 
-      // Création du message d'erreur
-      let errorsMessages: string = this.createErrorMessage(errorsAssignedToField);
+        // Création du message d'erreur
+        let errorsMessages: string = this.createErrorMessage(errorsAssignedToField);
 
-      // En cas d'erreur
-      if (errorsAssignedToField.length > 0) {
-        // Assignement du message
-        form.formControl.setErrors({"validation": errorsMessages});
-        form.formControl.markAsTouched();
+        // En cas d'erreur
+        if (errorsAssignedToField.length > 0) {
+          // Assignement du message
+          form.formControl.setErrors({"validation": errorsMessages});
+          form.formControl.markAsTouched();
 
-        // Suppression des erreurs dans la liste
-        errors = errors.filter(error => !errorsAssignedToField.includes(error));
-      }
-    });
+          // Suppression des erreurs dans la liste
+          errors = errors.filter(error => !errorsAssignedToField.includes(error));
+        }
+      });
+    }
 
     // Gestion des erreurs inconnues
     if (this.formComponent) {

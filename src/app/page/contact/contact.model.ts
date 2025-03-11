@@ -36,3 +36,7 @@ export const CONTACT_REMARQUES_LABEL = 'Remarques';
 // Autres pour la page des contacts et pas en DB
 export const CONTACT_MACHINES = 'machines';
 export const CONTACT_MACHINES_LABEL = 'Machines';
+
+// Constantes pour les panels
+export const PANEL_INFORMATIONS_CONTACT = 'Informations de contact';
+export const PANEL_INFORMATIONS_SUPPLEMENTAIRES = 'Informations supplémentaires';

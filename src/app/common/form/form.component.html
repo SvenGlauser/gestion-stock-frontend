@@ -5,32 +5,43 @@
         {{this.formGroup.getError("validation")}}
       </div>
     }
+    <mat-accordion multi>
+      @for (formsKeyValue of this.formsMap | keyvalue: unsortedMap; track formsKeyValue.key) {
+        <mat-expansion-panel [expanded]="true">
+          <mat-expansion-panel-header tabIndex="-1">
+            <mat-panel-title> {{ formsKeyValue.key }} </mat-panel-title>
+          </mat-expansion-panel-header>
 
-    @for (formField of this.forms; track formField.field) {
-      @if (InputFormField.isInstanceOf(formField)) {
-        <mat-form-field>
-          <mat-label>{{ formField.label }}</mat-label>
-          <input matInput [formControl]="formField.formControl" />
-          @if (formField.formControl.hasError("validation")) {
-            <mat-error class="error">
-              {{formField.formControl.getError("validation")}}
-            </mat-error>
+          <div class="grid">
+          @for (formField of formsKeyValue.value; track formField.field) {
+            @if (InputFormField.isInstanceOf(formField)) {
+              <mat-form-field>
+                <mat-label>{{ formField.label }}</mat-label>
+                <input matInput [formControl]="formField.formControl" />
+                @if (formField.formControl.hasError("validation")) {
+                  <mat-error class="error">
+                    {{formField.formControl.getError("validation")}}
+                  </mat-error>
+                }
+              </mat-form-field>
+            }
+            @if (AutocompleteFormField.isInstanceOf(formField)) {
+              <app-autocomplete [label]="formField.label"
+                                [autocompleteFormControl]="formField.formControl"
+                                [autocompleteMethod]="AutocompleteFormField.cast(formField)!.autocompleteMethod"
+                                [autocompleteIdField]="AutocompleteFormField.cast(formField)!.autocompleteIdField"
+                                [autocompleteNameField]="AutocompleteFormField.cast(formField)!.autocompleteNameField"/>
+            }
+            @if (AutocompleteEnumFormField.isInstanceOf(formField)) {
+              <app-autocomplete-enum [label]="formField.label"
+                                     [autocompleteFormControl]="formField.formControl"
+                                     [mapOfElements]="AutocompleteEnumFormField.cast(formField)!.mapOfElements"/>
+            }
           }
-        </mat-form-field>
+          </div>
+        </mat-expansion-panel>
       }
-      @if (AutocompleteFormField.isInstanceOf(formField)) {
-        <app-autocomplete [label]="formField.label"
-                          [autocompleteFormControl]="formField.formControl"
-                          [autocompleteMethod]="AutocompleteFormField.cast(formField)!.autocompleteMethod"
-                          [autocompleteIdField]="AutocompleteFormField.cast(formField)!.autocompleteIdField"
-                          [autocompleteNameField]="AutocompleteFormField.cast(formField)!.autocompleteNameField"/>
-      }
-      @if (AutocompleteEnumFormField.isInstanceOf(formField)) {
-        <app-autocomplete-enum [label]="formField.label"
-                               [autocompleteFormControl]="formField.formControl"
-                               [mapOfElements]="AutocompleteEnumFormField.cast(formField)!.mapOfElements"/>
-      }
-    }
+    </mat-accordion>
   </form>
 }
 

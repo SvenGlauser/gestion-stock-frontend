@@ -1,10 +1,5 @@
 form {
-  padding: 20px 0;
-
-  display: grid;
-  grid-template-columns: repeat(2, 250px);
-  grid-gap: 20px;
-  align-items: flex-start;
+  padding: 10px 0;
 
   --mdc-outlined-text-field-disabled-input-text-color: color-mix(in srgb, var(--mat-sys-on-surface) 60%, transparent);
   --mdc-outlined-text-field-disabled-label-text-color: color-mix(in srgb, var(--mat-sys-on-surface) 60%, transparent);
@@ -27,5 +22,18 @@ form {
 
     color: var(--mat-sys-on-error-container);
     background: var(--mat-sys-error-container);
+  }
+
+  .mat-accordion .mat-expansion-panel {
+    box-shadow: var(--mat-sys-level2);
+  }
+
+  .grid {
+    margin-top: 10px;
+
+    display: grid;
+    grid-template-columns: repeat(2, 250px);
+    grid-gap: 20px;
+    align-items: flex-start;
   }
 }

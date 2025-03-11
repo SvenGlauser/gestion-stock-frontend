@@ -8,7 +8,7 @@ import {FormField} from '../../../common/form/field/form-field';
 import {PaysService} from '../pays.service';
 import {Observable} from 'rxjs';
 import {Pays, PAYS_ABREVIATION, PAYS_ABREVIATION_LABEL, PAYS_NOM, PAYS_NOM_LABEL} from '../pays.model';
-import {MODEL_ID} from '../../../common/model';
+import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
 import {InputFormField} from "../../../common/form/field/input-form-field";
 
 @Component({
@@ -31,10 +31,15 @@ export class PaysDialogComponent extends AbstractDialogComponent<PaysDialogCompo
   protected readonly ID_FIELD: string = MODEL_ID;
 
   // Définition des champs de formulaire
-  protected forms: FormField[] = [
-    InputFormField.ofValue(PAYS_NOM_LABEL, PAYS_NOM),
-    InputFormField.ofValue(PAYS_ABREVIATION_LABEL, PAYS_ABREVIATION),
-  ];
+  protected formsMap: Map<string, FormField[]> = new Map([
+    [
+      PANEL_DONNEES_GENERALES,
+      [
+        InputFormField.ofValue(PAYS_NOM_LABEL, PAYS_NOM),
+        InputFormField.ofValue(PAYS_ABREVIATION_LABEL, PAYS_ABREVIATION),
+      ]
+    ]
+  ]);
 
   constructor(private readonly paysService: PaysService) {
     super();
