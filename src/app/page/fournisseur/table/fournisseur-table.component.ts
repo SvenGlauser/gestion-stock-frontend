@@ -23,6 +23,7 @@ import {adresseToString} from '../../adresse/adresse';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
 import {FournisseurDialogComponent} from '../dialog/fournisseur-dialog.component';
+import {LinkColumn} from '../../../common/table/column/link-column';
 
 @Component({
   selector: 'app-categorie-table',
@@ -40,7 +41,7 @@ export class FournisseurTableComponent {
       .sort(Order.ASC)
       .inputFilterOnSameField(),
     ClassicColumn.of(FOURNISSEUR_DESCRIPTION_LABEL, FOURNISSEUR_DESCRIPTION, "25%"),
-    ClassicColumn.of(FOURNISSEUR_URL_LABEL, FOURNISSEUR_URL, "15%"),
+    LinkColumn.of(FOURNISSEUR_URL_LABEL, FOURNISSEUR_URL, "15%", (fournisseur: Fournisseur) => fournisseur.url),
     MethodColumn.of(FOURNISSEUR_ADRESSE_LABEL, FOURNISSEUR_ADRESSE, "25%", adresseToString),
   ]
 

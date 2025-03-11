@@ -32,6 +32,7 @@ import {ActionColumnInfo} from './action-column.info';
 import {ColumnFilter} from './column/filter/column-filter';
 import {InputFilter} from './column/filter/input-column-filter';
 import {AutocompleteFilter} from './column/filter/autocomplete-column-filter';
+import {LinkColumn} from './column/link-column';
 
 @Component({
   selector: 'app-table',
@@ -355,4 +356,6 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
 
     this.filter();
   }
+
+  protected readonly LinkColumn = LinkColumn;
 }
