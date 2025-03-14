@@ -4,6 +4,7 @@
 export interface DialogData {
   id: number | null;
   type: DialogType;
+  specificData: any;
 }
 
 /**

@@ -297,6 +297,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
       data: <DialogData>{
         type : type,
         id: element ? element[this.actionColumnInfo.idField] : null,
+        specificData: this.actionColumnInfo.dialogSpecificData,
       },
     });
 

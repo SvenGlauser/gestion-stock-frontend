@@ -134,7 +134,7 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
    * Récupère un object avec les nouvelles données
    */
   private getNewData(): Record<string, any> {
-    let element: Record<string, any> = {};
+    let element: E = structuredClone(this.oldObject) ?? <E>{};
 
     for (const forms of this.formsMap.values()) {
       forms.forEach((form: FormField) => {

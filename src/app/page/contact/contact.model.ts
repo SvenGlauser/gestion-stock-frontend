@@ -1,6 +1,6 @@
 import {Model} from '../../common/model';
-import {Adresse} from '../adresse/adresse';
-import {Titre} from './titre.enum';
+import {Adresse, adresseToString} from '../adresse/adresse';
+import {Titre, TitreEnumValuesForAutocomplete} from './titre.enum';
 
 /**
  * Interface représentant un contact
@@ -40,3 +40,31 @@ export const CONTACT_MACHINES_LABEL = 'Machines';
 // Constantes pour les panels
 export const PANEL_INFORMATIONS_CONTACT = 'Informations de contact';
 export const PANEL_INFORMATIONS_SUPPLEMENTAIRES = 'Informations supplémentaires';
+
+export const contactToString: (contact?: Contact) => string = (contact?: Contact): string => {
+  if (!contact) {
+    return "";
+  }
+
+  let contactString = "";
+
+  if (contact.titre) {
+    contactString = contactString.concat(TitreEnumValuesForAutocomplete.get(contact.titre) ?? "", "\n");
+  }
+
+  if (contact.prenom) {
+    contactString = contactString.concat(contact.prenom, " ");
+  }
+
+  if (contact.nom) {
+    contactString = contactString.concat(contact.nom, " ");
+  }
+
+  let adresseString = adresseToString(contact.adresse);
+
+  if (adresseString) {
+    contactString = contactString.concat("\n", adresseString);
+  }
+
+  return contactString;
+}

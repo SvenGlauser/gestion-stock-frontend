@@ -6,6 +6,7 @@ import {ComponentType} from '@angular/cdk/portal';
  */
 export interface ActionColumnInfo {
   dialogComponent: ComponentType<AbstractDialogComponent<any, any>> | null;
+  dialogSpecificData?: any;
   idField: string;
   read: boolean;
   created: boolean;

@@ -35,8 +35,12 @@ export class PaysDialogComponent extends AbstractDialogComponent<PaysDialogCompo
     [
       PANEL_DONNEES_GENERALES,
       [
-        InputFormField.ofValue(PAYS_NOM_LABEL, PAYS_NOM),
-        InputFormField.ofValue(PAYS_ABREVIATION_LABEL, PAYS_ABREVIATION),
+        InputFormField
+          .ofValue(PAYS_NOM_LABEL, PAYS_NOM)
+          .setColspan(2),
+        InputFormField
+          .ofValue(PAYS_ABREVIATION_LABEL, PAYS_ABREVIATION)
+          .setColspan(2),
       ]
     ]
   ]);

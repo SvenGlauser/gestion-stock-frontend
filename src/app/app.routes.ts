@@ -6,6 +6,7 @@ import {CategorieTableComponent} from './page/categorie/table/categorie-table.co
 import {FournisseurTableComponent} from './page/fournisseur/table/fournisseur-table.component';
 import {ContactTableComponent} from './page/contact/table/contact-table.component';
 import {PieceTableComponent} from './page/piece/table/piece-table.component';
+import {MachineTableComponent} from './page/machine/table/machine-table.component';
 
 export const routes: Routes = [
   {
@@ -18,7 +19,7 @@ export const routes: Routes = [
     children: [],
   }, {
     path: 'machines/:id',
-    component: AccueilComponent,
+    component: MachineTableComponent,
     children: [],
   }, {
     path: 'contacts',
