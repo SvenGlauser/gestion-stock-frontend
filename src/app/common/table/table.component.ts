@@ -83,6 +83,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   protected readonly DialogType = DialogType;
   protected readonly InputFilter = InputFilter;
   protected readonly AutocompleteFilter = AutocompleteFilter;
+  protected readonly LinkColumn = LinkColumn;
 
   @Input()
   public title: string = "";
@@ -112,12 +113,12 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   protected paginator: MatPaginator | undefined;
 
   // Génération de colonnes
+  @ViewChild(MatTable, {static: true})
+  protected table: MatTable<T> | undefined;
   @ContentChildren(MatColumnDef)
   protected columnDefs: QueryList<MatColumnDef> | undefined;
   @ContentChildren(MatRowDef)
   protected rowDefs: QueryList<MatRowDef<T>> | undefined;
-  @ViewChild(MatTable, {static: true})
-  protected table: MatTable<T> | undefined;
 
   // Données pour la MatTable
   protected data: SearchResult<T> | undefined;
@@ -162,36 +163,37 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
 
     // Crée tous les filtres
     this.searchRequest.filters = this.columns
-      .filter(column => column.filters.length != 0)
       .flatMap(column => column.filters)
       .map(columnFilter => {
         return <Filter>{
           field: columnFilter.filterField,
-          value: this.getFilterValueFromFilter(columnFilter),
+          value: columnFilter.getValue(),
           type: columnFilter.filterType,
           order: undefined,
         }
       });
 
     // Ajoute le tri
-    this.columns.filter(column => column.sortable).forEach(column => {
-      let founded = false;
+    this.columns
+      .filter((column: Column) => column.sortable)
+      .forEach((column: Column) => {
+        let founded: boolean = false;
 
-      this.searchRequest.filters.forEach((filter) => {
-        if (filter.field === column.field) {
-          founded = true;
-          filter.order = column.sortDefaultValue ?? undefined;
+        this.searchRequest.filters.forEach((filter) => {
+          if (filter.field === column.field) {
+            founded = true;
+            filter.order = column.sortDefaultValue ?? undefined;
+          }
+        });
+
+        // Crée un nouveau filtre si aucun de trouvé
+        if (!founded) {
+          this.searchRequest.filters.push({
+            field: column.field,
+            order: column.sortDefaultValue ?? undefined,
+          });
         }
       });
-
-      // Crée un nouveau filtre si aucun de trouvé
-      if (!founded) {
-        this.searchRequest.filters.push({
-          field: column.field,
-          order: column.sortDefaultValue ?? undefined,
-        });
-      }
-    })
 
     // Génère la liste des colonnes à afficher
     this.displayedColumns = this.columns.map(column => column.field).concat(this.displayedColumns);
@@ -201,8 +203,11 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
    * Recherche initiale après que tout a été initialisé
    */
   public ngAfterContentInit(): void {
+    // Initialise les colonnes automatiques/lignes
     this.columnDefs?.forEach(column => this.table?.addColumnDef(column));
     this.rowDefs?.forEach(row => this.table?.addRowDef(row));
+
+    // Initialise les valeurs du tableau
     this.searchEvent.emit();
   }
 
@@ -214,52 +219,6 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
     this.searchRequest.page = page.pageIndex;
     this.searchRequest.pageSize = page.pageSize;
     this.searchEvent.emit();
-  }
-
-  /**
-   * Récupère le premier tri
-   */
-  protected getDefaultSort(): string {
-    let column: Column | null = this.getFirstSortableColum();
-
-    if (column) {
-      return column.field;
-    }
-
-    return "";
-  }
-
-  /**
-   * Récupère le premier ordre de tri
-   */
-  protected getDefaultOrder(): "asc" | "desc" | "" {
-    let column: Column | null = this.getFirstSortableColum();
-
-    if (column) {
-      switch (column.sortDefaultValue) {
-        case Order.ASC: return "asc";
-        case Order.DESC: return "desc";
-        default: return "";
-      }
-    }
-
-    return "";
-  }
-
-  /**
-   * Récupère la première colonne à ordrer
-   */
-  private getFirstSortableColum(): Column | null {
-    if (!this.columns) {
-      return null;
-    }
-
-    let columns: Column[] = this.columns.filter(column => column.sortable);
-    if (columns.length > 0) {
-      return columns[0];
-    }
-
-    return null;
   }
 
   /**
@@ -304,30 +263,12 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
         return filter;
       }
 
-      filter.value = this.getFilterValueFromFilter(columnFilter);
+      filter.value = columnFilter.getValue();
 
       return filter;
     });
+
     this.searchEvent.emit();
-  }
-
-  /**
-   * Récupère la valeur de filtre
-   * @param columnFilter Filtre de colonne
-   * @return La valeur à envoyer à l'API
-   */
-  private getFilterValueFromFilter(columnFilter: ColumnFilter): any {
-    if (columnFilter instanceof AutocompleteFilter) {
-      if (columnFilter.filterValue) {
-        return columnFilter.filterValue[columnFilter.autocompleteIdField];
-      } else {
-        return null;
-      }
-    } else if (columnFilter instanceof InputFilter) {
-      return columnFilter.filterValue;
-    }
-
-    return null;
   }
 
   /**
@@ -379,5 +320,49 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
     this.filter();
   }
 
-  protected readonly LinkColumn = LinkColumn;
+  /**
+   * Récupère le premier tri
+   */
+  protected getDefaultSort(): string {
+    let column: Column | null = this.getFirstSortableColum();
+
+    if (column) {
+      return column.field;
+    }
+
+    return "";
+  }
+
+  /**
+   * Récupère le premier ordre de tri
+   */
+  protected getDefaultOrder(): "asc" | "desc" | "" {
+    let column: Column | null = this.getFirstSortableColum();
+
+    if (column) {
+      switch (column.sortDefaultValue) {
+        case Order.ASC: return "asc";
+        case Order.DESC: return "desc";
+        default: return "";
+      }
+    }
+
+    return "";
+  }
+
+  /**
+   * Récupère la première colonne à ordrer
+   */
+  private getFirstSortableColum(): Column | null {
+    if (!this.columns) {
+      return null;
+    }
+
+    let columns: Column[] = this.columns.filter(column => column.sortable);
+    if (columns.length > 0) {
+      return columns[0];
+    }
+
+    return null;
+  }
 }

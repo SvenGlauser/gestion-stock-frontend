@@ -65,4 +65,12 @@ export class AutocompleteFilter<T extends Record<string, any>> extends ColumnFil
 
     return null;
   }
+
+  public override getValue(): any {
+    if (this.filterValue) {
+      return this.filterValue[this.autocompleteIdField];
+    } else {
+      return null;
+    }
+  }
 }

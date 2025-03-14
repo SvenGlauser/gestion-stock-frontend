@@ -39,4 +39,8 @@ export class InputFilter extends ColumnFilter {
 
     return null;
   }
+
+  public override getValue(): any {
+    return this.filterValue;
+  }
 }

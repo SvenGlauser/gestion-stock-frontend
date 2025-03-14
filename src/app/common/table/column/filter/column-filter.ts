@@ -15,6 +15,12 @@ export abstract class ColumnFilter {
     this.filterValue = filterValue;
     this.filterType = filterType;
   }
+
+  /**
+   * Récupère la valeur de filtre
+   * @return La valeur à envoyer à l'API
+   */
+  public abstract getValue(): any;
 }
 
 
