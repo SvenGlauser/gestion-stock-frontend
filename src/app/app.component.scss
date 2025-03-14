@@ -1,4 +1,12 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
 mat-toolbar {
+  flex-shrink: 0;
+
   background: var(--mat-sys-primary);
   color: var(--mat-sys-on-primary);
 

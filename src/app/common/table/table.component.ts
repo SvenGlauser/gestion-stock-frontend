@@ -1,4 +1,14 @@
-import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterContentInit,
+  ChangeDetectorRef,
+  Component,
+  ContentChildren,
+  EventEmitter,
+  Input,
+  OnInit,
+  QueryList,
+  ViewChild
+} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -68,7 +78,7 @@ import {RouterLink} from '@angular/router';
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
 })
-export class TableComponent<T extends Record<string, any>> implements OnInit, AfterViewInit {
+export class TableComponent<T extends Record<string, any>> implements OnInit, AfterContentInit {
   // Constantes
   protected readonly DialogType = DialogType;
   protected readonly InputFilter = InputFilter;
@@ -100,6 +110,14 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   // Composant de pagination
   @ViewChild(MatPaginator)
   protected paginator: MatPaginator | undefined;
+
+  // Génération de colonnes
+  @ContentChildren(MatColumnDef)
+  protected columnDefs: QueryList<MatColumnDef> | undefined;
+  @ContentChildren(MatRowDef)
+  protected rowDefs: QueryList<MatRowDef<T>> | undefined;
+  @ViewChild(MatTable, {static: true})
+  protected table: MatTable<T> | undefined;
 
   // Données pour la MatTable
   protected data: SearchResult<T> | undefined;
@@ -182,7 +200,9 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   /**
    * Recherche initiale après que tout a été initialisé
    */
-  public ngAfterViewInit(): void {
+  public ngAfterContentInit(): void {
+    this.columnDefs?.forEach(column => this.table?.addColumnDef(column));
+    this.rowDefs?.forEach(row => this.table?.addRowDef(row));
     this.searchEvent.emit();
   }
 

@@ -15,6 +15,7 @@
   }
 
   <table mat-table
+         multiTemplateDataRows
          [dataSource]="data ? data.elements : []"
          matSort
          (matSortChange)="sort($event)"
@@ -137,6 +138,8 @@
         </div>
       </th>
     </ng-container>
+
+    <ng-content></ng-content>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-header-row
