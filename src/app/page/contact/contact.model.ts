@@ -9,10 +9,10 @@ export interface Contact extends Model {
   titre: Titre | null;
   nom: string;
   prenom: string;
-  email: string;
-  telephone: string;
+  email: string | null;
+  telephone: string | null;
   adresse: Adresse;
-  remarques: string;
+  remarques: string | null;
 }
 
 // Field constantes

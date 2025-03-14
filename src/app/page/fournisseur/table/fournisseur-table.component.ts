@@ -41,7 +41,7 @@ export class FournisseurTableComponent {
       .sort(Order.ASC)
       .inputFilterOnSameField(),
     ClassicColumn.of(FOURNISSEUR_DESCRIPTION_LABEL, FOURNISSEUR_DESCRIPTION, "25%"),
-    LinkColumn.of(FOURNISSEUR_URL_LABEL, FOURNISSEUR_URL, "15%", (fournisseur: Fournisseur) => fournisseur.url),
+    LinkColumn.of(FOURNISSEUR_URL_LABEL, FOURNISSEUR_URL, "15%", (fournisseur: Fournisseur) => fournisseur.url ?? ""),
     MethodColumn.of(FOURNISSEUR_ADRESSE_LABEL, FOURNISSEUR_ADRESSE, "25%", adresseToString),
   ]
 

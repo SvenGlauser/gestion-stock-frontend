@@ -6,8 +6,8 @@ import {Adresse} from '../adresse/adresse';
  */
 export interface Fournisseur extends Model {
   nom: string;
-  description: string;
-  url: string;
+  description: string | null;
+  url: string | null;
   adresse: Adresse;
 }
 

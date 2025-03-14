@@ -2,6 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
 
   h2 {
     font: var(--mat-sys-headline-small);
@@ -9,8 +10,6 @@
   }
 
   .header-actions {
-    margin-bottom: 10px;
-
     button {
       box-shadow: var(--mat-sys-level2);
     }

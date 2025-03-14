@@ -59,10 +59,10 @@ export abstract class Column {
    * @param filterValue Valeur initiale
    */
   public autocompleteFilter<T extends Record<string, any>>(filterField: any,
-                            autocompleteMethod: AutocompleteMethod<T>,
-                            autocompleteIdField: string,
-                            autocompleteNameField: string,
-                            filterValue: any = null): this {
+                                                           autocompleteMethod: AutocompleteMethod<T>,
+                                                           autocompleteIdField: string,
+                                                           autocompleteNameField: string,
+                                                           filterValue: any = null): this {
     this.filters.push(AutocompleteFilter.of<T>(
       filterField,
       autocompleteMethod,

@@ -5,8 +5,8 @@ import {Model} from '../../common/model';
  */
 export interface Categorie extends Model {
   nom: string;
-  description: string;
-  actif: boolean;
+  description: string | null;
+  actif: boolean | null;
 }
 
 // Field constantes

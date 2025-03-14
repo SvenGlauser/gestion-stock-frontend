@@ -10,7 +10,7 @@ export class AutocompleteFilter<T extends Record<string, any>> extends ColumnFil
   public autocompleteIdField: string;
   public autocompleteNameField: string;
 
-  private constructor(filterField: any,
+  private constructor(filterField: string,
                       filterValue: any,
                       autocompleteMethod: AutocompleteMethod<T>,
                       autocompleteIdField: string,
@@ -31,7 +31,7 @@ export class AutocompleteFilter<T extends Record<string, any>> extends ColumnFil
    * @param autocompleteNameField Champ du text à afficher
    * @param filterValue Valeur initiale [initial = null]
    */
-  public static of<T extends Record<string, any>>(filterField: any,
+  public static of<T extends Record<string, any>>(filterField: string,
                                                   autocompleteMethod: AutocompleteMethod<T>,
                                                   autocompleteIdField: string,
                                                   autocompleteNameField: string,
