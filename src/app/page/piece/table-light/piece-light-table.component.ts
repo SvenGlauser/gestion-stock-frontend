@@ -1,9 +1,9 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ViewChild} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {MODEL_ID} from '../../../common/model';
 import {SearchRequest} from '../../../common/search/searchRequest';
-import {Observable, of} from 'rxjs';
+import {map, mergeMap, Observable, of, tap} from 'rxjs';
 import {SearchResult} from '../../../common/search/searchResult';
 import {TableComponent} from '../../../common/table/table.component';
 import {PieceDialogComponent} from '../dialog/piece-dialog.component';
@@ -20,7 +20,10 @@ import {
   PIECE_NUMERO_INVENTAIRE_LABEL
 } from '../piece.model';
 import {CATEGORIE_NOM} from '../../categorie/categorie.model';
-import {Machine} from '../../machine/machine.model';
+import {copyNewMachineDataInOldInstance, Machine} from '../../machine/machine.model';
+import {MachineService} from '../../machine/machine.service';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmationDialogComponent} from '../../../common/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-piece-light-table',
@@ -48,14 +51,23 @@ export class PieceLightTableComponent {
     dialogComponent: PieceDialogComponent,
     idField: MODEL_ID,
     clicOnLine: true,
+    read: true,
     created: false,
+    modify: true,
     delete: false,
-    modify: false,
-    read: true
+    actions: [
+      { name: "Retirer la pièce de la machine", action: this.unlinkPiece.bind(this) }
+    ]
   };
 
   @Input({required: true})
   public machine: Machine | null = null;
+
+  @ViewChild(TableComponent)
+  public table: TableComponent<Piece> | null = null;
+
+  constructor(private readonly machineService: MachineService,
+              private readonly matDialog: MatDialog) {}
 
   /**
    * Récupère la liste à afficher dans le tableau
@@ -66,7 +78,7 @@ export class PieceLightTableComponent {
     const pageSize: number = searchRequest.pageSize ?? 10;
     const orignalPiecesList: Piece[] = this.machine?.pieces ?? [];
 
-    let pieces: Piece[] = this.machine?.pieces ?? [];
+    let pieces: Piece[] = [...(this.machine?.pieces ?? [])].sort((a, b) => a.numeroInventaire.localeCompare(b.numeroInventaire));
 
     let numberElementToRemove: number = page * pageSize;
 
@@ -81,5 +93,39 @@ export class PieceLightTableComponent {
     }
 
     return of(searchResult);
+  }
+
+  /**
+   * Retire la piece de la machine
+   * @param piece Pièce à retirer
+   */
+  private unlinkPiece(piece: Piece): Observable<boolean> {
+    if (this.machine) {
+      return this.matDialog
+        .open(ConfirmationDialogComponent, {
+          data: "Voulez-vous vraiment retirer la pièce ?"
+        })
+        .afterClosed()
+        .pipe(mergeMap((confirmation: boolean): Observable<boolean> => {
+          if (!this.machine || !confirmation) {
+            return of(false);
+          }
+
+          let machine = structuredClone(this.machine);
+          machine.pieces = machine.pieces.filter(pieceFromFilter => pieceFromFilter.id !== piece.id);
+
+          return this.machineService
+            .modify(machine)
+            .pipe(
+              tap(machine => {
+                if (this.machine) {
+                  copyNewMachineDataInOldInstance(machine, this.machine);
+                }
+              }),
+              map(() => true));
+        }));
+    }
+
+    return of(false);
   }
 }

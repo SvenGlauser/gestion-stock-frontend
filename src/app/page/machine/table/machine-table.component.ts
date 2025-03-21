@@ -1,6 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {
+  copyNewMachineDataInOldInstance,
   Machine,
   MACHINE_CONTACT,
   MACHINE_CONTACT_LABEL,
@@ -15,13 +16,13 @@ import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {MODEL_ID} from '../../../common/model';
 import {MachineService} from '../machine.service';
 import {SearchRequest} from '../../../common/search/searchRequest';
-import {Observable, of} from 'rxjs';
+import {map, Observable, of, tap} from 'rxjs';
 import {SearchResult} from '../../../common/search/searchResult';
 import {TableComponent} from '../../../common/table/table.component';
 import {MachineDialogComponent} from '../dialog/machine-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
-import {Contact, contactToString} from '../../contact/contact.model';
+import {Contact, contactNomPrenomToString} from '../../contact/contact.model';
 import {ContactService} from '../../contact/contact.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {
@@ -38,6 +39,8 @@ import {CustomColumn} from '../../../common/table/column/custom-column';
 import {MatIcon} from '@angular/material/icon';
 import {MatIconButton} from '@angular/material/button';
 import {MatBadge, MatBadgeModule} from '@angular/material/badge';
+import {MatDialog} from '@angular/material/dialog';
+import {PieceSelectionDialogComponent} from '../../piece/selection-dialog/piece-selection-dialog.component';
 
 @Component({
   selector: 'app-machine-table',
@@ -69,12 +72,16 @@ export class MachineTableComponent implements OnInit {
       .sort(Order.ASC)
       .inputFilterOnSameField(),
     ClassicColumn.of(MACHINE_DESCRIPTION_LABEL, MACHINE_DESCRIPTION, "40%"),
-    MethodColumn.of(MACHINE_CONTACT_LABEL, MACHINE_CONTACT, "20%", contactToString),
+    MethodColumn.of(MACHINE_CONTACT_LABEL, MACHINE_CONTACT, "20%", contactNomPrenomToString),
   ]
 
   // Utilisé pour udpate la dataTable
   @ViewChild(TableComponent)
   public matTable: TableComponent<Machine> | null = null;
+
+  // Utilisé pour udpate la dataTable
+  @ViewChildren(PieceLightTableComponent)
+  public piecesLightsTables:  QueryList<PieceLightTableComponent> | null = null;
 
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
@@ -85,7 +92,10 @@ export class MachineTableComponent implements OnInit {
     created: true,
     delete: true,
     modify: true,
-    read: true
+    read: true,
+    actions: [
+      { name: "Ajouter une pièce à la machine", action: this.linkPiece.bind(this) }
+    ]
   };
 
   private currentContactId: number | null = null;
@@ -94,7 +104,8 @@ export class MachineTableComponent implements OnInit {
 
   constructor(private readonly machineService: MachineService,
               private readonly contactService: ContactService,
-              private readonly route: ActivatedRoute) {}
+              private readonly route: ActivatedRoute,
+              private readonly matDialog: MatDialog) {}
 
   /**
    * Récupère le contact
@@ -150,6 +161,10 @@ export class MachineTableComponent implements OnInit {
     return title;
   }
 
+  /**
+   * Affiche / Cache le tableau des pieces pour cet élément
+   * @param element Machine en question
+   */
   protected togglePieces(element: Machine): void {
     if (this.extendedRowId === element.id) {
       this.extendedRowId = null;
@@ -159,7 +174,38 @@ export class MachineTableComponent implements OnInit {
     this.matTable?.table?.renderRows();
   }
 
+  /**
+   * Indique si la ligne supplémentaire doit s'afficher ou non
+   * @param index Index de l'élément
+   * @param rowData Machine
+   */
   protected viewRow(index: number, rowData: Machine): boolean {
     return this.extendedRowId === rowData.id;
+  }
+
+  /**
+   * Ouvre un dialog de saisie de pièce et ajoute cette pièce à la machine
+   * @param machine
+   */
+  private linkPiece(machine: Machine): Observable<boolean> {
+    return this.matDialog
+      .open(PieceSelectionDialogComponent, {
+        data: machine.id,
+      })
+      .afterClosed()
+      .pipe(
+        tap((returnedMachine: Machine | null) => {
+          if (returnedMachine) {
+            copyNewMachineDataInOldInstance(returnedMachine, machine);
+            if (this.piecesLightsTables) {
+              this.piecesLightsTables.forEach(table => {
+                if (table.machine?.id === machine.id) {
+                  table.table!.update();
+                }
+              })
+            }
+          }
+        }),
+        map(() => false));
   }
 }

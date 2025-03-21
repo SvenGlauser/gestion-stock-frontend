@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
-import {AbstractDialogComponent} from '../../../common/dialog/abstract-dialog.component';
+import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-form-dialog.component';
 import {FormComponent} from '../../../common/form/form.component';
 import {FormField} from '../../../common/form/field/form-field';
 import {PaysService} from '../pays.service';
@@ -23,10 +23,10 @@ import {InputFormField} from "../../../common/form/field/input-form-field";
     ReactiveFormsModule,
     FormComponent
   ],
-  templateUrl: '../../../common/dialog/abstract-dialog.component.html',
-  styleUrl: '../../../common/dialog/abstract-dialog.component.scss'
+  templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
+  styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
-export class PaysDialogComponent extends AbstractDialogComponent<PaysDialogComponent, Pays> {
+export class PaysDialogComponent extends AbstractFormDialogComponent<PaysDialogComponent, Pays> {
   // Constantes
   protected readonly ID_FIELD: string = MODEL_ID;
 

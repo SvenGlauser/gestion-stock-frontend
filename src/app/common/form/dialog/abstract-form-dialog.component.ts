@@ -2,13 +2,14 @@ import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DialogData, DialogType} from './dialog-data';
 import {Observable} from 'rxjs';
-import {FormField} from '../form/field/form-field';
+import {FormField} from '../field/form-field';
 import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
-import {FormComponent} from '../form/form.component';
-import {getValueFromAttributeInCascade, setValueOfAttributeInCascade} from '../utils/function.utils';
+import {FormComponent} from '../form.component';
+import {getValueFromAttributeInCascade, setValueOfAttributeInCascade} from '../../utils/function.utils';
+import {ValidationException} from '../../utils/Validation-exception';
 
 @Component({template: ''}) // Obligatoire, car implémente OnInit
-export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<T, E>, E extends Record<string, any>> implements OnInit {
+export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogComponent<T, E>, E extends Record<string, any>> implements OnInit {
   // Données du dialog
   private readonly dialogRef: MatDialogRef<T> = inject(MatDialogRef<T>);
   protected readonly data: DialogData = inject<DialogData>(MAT_DIALOG_DATA);
@@ -166,7 +167,7 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
    * Traitement des erreurs
    * @param errors Erreurs à traiter
    */
-  private traiterErreur(errors: { clazz: string, field: string, message: string }[]): void {
+  private traiterErreur(errors: ValidationException[]): void {
     // Traiter les erreurs liées à un champ connu
     for (const forms of this.formsMap.values()) {
       forms.forEach((form: FormField) => {
@@ -205,7 +206,7 @@ export abstract class AbstractDialogComponent<T extends AbstractDialogComponent<
    * Créer un message d'erreur
    * @param errors Erreurs
    */
-  private createErrorMessage(errors: { clazz: string; field: string; message: string }[]): string {
+  private createErrorMessage(errors: ValidationException[]): string {
     return errors.map(error => error.message).join("<br>");
   }
 

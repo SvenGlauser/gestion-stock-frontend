@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AbstractDialogComponent} from '../../../common/dialog/abstract-dialog.component';
+import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-form-dialog.component';
 import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
 import {Observable} from 'rxjs';
@@ -48,10 +48,10 @@ import {FournisseurService} from '../../fournisseur/fournisseur.service';
     ReactiveFormsModule,
     FormComponent
   ],
-  templateUrl: '../../../common/dialog/abstract-dialog.component.html',
-  styleUrl: '../../../common/dialog/abstract-dialog.component.scss'
+  templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
+  styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
-export class PieceDialogComponent extends AbstractDialogComponent<PieceDialogComponent, Piece> {
+export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialogComponent, Piece> {
   // Constantes
   protected readonly ID_FIELD: string = MODEL_ID;
 

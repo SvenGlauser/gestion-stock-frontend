@@ -36,7 +36,7 @@ import {MatIcon} from '@angular/material/icon';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {NgClass} from '@angular/common';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
-import {DialogData, DialogType} from '../dialog/dialog-data';
+import {DialogData, DialogType} from '../form/dialog/dialog-data';
 import {MatDialog} from '@angular/material/dialog';
 import {ActionColumnInfo} from './action-column.info';
 import {ColumnFilter} from './column/filter/column-filter';
@@ -216,6 +216,13 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   }
 
   /**
+   * Met à jour la table
+   */
+  public update(): void {
+    this.searchEvent.emit();
+  }
+
+  /**
    * Recherche en fonction de la nouvelle page
    * @param page Nouvelle page
    */
@@ -330,6 +337,20 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
    */
   protected getColumnsToGenerateList(): Column[] {
     return this.columns.filter(column => !(column instanceof CustomColumn));
+  }
+
+  /**
+   * Lance une méthode et rafraichit si nécessaire
+   *
+   * @param action Méthode à exécuter
+   * @param element Elément
+   */
+  protected run(action: (value: any) => Observable<boolean>, element: T): void {
+    action(element).subscribe((needToRefresh: boolean) => {
+      if (needToRefresh) {
+        this.searchEvent.emit();
+      }
+    })
   }
 
   /**

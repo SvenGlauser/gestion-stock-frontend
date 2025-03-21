@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AbstractDialogComponent} from '../../../common/dialog/abstract-dialog.component';
+import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-form-dialog.component';
 import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
 import {Observable} from 'rxjs';
@@ -29,10 +29,10 @@ import {InputFormField} from '../../../common/form/field/input-form-field';
     ReactiveFormsModule,
     FormComponent
   ],
-  templateUrl: '../../../common/dialog/abstract-dialog.component.html',
-  styleUrl: '../../../common/dialog/abstract-dialog.component.scss'
+  templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
+  styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
-export class MachineDialogComponent extends AbstractDialogComponent<MachineDialogComponent, Machine> {
+export class MachineDialogComponent extends AbstractFormDialogComponent<MachineDialogComponent, Machine> {
   // Constantes
   protected readonly ID_FIELD: string = MODEL_ID;
 

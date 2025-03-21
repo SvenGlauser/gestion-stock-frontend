@@ -41,6 +41,24 @@ export const CONTACT_MACHINES_LABEL = 'Machines';
 export const PANEL_INFORMATIONS_CONTACT = 'Informations de contact';
 export const PANEL_INFORMATIONS_SUPPLEMENTAIRES = 'Informations supplémentaires';
 
+export const contactNomPrenomToString: (contact?: Contact) => string = (contact?: Contact): string => {
+  if (!contact) {
+    return "";
+  }
+
+  let nomPrenom = "";
+
+  if (contact.prenom) {
+    nomPrenom = nomPrenom.concat(contact.prenom, " ");
+  }
+
+  if (contact.nom) {
+    nomPrenom = nomPrenom.concat(contact.nom);
+  }
+
+  return nomPrenom;
+}
+
 export const contactToString: (contact?: Contact) => string = (contact?: Contact): string => {
   if (!contact) {
     return "";
@@ -52,13 +70,7 @@ export const contactToString: (contact?: Contact) => string = (contact?: Contact
     contactString = contactString.concat(TitreEnumValuesForAutocomplete.get(contact.titre) ?? "", "\n");
   }
 
-  if (contact.prenom) {
-    contactString = contactString.concat(contact.prenom, " ");
-  }
-
-  if (contact.nom) {
-    contactString = contactString.concat(contact.nom, " ");
-  }
+  contactString = contactString.concat(contactNomPrenomToString(contact), " ");
 
   let adresseString = adresseToString(contact.adresse);
 
