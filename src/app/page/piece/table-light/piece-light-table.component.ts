@@ -52,9 +52,9 @@ export class PieceLightTableComponent {
     idField: MODEL_ID,
     clicOnLine: true,
     read: true,
-    created: false,
-    modify: true,
-    delete: false,
+    created: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB
+    modify: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB
+    delete: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB
     actions: [
       { name: "Retirer la pièce de la machine", action: this.unlinkPiece.bind(this) }
     ]
