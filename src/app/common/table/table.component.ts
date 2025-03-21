@@ -44,6 +44,7 @@ import {InputFilter} from './column/filter/input-column-filter';
 import {AutocompleteFilter} from './column/filter/autocomplete-column-filter';
 import {LinkColumn} from './column/link-column';
 import {RouterLink} from '@angular/router';
+import {CustomColumn} from './column/custom-column';
 
 @Component({
   selector: 'app-table',
@@ -114,7 +115,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
 
   // Génération de colonnes
   @ViewChild(MatTable, {static: true})
-  protected table: MatTable<T> | undefined;
+  public table: MatTable<T> | undefined;
   @ContentChildren(MatColumnDef)
   protected columnDefs: QueryList<MatColumnDef> | undefined;
   @ContentChildren(MatRowDef)
@@ -126,6 +127,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
 
   // Configuration de l'affichage
   protected isLoadingData: boolean = false;
+  protected existFilter: boolean = true;
   protected viewFilter: boolean = true;
 
   // Événement de recherche
@@ -197,6 +199,8 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
 
     // Génère la liste des colonnes à afficher
     this.displayedColumns = this.columns.map(column => column.field).concat(this.displayedColumns);
+    this.existFilter = this.columns.flatMap(column => column.filters).length > 0;
+    this.viewFilter = this.existFilter;
   }
 
   /**
@@ -319,6 +323,13 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
       });
 
     this.filter();
+  }
+
+  /**
+   * Retourne la liste des colonnes à créer
+   */
+  protected getColumnsToGenerateList(): Column[] {
+    return this.columns.filter(column => !(column instanceof CustomColumn));
   }
 
   /**

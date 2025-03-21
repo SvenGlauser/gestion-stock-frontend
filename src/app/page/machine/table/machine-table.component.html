@@ -1,4 +1,36 @@
 <app-table [title]="this.getTableTitle()"
            [columns]="this.columns"
            [updateMethod]="this.getUpdateMethod.bind(this)"
-           [actionColumnInfo]="actionColumnInfo" />
+           [actionColumnInfo]="actionColumnInfo">
+  <ng-container [matColumnDef]="'rowExtender'">
+    <th mat-header-cell
+        *matHeaderCellDef
+        [style.width]="'10%'">
+    </th>
+    <td mat-cell
+        *matCellDef="let element"
+        class="row-extender">
+      <button mat-icon-button
+              [matBadge]="element.pieces.length"
+              (keydown.enter)="$event.stopPropagation(); togglePieces(element)"
+              (click)="$event.stopPropagation(); togglePieces(element)">
+        <mat-icon>
+          @if (element.id === this.extendedRowId) {
+            folder_open
+          } @else {
+            folder_off
+          }
+        </mat-icon>
+      </button>
+    </td>
+  </ng-container>
+  <ng-container [matColumnDef]="'piecesLiees'">
+    <td mat-cell
+        *matCellDef="let element"
+        class="extended-row"
+        [attr.colspan]="this.columns.length + 1">
+      <app-piece-light-table [machine]="element"></app-piece-light-table>
+    </td>
+  </ng-container>
+  <tr mat-row *matRowDef="let row; columns: ['piecesLiees']; when: this.viewRow.bind(this)"></tr>
+</app-table>

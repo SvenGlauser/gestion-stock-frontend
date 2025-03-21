@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {
   Machine,
@@ -7,7 +7,8 @@ import {
   MACHINE_DESCRIPTION,
   MACHINE_DESCRIPTION_LABEL,
   MACHINE_NOM,
-  MACHINE_NOM_LABEL
+  MACHINE_NOM_LABEL,
+  MACHINE_ROW_EXTENDER
 } from '../machine.model';
 import {Filter, Order, Type} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
@@ -23,11 +24,37 @@ import {MethodColumn} from '../../../common/table/column/method-column';
 import {Contact, contactToString} from '../../contact/contact.model';
 import {ContactService} from '../../contact/contact.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatRow,
+  MatRowDef
+} from '@angular/material/table';
+import {PieceLightTableComponent} from '../../piece/table-light/piece-light-table.component';
+import {CustomColumn} from '../../../common/table/column/custom-column';
+import {MatIcon} from '@angular/material/icon';
+import {MatIconButton} from '@angular/material/button';
+import {MatBadge, MatBadgeModule} from '@angular/material/badge';
 
 @Component({
   selector: 'app-machine-table',
   imports: [
-    TableComponent
+    TableComponent,
+    MatCell,
+    MatCellDef,
+    MatRow,
+    MatRowDef,
+    MatColumnDef,
+    PieceLightTableComponent,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatIcon,
+    MatIconButton,
+    MatBadge,
+    MatBadgeModule
   ],
   templateUrl: './machine-table.component.html',
   styleUrl: './machine-table.component.scss'
@@ -35,13 +62,19 @@ import {ActivatedRoute, ParamMap} from '@angular/router';
 export class MachineTableComponent implements OnInit {
   // Définition des colonnes
   protected readonly columns: Column[] = [
+    CustomColumn
+      .of("", MACHINE_ROW_EXTENDER, "10%"),
     ClassicColumn
-      .of(MACHINE_NOM_LABEL, MACHINE_NOM, "25%")
+      .of(MACHINE_NOM_LABEL, MACHINE_NOM, "20%")
       .sort(Order.ASC)
       .inputFilterOnSameField(),
-    ClassicColumn.of(MACHINE_DESCRIPTION_LABEL, MACHINE_DESCRIPTION, "45%"),
+    ClassicColumn.of(MACHINE_DESCRIPTION_LABEL, MACHINE_DESCRIPTION, "40%"),
     MethodColumn.of(MACHINE_CONTACT_LABEL, MACHINE_CONTACT, "20%", contactToString),
   ]
+
+  // Utilisé pour udpate la dataTable
+  @ViewChild(TableComponent)
+  public matTable: TableComponent<Machine> | null = null;
 
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
@@ -57,6 +90,7 @@ export class MachineTableComponent implements OnInit {
 
   private currentContactId: number | null = null;
   protected contact: Contact | null = null;
+  protected extendedRowId: number | null = null;
 
   constructor(private readonly machineService: MachineService,
               private readonly contactService: ContactService,
@@ -114,5 +148,18 @@ export class MachineTableComponent implements OnInit {
     }
 
     return title;
+  }
+
+  protected togglePieces(element: Machine): void {
+    if (this.extendedRowId === element.id) {
+      this.extendedRowId = null;
+    } else {
+      this.extendedRowId = element.id;
+    }
+    this.matTable?.table?.renderRows();
+  }
+
+  protected viewRow(index: number, rowData: Machine): boolean {
+    return this.extendedRowId === rowData.id;
   }
 }

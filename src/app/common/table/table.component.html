@@ -22,7 +22,7 @@
          [matSortActive]="getDefaultSort()"
          [matSortDirection]="getDefaultOrder()">
 
-    @for (column of columns; track column.field) {
+    @for (column of this.getColumnsToGenerateList(); track column.field) {
       <ng-container [matColumnDef]="column.field">
         <th mat-header-cell
             *matHeaderCellDef
@@ -71,7 +71,7 @@
                   (click)="viewFilter = false">
             <mat-icon>filter_alt</mat-icon>
           </button>
-        } @else {
+        } @else if(this.existFilter) {
           <button mat-icon-button
                   (click)="viewFilter = true">
             <mat-icon>filter_alt_off</mat-icon>
@@ -156,7 +156,9 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     }
   </table>
-
+  @if (!this.data?.elements?.length) {
+    <div class="empty-table">Aucun élément dans la liste</div>
+  }
   <mat-paginator [pageSizeOptions]="[10, 20, 50]"
                  (page)="changePage($event)"
                  showFirstLastButtons>

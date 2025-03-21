@@ -23,3 +23,5 @@ export const MACHINE_NOM_LABEL = 'Nom';
 export const MACHINE_DESCRIPTION_LABEL = 'Description';
 export const MACHINE_CONTACT_LABEL = 'Contact';
 export const MACHINE_PIECES_LABEL = 'Pièces';
+
+export const MACHINE_ROW_EXTENDER = 'rowExtender';
