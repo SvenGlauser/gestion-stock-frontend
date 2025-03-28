@@ -45,6 +45,8 @@ import {AutocompleteFilter} from './column/filter/autocomplete-column-filter';
 import {LinkColumn} from './column/link-column';
 import {RouterLink} from '@angular/router';
 import {CustomColumn} from './column/custom-column';
+import {AutocompleteEnumFilter} from './column/filter/autocomplete-enunm-column-filter';
+import {AutocompleteEnumComponent} from '../form/input/autocomplete-enum/autocomplete-enum.component';
 
 @Component({
   selector: 'app-table',
@@ -74,7 +76,8 @@ import {CustomColumn} from './column/custom-column';
     MatMenu,
     MatMenuItem,
     MatButton,
-    RouterLink
+    RouterLink,
+    AutocompleteEnumComponent
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
@@ -84,6 +87,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   protected readonly DialogType = DialogType;
   protected readonly InputFilter = InputFilter;
   protected readonly AutocompleteFilter = AutocompleteFilter;
+  protected readonly AutocompleteEnumFilter = AutocompleteEnumFilter;
   protected readonly LinkColumn = LinkColumn;
 
   @Input()
@@ -354,6 +358,20 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   }
 
   /**
+   * Vérifier si au moins une action est affiché
+   * @param element
+   * @protected
+   */
+  protected canViewOneAction(element: T) {
+    for (const action of this.actionColumnInfo.actions ?? []) {
+      if (action.condition && action.condition(element)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Récupère le premier tri
    */
   protected getDefaultSort(): string {
@@ -391,8 +409,14 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
       return null;
     }
 
-    let columns: Column[] = this.columns.filter(column => column.sortable);
+    let columns: Column[] = this.columns.filter(column => column.sortable && column.sortDefaultValue);
+
+    if (columns.length == 0) {
+      columns = this.columns.filter(column => column.sortable);
+    }
+
     if (columns.length > 0) {
+      console.log(columns[0])
       return columns[0];
     }
 

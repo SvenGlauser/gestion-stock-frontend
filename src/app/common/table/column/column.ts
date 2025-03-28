@@ -3,6 +3,7 @@ import {AutocompleteMethod} from '../../form/input/autocomplete/autocomplete';
 import {ColumnFilter} from './filter/column-filter';
 import {InputFilter} from './filter/input-column-filter';
 import {AutocompleteFilter} from './filter/autocomplete-column-filter';
+import {AutocompleteEnumFilter} from './filter/autocomplete-enunm-column-filter';
 
 /**
  * Colonne générée automatiquement dans le tableau
@@ -14,11 +15,21 @@ export abstract class Column {
   public sortable: boolean = false;
   public sortDefaultValue: Order | null = null;
   public width: string;
+  public style: string | null = null;
 
   protected constructor(label: string, field: string, width: string) {
     this.label = label;
     this.field = field;
     this.width = width;
+  }
+
+  /**
+   * Set le style
+   * @param style Style
+   */
+  public setStyle(style: string): this {
+    this.style = style;
+    return this;
   }
 
   /**
@@ -70,6 +81,22 @@ export abstract class Column {
       autocompleteNameField,
       filterValue
     ));
+    return this;
+  }
+
+  /**
+   * Ajoute un filtre avec autocomplétion pour une énumération
+   * @param filterField Champ
+   * @param values Valeurs de l'autocomplete
+   * @param filterValue Valeur initiale
+   */
+  public autocompleteEnumFilter(filterField: any,
+                                values: Map<any, string>,
+                                filterValue: any = null): this {
+    this.filters.push(AutocompleteEnumFilter.of(
+      filterField,
+      filterValue
+    ).addValues(values));
     return this;
   }
 

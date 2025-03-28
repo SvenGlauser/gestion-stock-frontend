@@ -17,7 +17,7 @@ import {MachineService} from '../../machine/machine.service';
 import {Machine} from '../../machine/machine.model';
 import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
 import {FormControl} from '@angular/forms';
-import {ValidationException} from '../../../common/utils/Validation-exception';
+import {ValidationException} from '../../../common/utils/validation-exception';
 
 @Component({
   selector: 'app-piece-selection-dialog',

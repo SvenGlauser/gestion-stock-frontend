@@ -1,0 +1,35 @@
+<app-table title="Liste des exceptions"
+           [columns]="this.columns"
+           [updateMethod]="this.getUpdateMethod.bind(this)"
+           [actionColumnInfo]="actionColumnInfo">
+  <ng-container [matColumnDef]="'rowExtender'">
+    <th mat-header-cell
+        *matHeaderCellDef
+        [style.width]="'5%'">
+    </th>
+    <td mat-cell
+        *matCellDef="let element"
+        class="row-extender">
+      <button mat-icon-button
+              (keydown.enter)="$event.stopPropagation(); toggleStacktrace(element)"
+              (click)="$event.stopPropagation(); toggleStacktrace(element)">
+        <mat-icon>
+          @if (element.id === this.extendedRowId) {
+            keyboard_arrow_down
+          } @else {
+            keyboard_arrow_right
+          }
+        </mat-icon>
+      </button>
+    </td>
+  </ng-container>
+  <ng-container [matColumnDef]="'stacktrace'">
+    <td mat-cell
+        *matCellDef="let element"
+        class="extended-row"
+        [attr.colspan]="this.columns.length + 1">
+      <div>{{element.stacktrace}}</div>
+    </td>
+  </ng-container>
+  <tr mat-row *matRowDef="let row; columns: ['stacktrace']; when: this.viewRow.bind(this)"></tr>
+</app-table>

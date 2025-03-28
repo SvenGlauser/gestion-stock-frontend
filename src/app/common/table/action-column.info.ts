@@ -20,4 +20,5 @@ export interface ActionColumnInfo {
 export interface Action {
   name: string;
   action: (value: any) => Observable<boolean>;
+  condition?: (value: any) => boolean;
 }

@@ -7,6 +7,7 @@ import {FournisseurTableComponent} from './page/fournisseur/table/fournisseur-ta
 import {ContactTableComponent} from './page/contact/table/contact-table.component';
 import {PieceTableComponent} from './page/piece/table/piece-table.component';
 import {MachineTableComponent} from './page/machine/table/machine-table.component';
+import {ExceptionTableComponent} from './page/exception/table/exception-table.component';
 
 export const routes: Routes = [
   {
@@ -40,6 +41,10 @@ export const routes: Routes = [
   }, {
     path: 'pays',
     component: PaysTableComponent,
+    children: [],
+  }, {
+    path: 'exceptions',
+    component: ExceptionTableComponent,
     children: [],
   }
 ];

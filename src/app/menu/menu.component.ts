@@ -58,6 +58,12 @@ export class MenuComponent implements OnInit {
       icon: "flag",
       url: "/pays",
     },
+    {
+      name: "Exceptions",
+      icon: "bug_report",
+      url: "/exceptions",
+      separatorBefore: "Technique"
+    },
   ];
 
   constructor(private readonly router: Router) {}

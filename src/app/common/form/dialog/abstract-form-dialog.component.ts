@@ -6,7 +6,7 @@ import {FormField} from '../field/form-field';
 import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
 import {FormComponent} from '../form.component';
 import {getValueFromAttributeInCascade, setValueOfAttributeInCascade} from '../../utils/function.utils';
-import {ValidationException} from '../../utils/Validation-exception';
+import {ValidationException} from '../../utils/validation-exception';
 
 @Component({template: ''}) // Obligatoire, car implémente OnInit
 export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogComponent<T, E>, E extends Record<string, any>> implements OnInit {
