@@ -1,29 +1,18 @@
 import {Component, Input, ViewChild} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
-import {MODEL_ID} from '../../../common/model';
 import {SearchRequest} from '../../../common/search/searchRequest';
 import {map, mergeMap, Observable, of, tap} from 'rxjs';
 import {SearchResult} from '../../../common/search/searchResult';
 import {TableComponent} from '../../../common/table/table.component';
 import {PieceDialogComponent} from '../dialog/piece-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
-import {
-  Piece,
-  PIECE_CATEGORIE,
-  PIECE_CATEGORIE_LABEL,
-  PIECE_DESCRIPTION,
-  PIECE_DESCRIPTION_LABEL,
-  PIECE_NOM,
-  PIECE_NOM_LABEL,
-  PIECE_NUMERO_INVENTAIRE,
-  PIECE_NUMERO_INVENTAIRE_LABEL
-} from '../piece.model';
-import {CATEGORIE_NOM} from '../../categorie/categorie.model';
-import {copyNewMachineDataInOldInstance, Machine} from '../../machine/machine.model';
+import {Machine} from '../../machine/machine.model';
 import {MachineService} from '../../machine/machine.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmationDialogComponent} from '../../../common/confirmation-dialog/confirmation-dialog.component';
+import {Piece} from '../piece.model';
+import {Model} from '../../../common/model';
 
 @Component({
   selector: 'app-piece-light-table',
@@ -37,19 +26,19 @@ export class PieceLightTableComponent {
   // Définition des colonnes
   protected readonly columns: Column[] = [
     ClassicColumn
-      .of(PIECE_NUMERO_INVENTAIRE_LABEL, PIECE_NUMERO_INVENTAIRE, "10%"),
+      .of(Piece.NUMERO_INVENTAIRE_LABEL, Piece.NUMERO_INVENTAIRE, "10%"),
     ClassicColumn
-      .of(PIECE_NOM_LABEL, PIECE_NOM, "25%"),
+      .of(Piece.NOM_LABEL, Piece.NOM, "25%"),
     ClassicColumn
-      .of(PIECE_DESCRIPTION_LABEL, PIECE_DESCRIPTION, "30%"),
+      .of(Piece.DESCRIPTION_LABEL, Piece.DESCRIPTION, "30%"),
     ClassicColumn
-      .of(PIECE_CATEGORIE_LABEL, PIECE_CATEGORIE.concat(".", CATEGORIE_NOM), "25%"),
+      .of(Piece.CATEGORIE_LABEL, Piece.CATEGORIE_NOM, "25%"),
   ]
 
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: PieceDialogComponent,
-    idField: MODEL_ID,
+    idField: Model.ID,
     clicOnLine: true,
     read: true,
     created: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB
@@ -78,7 +67,7 @@ export class PieceLightTableComponent {
     const pageSize: number = searchRequest.pageSize ?? 10;
     const orignalPiecesList: Piece[] = this.machine?.pieces ?? [];
 
-    let pieces: Piece[] = [...(this.machine?.pieces ?? [])].sort((a, b) => a.numeroInventaire.localeCompare(b.numeroInventaire));
+    let pieces: Piece[] = [...(this.machine?.pieces ?? [])].sort((a, b) => a.numeroInventaire!.localeCompare(b.numeroInventaire!));
 
     let numberElementToRemove: number = page * pageSize;
 
@@ -119,7 +108,10 @@ export class PieceLightTableComponent {
             .pipe(
               tap(machine => {
                 if (this.machine) {
-                  copyNewMachineDataInOldInstance(machine, this.machine);
+                  this.machine.nom = machine.nom;
+                  this.machine.description = machine.description;
+                  this.machine.contact = machine.contact;
+                  this.machine.pieces = machine.pieces;
                 }
               }),
               map(() => true));

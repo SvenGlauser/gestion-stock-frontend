@@ -1,82 +1,103 @@
 import {Model} from '../../common/model';
-import {Adresse, adresseToString} from '../adresse/adresse';
+import {Adresse} from '../adresse/adresse';
 import {Titre, TitreEnumValuesForAutocomplete} from './titre.enum';
 
 /**
- * Interface représentant un contact
+ * Class représentant un contact
  */
-export interface Contact extends Model {
-  titre: Titre | null;
-  nom: string;
-  prenom: string;
-  email: string | null;
-  telephone: string | null;
-  adresse: Adresse;
-  remarques: string | null;
-}
+export class Contact extends Model {
 
-// Field constantes
-export const CONTACT_TITRE = 'titre';
-export const CONTACT_NOM = 'nom';
-export const CONTACT_PRENOM = 'prenom';
-export const CONTACT_EMAIL = 'email';
-export const CONTACT_TELEPHONE = 'telephone';
-export const CONTACT_ADRESSE = 'adresse';
-export const CONTACT_REMARQUES = 'remarques';
+  // Field constantes
+  public static readonly TITRE = 'titre';
+  public static readonly NOM = 'nom';
+  public static readonly PRENOM = 'prenom';
+  public static readonly EMAIL = 'email';
+  public static readonly TELEPHONE = 'telephone';
+  public static readonly ADRESSE = 'adresse';
+  public static readonly ADRESSE_RUE = this.ADRESSE.concat(".", Adresse.RUE);
+  public static readonly ADRESSE_NUMERO = this.ADRESSE.concat(".", Adresse.NUMERO);
+  public static readonly ADRESSE_LOCALITE = this.ADRESSE.concat(".", Adresse.LOCALILTE);
+  public static readonly REMARQUES = 'remarques';
 
-// Label constantes
-export const CONTACT_TITRE_LABEL = 'Titre';
-export const CONTACT_NOM_LABEL = 'Nom';
-export const CONTACT_PRENOM_LABEL = 'Prénom';
-export const CONTACT_EMAIL_LABEL = 'Email';
-export const CONTACT_TELEPHONE_LABEL = 'Téléphone';
-export const CONTACT_ADRESSE_LABEL = 'Adresse';
-export const CONTACT_REMARQUES_LABEL = 'Remarques';
+  // Label constantes
+  public static readonly TITRE_LABEL = 'Titre';
+  public static readonly NOM_LABEL = 'Nom';
+  public static readonly PRENOM_LABEL = 'Prénom';
+  public static readonly EMAIL_LABEL = 'Email';
+  public static readonly TELEPHONE_LABEL = 'Téléphone';
+  public static readonly ADRESSE_LABEL = 'Adresse';
+  public static readonly REMARQUES_LABEL = 'Remarques';
 
-// Autres pour la page des contacts et pas en DB
-export const CONTACT_MACHINES = 'machines';
-export const CONTACT_MACHINES_LABEL = 'Machines';
+  // Autres pour la page des contacts et pas en DB
+  public static readonly MACHINES = 'machines';
+  public static readonly MACHINES_LABEL = 'Machines';
 
-// Constantes pour les panels
-export const PANEL_INFORMATIONS_CONTACT = 'Informations de contact';
-export const PANEL_INFORMATIONS_SUPPLEMENTAIRES = 'Informations supplémentaires';
+  // Constantes pour les panels
+  public static readonly PANEL_INFORMATIONS_CONTACT = 'Informations de contact';
+  public static readonly PANEL_INFORMATIONS_SUPPLEMENTAIRES = 'Informations supplémentaires';
 
-export const contactNomPrenomToString: (contact?: Contact) => string = (contact?: Contact): string => {
-  if (!contact) {
-    return "";
+  public titre: Titre | null = null;
+  public nom: string | null = null;
+  public prenom: string | null = null;
+  public email: string | null = null;
+  public telephone: string | null = null;
+  public adresse: Adresse | null = null;
+  public remarques: string | null = null;
+
+  constructor(contact?: Contact) {
+    super(contact);
+
+    if (contact) {
+      this.titre = contact.titre;
+      this.nom = contact.nom;
+      this.prenom = contact.prenom;
+      this.email = contact.email;
+      this.telephone = contact.telephone;
+      if (contact.adresse) {
+        this.adresse = new Adresse(contact.adresse);
+      }
+      this.remarques = contact.remarques;
+    }
   }
 
-  let nomPrenom = "";
+  public static contactNomPrenomToString(contact: Contact | null): string {
+    if (!contact) {
+      return "";
+    }
 
-  if (contact.prenom) {
-    nomPrenom = nomPrenom.concat(contact.prenom, " ");
+    let nomPrenom = "";
+
+    if (contact.prenom) {
+      nomPrenom = nomPrenom.concat(contact.prenom, " ");
+    }
+
+    if (contact.nom) {
+      nomPrenom = nomPrenom.concat(contact.nom);
+    }
+
+    return nomPrenom;
   }
 
-  if (contact.nom) {
-    nomPrenom = nomPrenom.concat(contact.nom);
+  public static contactToString(contact: Contact | null): string {
+    if (!contact) {
+      return "";
+    }
+
+    let contactString = "";
+
+    if (contact.titre) {
+      contactString = contactString.concat(TitreEnumValuesForAutocomplete.get(contact.titre) ?? "", "\n");
+    }
+
+    contactString = contactString.concat(this.contactNomPrenomToString(contact), " ");
+
+    let adresseString = Adresse.adresseToString(contact.adresse);
+
+    if (adresseString) {
+      contactString = contactString.concat("\n", adresseString);
+    }
+
+    return contactString;
   }
 
-  return nomPrenom;
-}
-
-export const contactToString: (contact?: Contact) => string = (contact?: Contact): string => {
-  if (!contact) {
-    return "";
-  }
-
-  let contactString = "";
-
-  if (contact.titre) {
-    contactString = contactString.concat(TitreEnumValuesForAutocomplete.get(contact.titre) ?? "", "\n");
-  }
-
-  contactString = contactString.concat(contactNomPrenomToString(contact), " ");
-
-  let adresseString = adresseToString(contact.adresse);
-
-  if (adresseString) {
-    contactString = contactString.concat("\n", adresseString);
-  }
-
-  return contactString;
 }

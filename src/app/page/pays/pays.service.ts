@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../../common/search/searchResult';
-import {Pays, PAYS_NOM} from './pays.model';
+import {Pays} from './pays.model';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
 import {BASE_URL} from '../../common/utils/http-client.configuration';
@@ -17,7 +17,9 @@ export class PaysService {
   constructor(private readonly http: HttpClient) {}
 
   public get(id: number): Observable<Pays> {
-    return this.http.get<Pays>(this.URL_WITH_SLASH + id);
+    return this.http
+      .get<Pays>(this.URL_WITH_SLASH + id)
+      .pipe(map(pays => new Pays(pays)));
   }
 
   public delete(id: number): Observable<void> {
@@ -25,15 +27,24 @@ export class PaysService {
   }
 
   public create(pays: Pays): Observable<Pays> {
-    return this.http.post<Pays>(this.URL, pays);
+    return this.http
+      .post<Pays>(this.URL, pays)
+      .pipe(map(pays => new Pays(pays)));
   }
 
   public modify(pays: Pays): Observable<Pays> {
-    return this.http.put<Pays>(this.URL, pays);
+    return this.http
+      .put<Pays>(this.URL, pays)
+      .pipe(map(pays => new Pays(pays)));
   }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<Pays>> {
-    return this.http.post<SearchResult<Pays>>(this.URL_WITH_SLASH + "search", searchRequest);
+    return this.http
+      .post<SearchResult<Pays>>(this.URL_WITH_SLASH + "search", searchRequest)
+      .pipe(map(result => {
+        result.elements = result.elements.map(pays => new Pays(pays));
+        return result;
+      }));
   }
 
   public autocomplete(value: string): Observable<Pays[]> {
@@ -41,7 +52,7 @@ export class PaysService {
       page: 0,
       pageSize: 25,
       filters: [{
-        field: PAYS_NOM,
+        field: Pays.NOM,
         value: value,
         type: Type.STRING_LIKE,
         order: Order.ASC

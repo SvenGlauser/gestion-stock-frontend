@@ -1,19 +1,7 @@
 import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
-import {
-  copyNewMachineDataInOldInstance,
-  Machine,
-  MACHINE_CONTACT,
-  MACHINE_CONTACT_LABEL,
-  MACHINE_DESCRIPTION,
-  MACHINE_DESCRIPTION_LABEL,
-  MACHINE_NOM,
-  MACHINE_NOM_LABEL,
-  MACHINE_ROW_EXTENDER
-} from '../machine.model';
 import {Filter, Order, Type} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
-import {MODEL_ID} from '../../../common/model';
 import {MachineService} from '../machine.service';
 import {SearchRequest} from '../../../common/search/searchRequest';
 import {map, Observable, of, tap} from 'rxjs';
@@ -22,7 +10,6 @@ import {TableComponent} from '../../../common/table/table.component';
 import {MachineDialogComponent} from '../dialog/machine-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
-import {Contact, contactNomPrenomToString} from '../../contact/contact.model';
 import {ContactService} from '../../contact/contact.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {
@@ -41,6 +28,9 @@ import {MatIconButton} from '@angular/material/button';
 import {MatBadge, MatBadgeModule} from '@angular/material/badge';
 import {MatDialog} from '@angular/material/dialog';
 import {PieceSelectionDialogComponent} from '../../piece/selection-dialog/piece-selection-dialog.component';
+import {Machine} from '../machine.model';
+import {Contact} from '../../contact/contact.model';
+import {Model} from '../../../common/model';
 
 @Component({
   selector: 'app-machine-table',
@@ -65,14 +55,13 @@ import {PieceSelectionDialogComponent} from '../../piece/selection-dialog/piece-
 export class MachineTableComponent implements OnInit {
   // Définition des colonnes
   protected readonly columns: Column[] = [
-    CustomColumn
-      .of("", MACHINE_ROW_EXTENDER, "10%"),
+    CustomColumn.of("", Machine.ROW_EXTENDER, "10%"),
     ClassicColumn
-      .of(MACHINE_NOM_LABEL, MACHINE_NOM, "20%")
+      .of(Machine.NOM_LABEL, Machine.NOM, "20%")
       .sort(Order.ASC)
       .inputFilterOnSameField(),
-    ClassicColumn.of(MACHINE_DESCRIPTION_LABEL, MACHINE_DESCRIPTION, "40%"),
-    MethodColumn.of(MACHINE_CONTACT_LABEL, MACHINE_CONTACT, "20%", contactNomPrenomToString),
+    ClassicColumn.of(Machine.DESCRIPTION_LABEL, Machine.DESCRIPTION, "40%"),
+    MethodColumn.of(Machine.CONTACT_LABEL, Machine.CONTACT, "20%", Contact.contactNomPrenomToString),
   ]
 
   // Utilisé pour udpate la dataTable
@@ -87,7 +76,7 @@ export class MachineTableComponent implements OnInit {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: MachineDialogComponent,
     dialogSpecificData: { contact: null },
-    idField: MODEL_ID,
+    idField: Model.ID,
     clicOnLine: true,
     created: true,
     delete: true,
@@ -139,7 +128,7 @@ export class MachineTableComponent implements OnInit {
 
     let searchRequestModified: SearchRequest = structuredClone(searchRequest);
     searchRequestModified.filters.push(<Filter>{
-      field: MACHINE_CONTACT.concat(".", MODEL_ID),
+      field: Machine.CONTACT_ID,
       value: this.contact.id,
       type: Type.EQUAL,
       order: undefined,
@@ -176,10 +165,10 @@ export class MachineTableComponent implements OnInit {
 
   /**
    * Indique si la ligne supplémentaire doit s'afficher ou non
-   * @param index Index de l'élément
+   * @param _index Index de l'élément
    * @param rowData Machine
    */
-  protected viewRow(index: number, rowData: Machine): boolean {
+  protected viewRow(_index: number, rowData: Machine): boolean {
     return this.extendedRowId === rowData.id;
   }
 
@@ -196,7 +185,10 @@ export class MachineTableComponent implements OnInit {
       .pipe(
         tap((returnedMachine: Machine | null) => {
           if (returnedMachine) {
-            copyNewMachineDataInOldInstance(returnedMachine, machine);
+            machine.nom = returnedMachine.nom;
+            machine.description = returnedMachine.description;
+            machine.contact = returnedMachine.contact;
+            machine.pieces = returnedMachine.pieces;
             if (this.piecesLightsTables) {
               this.piecesLightsTables.forEach(table => {
                 if (table.machine?.id === machine.id) {

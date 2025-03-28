@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-form-dialog.component';
-import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
 import {Observable} from 'rxjs';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
@@ -8,33 +7,14 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {FormComponent} from '../../../common/form/form.component';
 import {PieceService} from '../piece.service';
-import {
-  PANEL_INFORMATIONS_FOURNISSEUR,
-  PANEL_INFORMATIONS_VENTE,
-  Piece,
-  PIECE_CATEGORIE,
-  PIECE_CATEGORIE_LABEL,
-  PIECE_DESCRIPTION,
-  PIECE_DESCRIPTION_LABEL,
-  PIECE_FOURNISSEUR,
-  PIECE_FOURNISSEUR_LABEL,
-  PIECE_NOM,
-  PIECE_NOM_LABEL,
-  PIECE_NUMERO_FOURNISSEUR,
-  PIECE_NUMERO_FOURNISSEUR_LABEL,
-  PIECE_NUMERO_INVENTAIRE,
-  PIECE_NUMERO_INVENTAIRE_LABEL,
-  PIECE_PRIX,
-  PIECE_PRIX_LABEL,
-  PIECE_QUANTITE,
-  PIECE_QUANTITE_LABEL
-} from '../piece.model';
 import {InputFormField} from '../../../common/form/field/input-form-field';
-import {Fournisseur, FOURNISSEUR_NOM} from '../../fournisseur/fournisseur.model';
+import {Fournisseur} from '../../fournisseur/fournisseur.model';
 import {AutocompleteFormField} from '../../../common/form/field/autocomplete-form-field';
-import {Categorie, CATEGORIE_NOM} from '../../categorie/categorie.model';
+import {Categorie} from '../../categorie/categorie.model';
 import {CategorieService} from '../../categorie/categorie.service';
 import {FournisseurService} from '../../fournisseur/fournisseur.service';
+import {Piece} from '../piece.model';
+import {Model} from '../../../common/model';
 
 @Component({
   selector: 'app-piece-dialog',
@@ -53,51 +33,51 @@ import {FournisseurService} from '../../fournisseur/fournisseur.service';
 })
 export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialogComponent, Piece> {
   // Constantes
-  protected readonly ID_FIELD: string = MODEL_ID;
+  protected readonly ID_FIELD: string = Model.ID;
 
   // Définition des champs de formulaire
   protected formsMap: Map<string, FormField[]> = new Map([
     [
-      PANEL_DONNEES_GENERALES,
+      Piece.PANEL_DONNEES_GENERALES,
       [
         InputFormField
-          .ofValue(PIECE_NUMERO_INVENTAIRE_LABEL, PIECE_NUMERO_INVENTAIRE),
+          .ofValue(Piece.NUMERO_INVENTAIRE_LABEL, Piece.NUMERO_INVENTAIRE),
         AutocompleteFormField
           .ofValue(
-            PIECE_CATEGORIE_LABEL,
-            PIECE_CATEGORIE,
+            Piece.CATEGORIE_LABEL,
+            Piece.CATEGORIE,
             this.autocompleteCategorie.bind(this),
-            MODEL_ID,
-            CATEGORIE_NOM,
+            Model.ID,
+            Categorie.NOM,
           ),
         InputFormField
-          .ofValue(PIECE_NOM_LABEL, PIECE_NOM)
+          .ofValue(Piece.NOM_LABEL, Piece.NOM)
           .setColspan(2),
         InputFormField
-          .ofValue(PIECE_DESCRIPTION_LABEL, PIECE_DESCRIPTION)
+          .ofValue(Piece.DESCRIPTION_LABEL, Piece.DESCRIPTION)
           .setColspan(2),
       ],
     ], [
-      PANEL_INFORMATIONS_FOURNISSEUR,
+      Piece.PANEL_INFORMATIONS_FOURNISSEUR,
       [
         InputFormField
-          .ofValue(PIECE_NUMERO_FOURNISSEUR_LABEL, PIECE_NUMERO_FOURNISSEUR),
+          .ofValue(Piece.NUMERO_FOURNISSEUR_LABEL, Piece.NUMERO_FOURNISSEUR),
         AutocompleteFormField
           .ofValue(
-            PIECE_FOURNISSEUR_LABEL,
-            PIECE_FOURNISSEUR,
+            Piece.FOURNISSEUR_LABEL,
+            Piece.FOURNISSEUR,
             this.autocompleteFournisseur.bind(this),
-            MODEL_ID,
-            FOURNISSEUR_NOM,
+            Model.ID,
+            Fournisseur.NOM,
           ),
       ],
     ], [
-      PANEL_INFORMATIONS_VENTE,
+      Piece.PANEL_INFORMATIONS_VENTE,
       [
         InputFormField
-          .ofValue(PIECE_QUANTITE_LABEL, PIECE_QUANTITE),
+          .ofValue(Piece.QUANTITE_LABEL, Piece.QUANTITE),
         InputFormField
-          .ofValue(PIECE_PRIX_LABEL, PIECE_PRIX),
+          .ofValue(Piece.PRIX_LABEL, Piece.PRIX),
       ]
     ]
   ]);

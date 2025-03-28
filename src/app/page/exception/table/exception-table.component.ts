@@ -1,16 +1,4 @@
 import {Component, ViewChild} from '@angular/core';
-import {
-  THROWN_EXCEPTION_ACTIF,
-  THROWN_EXCEPTION_ACTIF_LABEL,
-  THROWN_EXCEPTION_CLASS_NAME,
-  THROWN_EXCEPTION_CLASS_NAME_LABEL,
-  THROWN_EXCEPTION_MESSAGE,
-  THROWN_EXCEPTION_MESSAGE_LABEL,
-  THROWN_EXCEPTION_ROW_EXTENDER,
-  THROWN_EXCEPTION_TIMESTAMP,
-  THROWN_EXCEPTION_TIMESTAMP_LABEL,
-  ThrownException
-} from '../exception.model';
 import {ExceptionService} from '../exception.service';
 import {SearchRequest} from '../../../common/search/searchRequest';
 import {TableComponent} from '../../../common/table/table.component';
@@ -18,7 +6,6 @@ import {map, Observable} from 'rxjs';
 import {Column} from '../../../common/table/column/column';
 import {SearchResult} from '../../../common/search/searchResult';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
-import {MODEL_ID} from '../../../common/model';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
 import {convertBooleanToString} from '../../../common/utils/lambda.utils';
@@ -37,9 +24,11 @@ import {
 import {MatIcon} from '@angular/material/icon';
 import {MatIconButton} from '@angular/material/button';
 import {DateColumn} from '../../../common/table/column/date-column';
+import {ThrownException} from '../exception.model';
+import {Model} from '../../../common/model';
 
 @Component({
-  selector: 'app-pays',
+  selector: 'app-exception-table',
   imports: [
     TableComponent,
     MatCell,
@@ -59,21 +48,21 @@ export class ExceptionTableComponent {
   // Définition des colonnes
   protected readonly columns: Column[] = [
     CustomColumn
-      .of("", THROWN_EXCEPTION_ROW_EXTENDER, "5%"),
+      .of("", ThrownException.ROW_EXTENDER, "5%"),
     ClassicColumn
-      .of(THROWN_EXCEPTION_CLASS_NAME_LABEL, THROWN_EXCEPTION_CLASS_NAME, "35%")
+      .of(ThrownException.CLASS_NAME_LABEL, ThrownException.CLASS_NAME, "35%")
       .inputFilterOnSameField()
       .sort(),
     ClassicColumn
-      .of(THROWN_EXCEPTION_MESSAGE_LABEL, THROWN_EXCEPTION_MESSAGE, "25%")
+      .of(ThrownException.MESSAGE_LABEL, ThrownException.MESSAGE, "25%")
       .inputFilterOnSameField(),
     DateColumn
-      .of(THROWN_EXCEPTION_TIMESTAMP_LABEL, THROWN_EXCEPTION_TIMESTAMP, "15%")
+      .of(ThrownException.TIMESTAMP_LABEL, ThrownException.TIMESTAMP, "15%")
       .withTime()
       .sort(Order.ASC),
     MethodColumn
-      .of(THROWN_EXCEPTION_ACTIF_LABEL, THROWN_EXCEPTION_ACTIF, "10%", convertBooleanToString)
-      .autocompleteEnumFilter(THROWN_EXCEPTION_ACTIF, new Map([
+      .of(ThrownException.ACTIF_LABEL, ThrownException.ACTIF, "10%", convertBooleanToString)
+      .autocompleteEnumFilter(ThrownException.ACTIF, new Map([
         [true, "Oui"],
         [false, "Non"],
       ]), true)
@@ -82,7 +71,7 @@ export class ExceptionTableComponent {
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: null,
-    idField: MODEL_ID,
+    idField: Model.ID,
     clicOnLine: false,
     created: false,
     delete: false,
@@ -92,7 +81,7 @@ export class ExceptionTableComponent {
       {
         name: "Désactiver l'exception",
         action: this.hideException.bind(this),
-        condition: (element: ThrownException) => element.actif
+        condition: (element: ThrownException) => !!element.actif
       }, {
         name: "Activer l'exception",
         action: this.viewException.bind(this),
@@ -124,10 +113,10 @@ export class ExceptionTableComponent {
 
   /**
    * Indique si la ligne supplémentaire doit s'afficher ou non
-   * @param index Index de l'élément
+   * @param _index Index de l'élément
    * @param rowData ThrownException
    */
-  protected viewRow(index: number, rowData: ThrownException): boolean {
+  protected viewRow(_index: number, rowData: ThrownException): boolean {
     return this.extendedRowId === rowData.id;
   }
 
@@ -140,10 +129,10 @@ export class ExceptionTableComponent {
   }
 
   private hideException(element: ThrownException): Observable<boolean> {
-    return this.exceptionService.changeStatus(element.id, false).pipe(map(() => true));
+    return this.exceptionService.changeStatus(element.id!, false).pipe(map(() => true));
   }
 
   private viewException(element: ThrownException): Observable<boolean> {
-    return this.exceptionService.changeStatus(element.id, true).pipe(map(() => true));
+    return this.exceptionService.changeStatus(element.id!, true).pipe(map(() => true));
   }
 }

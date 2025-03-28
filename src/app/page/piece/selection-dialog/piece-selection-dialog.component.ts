@@ -8,16 +8,16 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {Piece, PIECE_NOM} from '../piece.model';
 import {PieceService} from '../piece.service';
 import {AutocompleteComponent} from '../../../common/form/input/autocomplete/autocomplete.component';
 import {Observable} from 'rxjs';
-import {MODEL_ID} from '../../../common/model';
+import {Model} from '../../../common/model';
 import {MachineService} from '../../machine/machine.service';
 import {Machine} from '../../machine/machine.model';
 import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
 import {FormControl} from '@angular/forms';
 import {ValidationException} from '../../../common/utils/validation-exception';
+import {Piece} from '../piece.model';
 
 @Component({
   selector: 'app-piece-selection-dialog',
@@ -33,8 +33,8 @@ import {ValidationException} from '../../../common/utils/validation-exception';
   styleUrl: './piece-selection-dialog.component.scss'
 })
 export class PieceSelectionDialogComponent implements OnInit {
-  protected readonly FIELD_ID = MODEL_ID;
-  protected readonly FIELD_NAME = PIECE_NOM;
+  protected readonly FIELD_ID = Model.ID;
+  protected readonly FIELD_NAME = Piece.NOM;
 
   protected pieceFormControl: FormControl = new FormControl();
   protected machine: Machine | null = null;

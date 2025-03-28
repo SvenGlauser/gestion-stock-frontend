@@ -1,26 +1,18 @@
 import {Component} from '@angular/core';
 import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-form-dialog.component';
-import {
-  Localite,
-  LOCALITE_NOM,
-  LOCALITE_NOM_LABEL,
-  LOCALITE_NPA,
-  LOCALITE_NPA_LABEL,
-  LOCALITE_PAYS,
-  LOCALITE_PAYS_LABEL
-} from '../localite.model';
-import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
 import {PaysService} from '../../pays/pays.service';
 import {Observable} from 'rxjs';
 import {LocaliteService} from '../localite.service';
-import {Pays, PAYS_NOM} from '../../pays/pays.model';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {FormComponent} from '../../../common/form/form.component';
 import {InputFormField} from '../../../common/form/field/input-form-field';
 import {AutocompleteFormField} from '../../../common/form/field/autocomplete-form-field';
+import {Localite} from '../localite.model';
+import {Model} from '../../../common/model';
+import {Pays} from '../../pays/pays.model';
 
 @Component({
   selector: 'app-localite-dialog',
@@ -39,22 +31,22 @@ import {AutocompleteFormField} from '../../../common/form/field/autocomplete-for
 })
 export class LocaliteDialogComponent extends AbstractFormDialogComponent<LocaliteDialogComponent, Localite> {
   // Constantes
-  protected readonly ID_FIELD: string = MODEL_ID;
+  protected readonly ID_FIELD: string = Model.ID;
 
   // Définition des champs de formulaire
   protected formsMap: Map<string, FormField[]> = new Map([
     [
-      PANEL_DONNEES_GENERALES,
+      Localite.PANEL_DONNEES_GENERALES,
       [
-        InputFormField.ofValue(LOCALITE_NOM_LABEL, LOCALITE_NOM),
-        InputFormField.ofValue(LOCALITE_NPA_LABEL, LOCALITE_NPA),
+        InputFormField.ofValue(Localite.NOM_LABEL, Localite.NOM),
+        InputFormField.ofValue(Localite.NPA_LABEL, Localite.NPA),
         AutocompleteFormField
           .ofValue(
-            LOCALITE_PAYS_LABEL,
-            LOCALITE_PAYS,
+            Localite.PAYS_LABEL,
+            Localite.PAYS,
             this.autocompletePays.bind(this),
-            MODEL_ID,
-            PAYS_NOM,
+            Model.ID,
+            Pays.NOM,
           )
           .setColspan(2),
       ],

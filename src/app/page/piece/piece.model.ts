@@ -3,46 +3,67 @@ import {Fournisseur} from '../fournisseur/fournisseur.model';
 import {Categorie} from '../categorie/categorie.model';
 
 /**
- * Interface représentant une pièce
+ * Class représentant une pièce
  */
-export interface Piece extends Model {
-  numeroInventaire: string;
-  nom: string;
-  description: string | null;
+export class Piece extends Model {
 
-  numeroFournisseur: string | null;
-  fournisseur: Fournisseur | null;
+  // Field constantes
+  public static readonly NUMERO_INVENTAIRE = 'numeroInventaire';
+  public static readonly NOM = 'nom';
+  public static readonly DESCRIPTION = 'description';
+  public static readonly NUMERO_FOURNISSEUR = 'numeroFournisseur';
+  public static readonly FOURNISSEUR = 'fournisseur';
+  public static readonly CATEGORIE = 'categorie';
+  public static readonly CATEGORIE_NOM = this.CATEGORIE.concat(".", Categorie.NOM);
+  public static readonly QUANTITE = 'quantite';
+  public static readonly PRIX = 'prix';
 
-  categorie: Categorie | null;
+  // Label constantes
+  public static readonly NUMERO_INVENTAIRE_LABEL = "N° d'inventaire";
+  public static readonly NOM_LABEL = 'Nom';
+  public static readonly DESCRIPTION_LABEL = 'Description';
+  public static readonly NUMERO_FOURNISSEUR_LABEL = 'N° du fournisseur';
+  public static readonly FOURNISSEUR_LABEL = 'Fournisseur';
+  public static readonly CATEGORIE_LABEL = 'Catégorie';
+  public static readonly QUANTITE_LABEL = 'Quantité';
+  public static readonly PRIX_LABEL = 'Prix';
 
-  quantite: number;
-  prix: number;
+  // Champs calculées
+  public static readonly TOTAL = 'total';
+  public static readonly TOTAL_LABEL = 'Valeur total';
+
+  // Constantes pour les panels
+  public static readonly PANEL_INFORMATIONS_FOURNISSEUR = 'Informations du fournisseur';
+  public static readonly PANEL_INFORMATIONS_VENTE = 'Informations de vente';
+
+  public numeroInventaire: string | null = null;
+  public nom: string | null = null;
+  public description: string | null = null;
+
+  public numeroFournisseur: string | null = null;
+  public fournisseur: Fournisseur | null = null;
+
+  public categorie: Categorie | null = null;
+
+  public quantite: number | null = null;
+  public prix: number | null = null;
+
+  constructor(piece?: Piece) {
+    super(piece);
+
+    if (piece) {
+      this.numeroInventaire = piece.numeroInventaire;
+      this.nom = piece.nom;
+      this.description = piece.description;
+      this.numeroFournisseur = piece.numeroFournisseur;
+      if (piece.fournisseur) {
+        this.fournisseur = new Fournisseur(piece.fournisseur);
+      }
+      if (piece.categorie) {
+        this.categorie = new Categorie(piece.categorie);
+      }
+      this.quantite = piece.quantite;
+      this.prix = piece.prix;
+    }
+  }
 }
-
-// Field constantes
-export const PIECE_NUMERO_INVENTAIRE = 'numeroInventaire';
-export const PIECE_NOM = 'nom';
-export const PIECE_DESCRIPTION = 'description';
-export const PIECE_NUMERO_FOURNISSEUR = 'numeroFournisseur';
-export const PIECE_FOURNISSEUR = 'fournisseur';
-export const PIECE_CATEGORIE = 'categorie';
-export const PIECE_QUANTITE = 'quantite';
-export const PIECE_PRIX = 'prix';
-
-// Label constantes
-export const PIECE_NUMERO_INVENTAIRE_LABEL = "N° d'inventaire";
-export const PIECE_NOM_LABEL = 'Nom';
-export const PIECE_DESCRIPTION_LABEL = 'Description';
-export const PIECE_NUMERO_FOURNISSEUR_LABEL = 'N° du fournisseur';
-export const PIECE_FOURNISSEUR_LABEL = 'Fournisseur';
-export const PIECE_CATEGORIE_LABEL = 'Catégorie';
-export const PIECE_QUANTITE_LABEL = 'Quantité';
-export const PIECE_PRIX_LABEL = 'Prix';
-
-// Champs calculées
-export const PIECE_TOTAL = 'total';
-export const PIECE_TOTAL_LABEL = 'Valeur total';
-
-// Constantes pour les panels
-export const PANEL_INFORMATIONS_FOURNISSEUR = 'Informations du fournisseur';
-export const PANEL_INFORMATIONS_VENTE = 'Informations de vente';

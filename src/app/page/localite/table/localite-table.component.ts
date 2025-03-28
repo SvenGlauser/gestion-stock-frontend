@@ -5,21 +5,13 @@ import {PaysService} from '../../pays/pays.service';
 import {SearchRequest} from '../../../common/search/searchRequest';
 import {Observable} from 'rxjs';
 import {SearchResult} from '../../../common/search/searchResult';
-import {Pays, PAYS_NOM} from '../../pays/pays.model';
+import {Pays} from '../../pays/pays.model';
 import {LocaliteService} from '../localite.service';
-import {
-  Localite,
-  LOCALITE_NOM,
-  LOCALITE_NOM_LABEL,
-  LOCALITE_NPA,
-  LOCALITE_NPA_LABEL,
-  LOCALITE_PAYS,
-  LOCALITE_PAYS_LABEL
-} from '../localite.model';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
-import {MODEL_ID} from '../../../common/model';
+import {Model} from '../../../common/model';
 import {LocaliteDialogComponent} from '../dialog/localite-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
+import {Localite} from '../localite.model';
 
 @Component({
   selector: 'app-localite',
@@ -33,27 +25,27 @@ export class LocaliteTableComponent {
   // Définition des colonnes
   protected columns = [
     ClassicColumn
-      .of(LOCALITE_NOM_LABEL, LOCALITE_NOM, "40%")
+      .of(Localite.NOM_LABEL, Localite.NOM, "40%")
       .sort(Order.ASC)
       .inputFilterOnSameField(),
     ClassicColumn
-      .of(LOCALITE_NPA_LABEL, LOCALITE_NPA, "25%")
+      .of(Localite.NPA_LABEL, Localite.NPA, "25%")
       .sort()
       .inputFilterOnSameField(),
     ClassicColumn
-      .of(LOCALITE_PAYS_LABEL, LOCALITE_PAYS.concat(".", PAYS_NOM), "25%")
+      .of(Localite.PAYS_LABEL, Localite.PAYS_NOM, "25%")
       .sort()
       .autocompleteFilter(
-        LOCALITE_PAYS.concat(".", MODEL_ID),
+        Localite.PAYS_ID,
         this.autocompletePays.bind(this),
-        MODEL_ID,
-        PAYS_NOM),
+        Model.ID,
+        Pays.NOM),
   ];
 
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: LocaliteDialogComponent,
-    idField: MODEL_ID,
+    idField: Model.ID,
     clicOnLine: true,
     created: true,
     delete: true,

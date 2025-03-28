@@ -7,9 +7,9 @@ import {FormComponent} from '../../../common/form/form.component';
 import {FormField} from '../../../common/form/field/form-field';
 import {PaysService} from '../pays.service';
 import {Observable} from 'rxjs';
-import {Pays, PAYS_ABREVIATION, PAYS_ABREVIATION_LABEL, PAYS_NOM, PAYS_NOM_LABEL} from '../pays.model';
-import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
 import {InputFormField} from "../../../common/form/field/input-form-field";
+import {Pays} from '../pays.model';
+import {Model} from '../../../common/model';
 
 @Component({
   selector: 'app-dialog',
@@ -28,18 +28,18 @@ import {InputFormField} from "../../../common/form/field/input-form-field";
 })
 export class PaysDialogComponent extends AbstractFormDialogComponent<PaysDialogComponent, Pays> {
   // Constantes
-  protected readonly ID_FIELD: string = MODEL_ID;
+  protected readonly ID_FIELD: string = Model.ID;
 
   // Définition des champs de formulaire
   protected formsMap: Map<string, FormField[]> = new Map([
     [
-      PANEL_DONNEES_GENERALES,
+      Pays.PANEL_DONNEES_GENERALES,
       [
         InputFormField
-          .ofValue(PAYS_NOM_LABEL, PAYS_NOM)
+          .ofValue(Pays.NOM_LABEL, Pays.NOM)
           .setColspan(2),
         InputFormField
-          .ofValue(PAYS_ABREVIATION_LABEL, PAYS_ABREVIATION)
+          .ofValue(Pays.ABREVIATION_LABEL, Pays.ABREVIATION)
           .setColspan(2),
       ]
     ]

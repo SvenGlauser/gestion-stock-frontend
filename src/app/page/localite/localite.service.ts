@@ -4,7 +4,7 @@ import {SearchResult} from '../../common/search/searchResult';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
 import {BASE_URL} from '../../common/utils/http-client.configuration';
-import {Localite, LOCALITE_NOM} from './localite.model';
+import {Localite} from './localite.model';
 import {Order, Type} from '../../common/search/filter';
 
 @Injectable({
@@ -17,23 +17,34 @@ export class LocaliteService {
   constructor(private readonly http: HttpClient) {}
 
   public get(id: number): Observable<Localite> {
-    return this.http.get<Localite>(this.URL_WITH_SLASH + id);
+    return this.http
+      .get<Localite>(this.URL_WITH_SLASH + id)
+      .pipe(map(localite => new Localite(localite)));
   }
 
   public delete(id: number): Observable<void> {
     return this.http.delete<void>(this.URL_WITH_SLASH + id);
   }
 
-  public create(pays: Localite): Observable<Localite> {
-    return this.http.post<Localite>(this.URL, pays);
+  public create(localite: Localite): Observable<Localite> {
+    return this.http
+      .post<Localite>(this.URL, localite)
+      .pipe(map(localite => new Localite(localite)));
   }
 
-  public modify(pays: Localite): Observable<Localite> {
-    return this.http.put<Localite>(this.URL, pays);
+  public modify(localite: Localite): Observable<Localite> {
+    return this.http
+      .put<Localite>(this.URL, localite)
+      .pipe(map(localite => new Localite(localite)));
   }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<Localite>> {
-    return this.http.post<SearchResult<Localite>>(this.URL_WITH_SLASH + "search", searchRequest);
+    return this.http
+      .post<SearchResult<Localite>>(this.URL_WITH_SLASH + "search", searchRequest)
+      .pipe(map(result => {
+        result.elements = result.elements.map(localite => new Localite(localite));
+        return result;
+      }))
   }
 
   public autocomplete(value: string): Observable<Localite[]> {
@@ -41,7 +52,7 @@ export class LocaliteService {
       page: 0,
       pageSize: 25,
       filters: [{
-        field: LOCALITE_NOM,
+        field: Localite.NOM,
         value: value,
         type: Type.STRING_LIKE,
         order: Order.ASC

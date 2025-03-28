@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../../common/search/searchResult';
-import {Piece, PIECE_NOM} from './piece.model';
+import {Piece} from './piece.model';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
 import {BASE_URL} from '../../common/utils/http-client.configuration';
@@ -17,23 +17,34 @@ export class PieceService {
   constructor(private readonly http: HttpClient) {}
 
   public get(id: number): Observable<Piece> {
-    return this.http.get<Piece>(this.URL_WITH_SLASH + id);
+    return this.http
+      .get<Piece>(this.URL_WITH_SLASH + id)
+      .pipe(map(piece => new Piece(piece)));
   }
 
   public delete(id: number): Observable<void> {
     return this.http.delete<void>(this.URL_WITH_SLASH + id);
   }
 
-  public create(Piece: Piece): Observable<Piece> {
-    return this.http.post<Piece>(this.URL, Piece);
+  public create(piece: Piece): Observable<Piece> {
+    return this.http
+      .post<Piece>(this.URL, piece)
+      .pipe(map(piece => new Piece(piece)));
   }
 
-  public modify(Piece: Piece): Observable<Piece> {
-    return this.http.put<Piece>(this.URL, Piece);
+  public modify(piece: Piece): Observable<Piece> {
+    return this.http
+      .put<Piece>(this.URL, piece)
+      .pipe(map(piece => new Piece(piece)));
   }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<Piece>> {
-    return this.http.post<SearchResult<Piece>>(this.URL_WITH_SLASH + "search", searchRequest);
+    return this.http
+      .post<SearchResult<Piece>>(this.URL_WITH_SLASH + "search", searchRequest)
+      .pipe(map(result => {
+        result.elements = result.elements.map(piece => new Piece(piece));
+        return result;
+      }))
   }
 
   public autocomplete(value: string): Observable<Piece[]> {
@@ -41,7 +52,7 @@ export class PieceService {
       page: 0,
       pageSize: 25,
       filters: [{
-        field: PIECE_NOM,
+        field: Piece.NOM,
         value: value,
         type: Type.STRING_LIKE,
         order: Order.ASC

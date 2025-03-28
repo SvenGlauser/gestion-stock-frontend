@@ -1,21 +1,15 @@
 import {Component} from '@angular/core';
 import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-form-dialog.component';
-import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
+import {Model} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
 import {Observable} from 'rxjs';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {FormComponent} from '../../../common/form/form.component';
-import {
-  Machine,
-  MACHINE_DESCRIPTION,
-  MACHINE_DESCRIPTION_LABEL,
-  MACHINE_NOM,
-  MACHINE_NOM_LABEL
-} from '../machine.model';
 import {MachineService} from '../machine.service';
 import {InputFormField} from '../../../common/form/field/input-form-field';
+import {Machine} from '../machine.model';
 
 @Component({
   selector: 'app-machine-dialog',
@@ -34,18 +28,18 @@ import {InputFormField} from '../../../common/form/field/input-form-field';
 })
 export class MachineDialogComponent extends AbstractFormDialogComponent<MachineDialogComponent, Machine> {
   // Constantes
-  protected readonly ID_FIELD: string = MODEL_ID;
+  protected readonly ID_FIELD: string = Model.ID;
 
   // Définition des champs de formulaire
   protected formsMap: Map<string, FormField[]> = new Map([
     [
-      PANEL_DONNEES_GENERALES,
+      Machine.PANEL_DONNEES_GENERALES,
       [
         InputFormField
-          .ofValue(MACHINE_NOM_LABEL, MACHINE_NOM)
+          .ofValue(Machine.NOM_LABEL, Machine.NOM)
           .setColspan(2),
         InputFormField
-          .ofValue(MACHINE_DESCRIPTION_LABEL, MACHINE_DESCRIPTION)
+          .ofValue(Machine.DESCRIPTION_LABEL, Machine.DESCRIPTION)
           .setColspan(2),
       ]
     ]

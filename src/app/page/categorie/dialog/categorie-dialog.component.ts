@@ -1,21 +1,13 @@
 import {Component} from '@angular/core';
 import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-form-dialog.component';
-import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
+import {Model} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
 import {Observable} from 'rxjs';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {FormComponent} from '../../../common/form/form.component';
-import {
-  Categorie,
-  CATEGORIE_ACTIF,
-  CATEGORIE_ACTIF_LABEL,
-  CATEGORIE_DESCRIPTION,
-  CATEGORIE_DESCRIPTION_LABEL,
-  CATEGORIE_NOM,
-  CATEGORIE_NOM_LABEL
-} from '../categorie.model';
+import {Categorie} from '../categorie.model';
 import {CategorieService} from '../categorie.service';
 import {InputFormField} from '../../../common/form/field/input-form-field';
 import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete-enum-form-field';
@@ -37,20 +29,20 @@ import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete
 })
 export class CategorieDialogComponent extends AbstractFormDialogComponent<CategorieDialogComponent, Categorie> {
   // Constantes
-  protected readonly ID_FIELD: string = MODEL_ID;
+  protected readonly ID_FIELD: string = Model.ID;
 
   // Définition des champs de formulaire
   protected formsMap: Map<string, FormField[]> = new Map([
     [
-      PANEL_DONNEES_GENERALES,
+      Categorie.PANEL_DONNEES_GENERALES,
       [
-        InputFormField.ofValue(CATEGORIE_NOM_LABEL, CATEGORIE_NOM),
+        InputFormField.ofValue(Categorie.NOM_LABEL, Categorie.NOM),
         AutocompleteEnumFormField
-          .ofValue(CATEGORIE_ACTIF_LABEL, CATEGORIE_ACTIF)
+          .ofValue(Categorie.ACTIF_LABEL, Categorie.ACTIF)
           .addValue(true, "Oui")
           .addValue(false, "Non"),
         InputFormField
-          .ofValue(CATEGORIE_DESCRIPTION_LABEL, CATEGORIE_DESCRIPTION)
+          .ofValue(Categorie.DESCRIPTION_LABEL, Categorie.DESCRIPTION)
           .setColspan(2),
       ]
     ]

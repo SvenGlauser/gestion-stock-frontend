@@ -33,6 +33,13 @@ export abstract class Column {
   }
 
   /**
+   * Set le style pre-wrap
+   */
+  public setStylePreWrap(): this {
+    return this.setStyle("white-space: pre-wrap");
+  }
+
+  /**
    * Permet de tri sur la colonne
    * @param order ASC ou DESC ou null
    */

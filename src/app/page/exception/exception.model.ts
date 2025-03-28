@@ -1,29 +1,44 @@
 import {Model} from '../../common/model';
 
 /**
- * Interface représentant un pays
+ * Class représentant un pays
  */
-export interface ThrownException extends Model {
-  stacktrace: string;
-  className: string;
-  message: string;
-  timestamp: Date;
-  actif: boolean;
+export class ThrownException extends Model {
+
+  // Field constantes
+  public static readonly STACKTRACE = 'stacktrace';
+  public static readonly CLASS_NAME = 'className';
+  public static readonly MESSAGE = 'message';
+  public static readonly TIMESTAMP = 'timestamp';
+  public static readonly ACTIF = 'actif';
+
+  // Label constantes
+  public static readonly STACKTRACE_LABEL = 'Stacktrace';
+  public static readonly CLASS_NAME_LABEL = 'Exception';
+  public static readonly MESSAGE_LABEL = 'Message';
+  public static readonly TIMESTAMP_LABEL = 'Date et heure';
+  public static readonly ACTIF_LABEL = 'Actif';
+
+  // DataTable constantes
+  public static readonly ROW_EXTENDER = 'rowExtender';
+
+  public stacktrace: string | null = null;
+  public className: string | null = null;
+  public message: string | null = null;
+  public timestamp: Date | null = null;
+  public actif: boolean | null = null;
+
+  constructor(exception?: ThrownException) {
+    super(exception);
+
+    if (exception) {
+      this.stacktrace = exception.stacktrace;
+      this.className = exception.className;
+      this.message = exception.message;
+      if (exception.timestamp) {
+        this.timestamp = new Date(exception.timestamp);
+      }
+      this.actif = exception.actif;
+    }
+  }
 }
-
-// Field constantes
-export const THROWN_EXCEPTION_STACKTRACE = 'stacktrace';
-export const THROWN_EXCEPTION_CLASS_NAME = 'className';
-export const THROWN_EXCEPTION_MESSAGE = 'message';
-export const THROWN_EXCEPTION_TIMESTAMP = 'timestamp';
-export const THROWN_EXCEPTION_ACTIF = 'actif';
-
-// Label constantes
-export const THROWN_EXCEPTION_STACKTRACE_LABEL = 'Stacktrace';
-export const THROWN_EXCEPTION_CLASS_NAME_LABEL = 'Exception';
-export const THROWN_EXCEPTION_MESSAGE_LABEL = 'Message';
-export const THROWN_EXCEPTION_TIMESTAMP_LABEL = 'Date et heure';
-export const THROWN_EXCEPTION_ACTIF_LABEL = 'Actif';
-
-// DataTable constantes
-export const THROWN_EXCEPTION_ROW_EXTENDER = 'rowExtender';

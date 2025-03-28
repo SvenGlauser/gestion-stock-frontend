@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../../common/search/searchResult';
 import {Contact} from './contact.model';
-import {Observable} from 'rxjs';
+import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
 import {BASE_URL} from '../../common/utils/http-client.configuration';
 
@@ -16,22 +16,33 @@ export class ContactService {
   constructor(private readonly http: HttpClient) {}
 
   public get(id: number): Observable<Contact> {
-    return this.http.get<Contact>(this.URL_WITH_SLASH + id);
+    return this.http
+      .get<Contact>(this.URL_WITH_SLASH + id)
+      .pipe(map(contact => new Contact(contact)));
   }
 
   public delete(id: number): Observable<void> {
     return this.http.delete<void>(this.URL_WITH_SLASH + id);
   }
 
-  public create(Categorie: Contact): Observable<Contact> {
-    return this.http.post<Contact>(this.URL, Categorie);
+  public create(contact: Contact): Observable<Contact> {
+    return this.http
+      .post<Contact>(this.URL, contact)
+      .pipe(map(contact => new Contact(contact)));
   }
 
-  public modify(Categorie: Contact): Observable<Contact> {
-    return this.http.put<Contact>(this.URL, Categorie);
+  public modify(contact: Contact): Observable<Contact> {
+    return this.http
+      .put<Contact>(this.URL, contact)
+      .pipe(map(contact => new Contact(contact)));
   }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<Contact>> {
-    return this.http.post<SearchResult<Contact>>(this.URL_WITH_SLASH + "search", searchRequest);
+    return this.http
+      .post<SearchResult<Contact>>(this.URL_WITH_SLASH + "search", searchRequest)
+      .pipe(map(result => {
+        result.elements = result.elements.map(contact => new Contact(contact));
+        return result;
+      }));
   }
 }

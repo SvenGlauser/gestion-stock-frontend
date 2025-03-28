@@ -364,7 +364,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
    */
   protected canViewOneAction(element: T) {
     for (const action of this.actionColumnInfo.actions ?? []) {
-      if (action.condition && action.condition(element)) {
+      if (!action.condition || action.condition(element)) {
         return true;
       }
     }

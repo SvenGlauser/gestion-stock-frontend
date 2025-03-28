@@ -1,36 +1,19 @@
 import {Component} from '@angular/core';
 import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-form-dialog.component';
-import {MODEL_ID, PANEL_DONNEES_GENERALES} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
 import {Observable} from 'rxjs';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {FormComponent} from '../../../common/form/form.component';
-import {
-  Fournisseur,
-  FOURNISSEUR_ADRESSE,
-  FOURNISSEUR_DESCRIPTION,
-  FOURNISSEUR_DESCRIPTION_LABEL,
-  FOURNISSEUR_NOM,
-  FOURNISSEUR_NOM_LABEL,
-  FOURNISSEUR_URL,
-  FOURNISSEUR_URL_LABEL
-} from '../fournisseur.model';
 import {FournisseurService} from '../fournisseur.service';
 import {LocaliteService} from '../../localite/localite.service';
-import {Localite, LOCALITE_NOM} from '../../localite/localite.model';
-import {
-  ADRESSE_LOCALILTE,
-  ADRESSE_LOCALILTE_LABEL,
-  ADRESSE_NUMERO,
-  ADRESSE_NUMERO_LABEL,
-  ADRESSE_RUE,
-  ADRESSE_RUE_LABEL,
-  PANEL_ADRESSE
-} from '../../adresse/adresse';
 import {InputFormField} from '../../../common/form/field/input-form-field';
 import {AutocompleteFormField} from '../../../common/form/field/autocomplete-form-field';
+import {Fournisseur} from '../fournisseur.model';
+import {Adresse} from '../../adresse/adresse';
+import {Localite} from '../../localite/localite.model';
+import {Model} from '../../../common/model';
 
 @Component({
   selector: 'app-fournisseur-dialog',
@@ -49,35 +32,35 @@ import {AutocompleteFormField} from '../../../common/form/field/autocomplete-for
 })
 export class FournisseurDialogComponent extends AbstractFormDialogComponent<FournisseurDialogComponent, Fournisseur> {
   // Constantes
-  protected readonly ID_FIELD: string = MODEL_ID;
+  protected readonly ID_FIELD: string = Model.ID;
 
   // Définition des champs de formulaire
   protected formsMap: Map<string, FormField[]> = new Map([
     [
-      PANEL_DONNEES_GENERALES,
+      Fournisseur.PANEL_DONNEES_GENERALES,
       [
         InputFormField
-          .ofValue(FOURNISSEUR_NOM_LABEL, FOURNISSEUR_NOM)
+          .ofValue(Fournisseur.NOM_LABEL, Fournisseur.NOM)
           .setColspan(2),
         InputFormField
-          .ofValue(FOURNISSEUR_DESCRIPTION_LABEL, FOURNISSEUR_DESCRIPTION)
+          .ofValue(Fournisseur.DESCRIPTION_LABEL, Fournisseur.DESCRIPTION)
           .setColspan(2),
         InputFormField
-          .ofValue(FOURNISSEUR_URL_LABEL, FOURNISSEUR_URL)
+          .ofValue(Fournisseur.URL_LABEL, Fournisseur.URL)
           .setColspan(2),
       ],
     ], [
-      PANEL_ADRESSE,
+      Adresse.PANEL_ADRESSE,
       [
-        InputFormField.ofValue(ADRESSE_RUE_LABEL, FOURNISSEUR_ADRESSE.concat(".", ADRESSE_RUE)),
-        InputFormField.ofValue(ADRESSE_NUMERO_LABEL, FOURNISSEUR_ADRESSE.concat(".", ADRESSE_NUMERO)),
+        InputFormField.ofValue(Adresse.RUE_LABEL, Fournisseur.ADRESSE_RUE),
+        InputFormField.ofValue(Adresse.NUMERO_LABEL, Fournisseur.ADRESSE_NUMERO),
         AutocompleteFormField
           .ofValue(
-            ADRESSE_LOCALILTE_LABEL,
-            FOURNISSEUR_ADRESSE.concat(".", ADRESSE_LOCALILTE),
+            Adresse.LOCALILTE_LABEL,
+            Fournisseur.ADRESSE_LOCALITE,
             this.autocompleteLocalite.bind(this),
-            MODEL_ID,
-            LOCALITE_NOM,
+            Model.ID,
+            Localite.NOM,
           )
           .setColspan(2),
       ]

@@ -97,7 +97,7 @@
               <button mat-menu-item (click)="openDialog(element, DialogType.MODIFY)">Modifier</button>
             }
             @for (action of this.actionColumnInfo.actions ?? []; track action.name) {
-              @if (action.condition && action.condition(element)) {
+              @if (!action.condition || action.condition(element)) {
                 <button mat-menu-item (click)="this.run(action.action, element)">
                   {{action.name}}
                 </button>

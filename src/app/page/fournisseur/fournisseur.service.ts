@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../../common/search/searchResult';
-import {Fournisseur, FOURNISSEUR_NOM} from './fournisseur.model';
+import {Fournisseur} from './fournisseur.model';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
 import {BASE_URL} from '../../common/utils/http-client.configuration';
@@ -17,23 +17,34 @@ export class FournisseurService {
   constructor(private readonly http: HttpClient) {}
 
   public get(id: number): Observable<Fournisseur> {
-    return this.http.get<Fournisseur>(this.URL_WITH_SLASH + id);
+    return this.http
+      .get<Fournisseur>(this.URL_WITH_SLASH + id)
+      .pipe(map(fournisseur => new Fournisseur(fournisseur)));
   }
 
   public delete(id: number): Observable<void> {
     return this.http.delete<void>(this.URL_WITH_SLASH + id);
   }
 
-  public create(Categorie: Fournisseur): Observable<Fournisseur> {
-    return this.http.post<Fournisseur>(this.URL, Categorie);
+  public create(fournisseur: Fournisseur): Observable<Fournisseur> {
+    return this.http
+      .post<Fournisseur>(this.URL, fournisseur)
+      .pipe(map(fournisseur => new Fournisseur(fournisseur)));
   }
 
-  public modify(Categorie: Fournisseur): Observable<Fournisseur> {
-    return this.http.put<Fournisseur>(this.URL, Categorie);
+  public modify(fournisseur: Fournisseur): Observable<Fournisseur> {
+    return this.http
+      .put<Fournisseur>(this.URL, fournisseur)
+      .pipe(map(fournisseur => new Fournisseur(fournisseur)));
   }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<Fournisseur>> {
-    return this.http.post<SearchResult<Fournisseur>>(this.URL_WITH_SLASH + "search", searchRequest);
+    return this.http
+      .post<SearchResult<Fournisseur>>(this.URL_WITH_SLASH + "search", searchRequest)
+      .pipe(map(result => {
+        result.elements = result.elements.map(fournisseur => new Fournisseur(fournisseur));
+        return result;
+      }));
   }
 
   public autocomplete(value: string): Observable<Fournisseur[]> {
@@ -41,7 +52,7 @@ export class FournisseurService {
       page: 0,
       pageSize: 25,
       filters: [{
-        field: FOURNISSEUR_NOM,
+        field: Fournisseur.NOM,
         value: value,
         type: Type.STRING_LIKE,
         order: Order.ASC

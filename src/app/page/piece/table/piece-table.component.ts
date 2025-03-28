@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
-import {MODEL_ID} from '../../../common/model';
 import {PieceService} from '../piece.service';
 import {SearchRequest} from '../../../common/search/searchRequest';
 import {Observable} from 'rxjs';
@@ -11,25 +10,10 @@ import {TableComponent} from '../../../common/table/table.component';
 import {PieceDialogComponent} from '../dialog/piece-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
-import {
-  Piece,
-  PIECE_CATEGORIE,
-  PIECE_CATEGORIE_LABEL,
-  PIECE_DESCRIPTION,
-  PIECE_DESCRIPTION_LABEL,
-  PIECE_NOM,
-  PIECE_NOM_LABEL,
-  PIECE_NUMERO_INVENTAIRE,
-  PIECE_NUMERO_INVENTAIRE_LABEL,
-  PIECE_PRIX,
-  PIECE_PRIX_LABEL,
-  PIECE_QUANTITE,
-  PIECE_QUANTITE_LABEL,
-  PIECE_TOTAL,
-  PIECE_TOTAL_LABEL
-} from '../piece.model';
 import {CategorieService} from '../../categorie/categorie.service';
-import {Categorie, CATEGORIE_NOM} from '../../categorie/categorie.model';
+import {Categorie} from '../../categorie/categorie.model';
+import {Piece} from '../piece.model';
+import {Model} from '../../../common/model';
 
 @Component({
   selector: 'app-piece-table',
@@ -43,38 +27,38 @@ export class PieceTableComponent {
   // Définition des colonnes
   protected readonly columns: Column[] = [
     ClassicColumn
-      .of(PIECE_NUMERO_INVENTAIRE_LABEL, PIECE_NUMERO_INVENTAIRE, "10%")
+      .of(Piece.NUMERO_INVENTAIRE_LABEL, Piece.NUMERO_INVENTAIRE, "10%")
       .sort(Order.ASC)
       .inputFilterOnSameField(),
     ClassicColumn
-      .of(PIECE_NOM_LABEL, PIECE_NOM, "15%")
+      .of(Piece.NOM_LABEL, Piece.NOM, "15%")
       .sort()
       .inputFilterOnSameField(),
     ClassicColumn
-      .of(PIECE_DESCRIPTION_LABEL, PIECE_DESCRIPTION, "20%"),
+      .of(Piece.DESCRIPTION_LABEL, Piece.DESCRIPTION, "20%"),
     ClassicColumn
-      .of(PIECE_CATEGORIE_LABEL, PIECE_CATEGORIE.concat(".", CATEGORIE_NOM), "15%")
+      .of(Piece.CATEGORIE_LABEL, Piece.CATEGORIE.concat(".", Piece.CATEGORIE_NOM), "15%")
       .sort()
       .autocompleteFilter(
-        PIECE_CATEGORIE.concat(".", MODEL_ID),
+        Piece.CATEGORIE.concat(".", Model.ID),
         this.autocompleteCategorie.bind(this),
-        MODEL_ID,
-        CATEGORIE_NOM,
+        Model.ID,
+        Categorie.NOM,
       ),
     ClassicColumn
-      .of(PIECE_PRIX_LABEL, PIECE_PRIX, "10%")
+      .of(Piece.PRIX_LABEL, Piece.PRIX, "10%")
       .sort(),
     ClassicColumn
-      .of(PIECE_QUANTITE_LABEL, PIECE_QUANTITE, "10%")
+      .of(Piece.QUANTITE_LABEL, Piece.QUANTITE, "10%")
       .sort(),
     MethodColumn
-      .of(PIECE_TOTAL_LABEL, PIECE_TOTAL, "10%", this.calculateTotal.bind(this), PIECE_QUANTITE, PIECE_PRIX),
+      .of(Piece.TOTAL_LABEL, Piece.TOTAL, "10%", this.calculateTotal.bind(this), Piece.QUANTITE, Piece.PRIX),
   ]
 
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: PieceDialogComponent,
-    idField: MODEL_ID,
+    idField: Model.ID,
     clicOnLine: true,
     created: true,
     delete: true,

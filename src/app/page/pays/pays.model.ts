@@ -1,17 +1,27 @@
 import {Model} from '../../common/model';
 
 /**
- * Interface représentant un pays
+ * Class représentant un pays
  */
-export interface Pays extends Model {
-  nom: string;
-  abreviation: string;
+export class Pays extends Model {
+
+  // Field constantes
+  public static readonly NOM = 'nom';
+  public static readonly ABREVIATION = 'abreviation';
+
+  // Label constantes
+  public static readonly NOM_LABEL = 'Nom';
+  public static readonly ABREVIATION_LABEL = 'Abréviation';
+
+  public nom: string | null = null;
+  public abreviation: string | null = null;
+
+  constructor(pays?: Pays) {
+    super(pays);
+
+    if (pays) {
+      this.abreviation = pays.nom;
+      this.nom = pays.nom;
+    }
+  }
 }
-
-// Field constantes
-export const PAYS_NOM = 'nom';
-export const PAYS_ABREVIATION = 'abreviation';
-
-// Label constantes
-export const PAYS_NOM_LABEL = 'Nom';
-export const PAYS_ABREVIATION_LABEL = 'Abréviation';

@@ -24,16 +24,9 @@ export class ExceptionService {
       .post<SearchResult<ThrownException>>(this.URL_WITH_SLASH + "search", searchRequest)
       .pipe(
         map(result => {
-          result.elements = result.elements.map(this.mapException);
+          result.elements = result.elements.map(exception => new ThrownException(exception));
           return result;
         })
       );
-  }
-
-  private mapException(exception: ThrownException): ThrownException {
-    if (exception.timestamp) {
-      exception.timestamp = new Date(exception.timestamp);
-    }
-    return exception;
   }
 }

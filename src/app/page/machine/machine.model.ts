@@ -3,37 +3,39 @@ import {Contact} from '../contact/contact.model';
 import {Piece} from '../piece/piece.model';
 
 /**
- * Interface représentant une machine
+ * Class représentant une machine
  */
-export interface Machine extends Model {
-  nom: string;
-  description: string | null;
-  contact: Contact | null;
-  pieces: Piece[];
+export class Machine extends Model {
+
+  // Field constantes
+  public static readonly NOM = 'nom';
+  public static readonly DESCRIPTION = 'description';
+  public static readonly CONTACT = 'contact';
+  public static readonly CONTACT_ID = this.CONTACT.concat(".", Model.ID);
+  public static readonly PIECES = 'pieces';
+
+  // Label constantes
+  public static readonly NOM_LABEL = 'Nom';
+  public static readonly DESCRIPTION_LABEL = 'Description';
+  public static readonly CONTACT_LABEL = 'Contact';
+  public static readonly PIECES_LABEL = 'Pièces';
+
+  // DataTable constantes
+  public static readonly ROW_EXTENDER = 'rowExtender';
+
+  public nom: string | null = null;
+  public description: string | null = null;
+  public contact: Contact | null = null;
+  public pieces: Piece[] = [];
+
+  constructor(machine?: Machine) {
+    super(machine);
+
+    if (machine) {
+      this.nom = machine.nom;
+      this.description = machine.description;
+      this.contact = machine.contact;
+      this.pieces = machine.pieces.map(piece => new Piece(piece));
+    }
+  }
 }
-
-/**
- * Met à jour tous les attributs de la machine
- * @param newMachine Nouvelle machine
- * @param oldMachine Ancienne machine
- */
-export function copyNewMachineDataInOldInstance(newMachine: Machine, oldMachine: Machine): void {
-  oldMachine.nom = newMachine.nom;
-  oldMachine.description = newMachine.description;
-  oldMachine.contact = newMachine.contact;
-  oldMachine.pieces = newMachine.pieces;
-}
-
-// Field constantes
-export const MACHINE_NOM = 'nom';
-export const MACHINE_DESCRIPTION = 'description';
-export const MACHINE_CONTACT = 'contact';
-export const MACHINE_PIECES = 'pieces';
-
-// Label constantes
-export const MACHINE_NOM_LABEL = 'Nom';
-export const MACHINE_DESCRIPTION_LABEL = 'Description';
-export const MACHINE_CONTACT_LABEL = 'Contact';
-export const MACHINE_PIECES_LABEL = 'Pièces';
-
-export const MACHINE_ROW_EXTENDER = 'rowExtender';

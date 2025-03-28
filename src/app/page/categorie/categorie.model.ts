@@ -1,20 +1,31 @@
 import {Model} from '../../common/model';
 
 /**
- * Interface représentant un pays
+ * Class représentant un pays
  */
-export interface Categorie extends Model {
-  nom: string;
-  description: string | null;
-  actif: boolean | null;
+export class Categorie extends Model {
+
+  // Field constantes
+  public static readonly NOM = 'nom';
+  public static readonly DESCRIPTION = 'description';
+  public static readonly ACTIF = 'actif';
+
+  // Label constantes
+  public static readonly NOM_LABEL = 'Nom';
+  public static readonly DESCRIPTION_LABEL = 'Description';
+  public static readonly ACTIF_LABEL = 'Active';
+
+  public nom: string | null = null;
+  public description: string | null = null;
+  public actif: boolean | null = null;
+
+  constructor(categorie?: Categorie) {
+    super(categorie);
+
+    if (categorie) {
+      this.nom = categorie.nom;
+      this.description = categorie.description;
+      this.actif = categorie.actif;
+    }
+  }
 }
-
-// Field constantes
-export const CATEGORIE_NOM = 'nom';
-export const CATEGORIE_DESCRIPTION = 'description';
-export const CATEGORIE_ACTIF = 'actif';
-
-// Label constantes
-export const CATEGORIE_NOM_LABEL = 'Nom';
-export const CATEGORIE_DESCRIPTION_LABEL = 'Description';
-export const CATEGORIE_ACTIF_LABEL = 'Active';
