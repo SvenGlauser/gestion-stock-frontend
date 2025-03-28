@@ -98,7 +98,7 @@ export class PieceHistoriqueTableComponent implements OnInit {
 
     let searchRequestModified: SearchRequest = structuredClone(searchRequest);
     searchRequestModified.filters.push(<Filter>{
-      field: PieceHistorique.PIECE,
+      field: PieceHistorique.PIECE_ID,
       value: this.piece.id,
       type: Type.EQUAL,
       order: undefined,

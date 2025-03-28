@@ -31,6 +31,12 @@ export class MenuComponent implements OnInit {
       url: "/pieces",
       separatorBefore: "Actions principales",
     }, {
+      name: "Historique des pièces",
+      icon: "history",
+      disabled: true,
+      disabledLabel: "Pour accéder à cette page, utilisez la page des pièces",
+      url: "/pieces/historique/",
+    }, {
       name: "Machines",
       icon: "agriculture",
       disabled: true,

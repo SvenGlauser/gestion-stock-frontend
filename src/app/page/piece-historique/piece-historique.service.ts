@@ -10,7 +10,7 @@ import {BASE_URL} from '../../common/utils/http-client.configuration';
   providedIn: 'root'
 })
 export class PieceHistoriqueService {
-  private readonly URL: string = BASE_URL + 'categorie';
+  private readonly URL: string = BASE_URL + 'piece/historique';
   private readonly URL_WITH_SLASH: string = this.URL + '/';
 
   constructor(private readonly http: HttpClient) {}

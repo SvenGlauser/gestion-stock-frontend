@@ -4,7 +4,7 @@ import {Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {PieceService} from '../piece.service';
 import {SearchRequest} from '../../../common/search/searchRequest';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {SearchResult} from '../../../common/search/searchResult';
 import {TableComponent} from '../../../common/table/table.component';
 import {PieceDialogComponent} from '../dialog/piece-dialog.component';
@@ -14,6 +14,8 @@ import {CategorieService} from '../../categorie/categorie.service';
 import {Categorie} from '../../categorie/categorie.model';
 import {Piece} from '../piece.model';
 import {Model} from '../../../common/model';
+import {PieceHistorique} from '../../piece-historique/piece-historique.model';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-piece-table',
@@ -63,11 +65,21 @@ export class PieceTableComponent {
     created: true,
     delete: true,
     modify: true,
-    read: true
+    read: true,
+    actions: [
+      {
+        name: "Voir l'historique",
+        action: (element: PieceHistorique) => {
+          this.router.navigate(['pieces', 'historique', element.id]).then();
+          return of(false);
+        }
+      }
+    ]
   };
 
   constructor(private readonly pieceService: PieceService,
-              private readonly categorieService: CategorieService) {}
+              private readonly categorieService: CategorieService,
+              private readonly router: Router) {}
 
   /**
    * Récupère la liste à afficher dans le tableau

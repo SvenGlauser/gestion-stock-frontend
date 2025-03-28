@@ -8,6 +8,7 @@ import {ContactTableComponent} from './page/contact/table/contact-table.componen
 import {PieceTableComponent} from './page/piece/table/piece-table.component';
 import {MachineTableComponent} from './page/machine/table/machine-table.component';
 import {ExceptionTableComponent} from './page/exception/table/exception-table.component';
+import {PieceHistoriqueTableComponent} from './page/piece-historique/table/piece-historique-table.component';
 
 export const routes: Routes = [
   {
@@ -17,6 +18,10 @@ export const routes: Routes = [
   }, {
     path: 'pieces',
     component: PieceTableComponent,
+    children: [],
+  }, {
+    path: 'pieces/historique/:id',
+    component: PieceHistoriqueTableComponent,
     children: [],
   }, {
     path: 'machines/:id',
