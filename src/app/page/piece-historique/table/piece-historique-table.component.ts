@@ -32,7 +32,7 @@ export class PieceHistoriqueTableComponent implements OnInit {
   protected readonly columns: Column[] = [
     DateColumn
       .of(PieceHistorique.DATE_LABEL, PieceHistorique.DATE, "20%")
-      .sort(Order.DESC),
+      .sort(Order.ASC),
     MethodColumn
       .of(
         PieceHistorique.TYPE_LABEL,
@@ -55,9 +55,9 @@ export class PieceHistoriqueTableComponent implements OnInit {
     dialogComponent: PieceHistoriqueDialogComponent,
     idField: Model.ID,
     clicOnLine: true,
-    created: true,
-    delete: true,
-    modify: true,
+    created: false,
+    delete: false,
+    modify: false,
     read: true
   };
 

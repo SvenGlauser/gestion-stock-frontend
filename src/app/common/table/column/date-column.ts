@@ -30,10 +30,17 @@ export class DateColumn extends Column {
   public getValue(object: any): any {
     let date: Date | null = getValueFromAttributeInCascade(this.field, object);
 
+    let dateString = "";
+
     if (date) {
-      return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+      dateString = date.toLocaleDateString();
+
+      if (this.time) {
+        dateString += " ";
+        dateString += date.toLocaleTimeString();
+      }
     }
 
-    return "";
+    return dateString;
   }
 }

@@ -59,7 +59,7 @@ export class ExceptionTableComponent {
     DateColumn
       .of(ThrownException.TIMESTAMP_LABEL, ThrownException.TIMESTAMP, "15%")
       .withTime()
-      .sort(Order.ASC),
+      .sort(Order.DESC),
     MethodColumn
       .of(ThrownException.ACTIF_LABEL, ThrownException.ACTIF, "10%", convertBooleanToString)
       .autocompleteEnumFilter(ThrownException.ACTIF, new Map([
