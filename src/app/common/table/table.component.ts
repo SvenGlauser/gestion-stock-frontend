@@ -416,7 +416,6 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
     }
 
     if (columns.length > 0) {
-      console.log(columns[0])
       return columns[0];
     }
 

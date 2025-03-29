@@ -28,7 +28,7 @@ export function setValueOfAttributeInCascade(attribut: string, object: any, valu
     let currentObject: any = object;
 
     for (let i = 0; i < (parts.length - 1); i++) {
-      if (currentObject[parts[i]] === undefined) {
+      if (currentObject[parts[i]] === null || currentObject[parts[i]] === undefined) {
         currentObject[parts[i]] = {};
       }
 

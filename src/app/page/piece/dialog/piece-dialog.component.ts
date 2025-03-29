@@ -15,6 +15,7 @@ import {CategorieService} from '../../categorie/categorie.service';
 import {FournisseurService} from '../../fournisseur/fournisseur.service';
 import {Piece} from '../piece.model';
 import {Model} from '../../../common/model';
+import {NumberFormField} from '../../../common/form/field/number-form-field';
 
 @Component({
   selector: 'app-piece-dialog',
@@ -74,10 +75,11 @@ export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialo
     ], [
       Piece.PANEL_INFORMATIONS_VENTE,
       [
-        InputFormField
+        NumberFormField
           .ofValue(Piece.QUANTITE_LABEL, Piece.QUANTITE),
-        InputFormField
-          .ofValue(Piece.PRIX_LABEL, Piece.PRIX),
+        NumberFormField
+          .ofValue(Piece.PRIX_LABEL, Piece.PRIX)
+          .withDecimal(),
       ]
     ]
   ]);

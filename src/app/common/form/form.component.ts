@@ -15,6 +15,7 @@ import {
   MatExpansionPanelHeader,
   MatExpansionPanelTitle
 } from '@angular/material/expansion';
+import {NumberFormField} from './field/number-form-field';
 
 @Component({
   selector: 'app-form',
@@ -41,6 +42,7 @@ export class FormComponent implements OnInit {
   protected readonly AutocompleteFormField = AutocompleteFormField;
   protected readonly AutocompleteEnumFormField = AutocompleteEnumFormField;
   protected readonly InputFormField = InputFormField;
+  protected readonly NumberFormField = NumberFormField;
 
   @Input({required: true})
   public formsMap: Map<string, FormField[]> = new Map();
