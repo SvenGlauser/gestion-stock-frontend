@@ -23,9 +23,16 @@ export class NumberFormField extends FormField {
       .subscribe((initialValue: any) => {
         let value: any;
         if (typeof initialValue === 'string') {
-          value = initialValue.replace(/[^0-9.]/g, '');
-          while (value.match(/\./g)?.length > formField.decimal ? 1 : 0) {
-            let index = value.lastIndexOf(".");
+          value = initialValue.replace(/[^0-9.,]/g, '');
+          while (value.match(/[.,]/g)?.length > (formField.decimal ? 1 : 0)) {
+            let regexResult = /.*[.,]/g.exec(value); // .* pour avoir le dernier
+
+            if (regexResult === null) {
+              break;
+            }
+
+            let index = regexResult?.index + regexResult?.input.length - 1;
+
             value = value.slice(0, index) + value.slice(index + 1);
           }
         } else if (typeof initialValue === 'number') {
@@ -78,10 +85,14 @@ export class NumberFormField extends FormField {
   }
 
   public override getValue(): any {
+    let value = this.formControl.value;
     if (this.decimal) {
-      return Number.parseFloat(this.formControl.value);
+      if (typeof value === 'string') {
+        value = value.replace(',', '\.');
+      }
+      return Number.parseFloat(value);
     }
 
-    return Number.parseInt(this.formControl.value);
+    return Number.parseInt(value);
   }
 }
