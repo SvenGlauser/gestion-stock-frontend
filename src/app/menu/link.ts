@@ -4,6 +4,7 @@ export interface Link {
   url: string;
   activated?: boolean;
   disabled?: boolean;
+  onHomePage?: boolean;
   disabledLabel?: string;
   separatorBefore?: string;
 }

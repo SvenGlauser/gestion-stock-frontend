@@ -8,6 +8,7 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
+          "displayBlock": true,
           "skipTests": true
         },
         "@schematics/angular:class": {

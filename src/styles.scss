@@ -2,7 +2,7 @@
 
 html {
   @include mat.theme((
-    color: mat.$red-palette,
+    color: mat.$azure-palette,
     typography: Roboto,
     density: 0,
   ));

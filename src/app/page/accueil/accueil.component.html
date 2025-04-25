@@ -1,0 +1,5 @@
+<div class="widgets">
+  @for (link of this.getAllWidgetLinks(); track link.name) {
+    <app-widget [label]="link.name" [icon]="link.icon" [url]="link.url"/>
+  }
+</div>

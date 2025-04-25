@@ -1,0 +1,39 @@
+:host {
+  display: block;
+}
+
+mat-card {
+  overflow: hidden;
+  height: 100%;
+  cursor: pointer;
+
+  border-radius: var(--mat-sys-corner-small);
+  border: 1px solid var(--mat-sys-outline-variant);
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+
+  box-shadow: none;
+
+  mat-card-content {
+    mat-icon {
+      font-size: 60px;
+      height: 60px;
+      width: 60px;
+    }
+
+    span {
+      font: var(--mat-sys-body-large);
+    }
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    height: 100%;
+  }
+}
+
+mat-card:hover {
+  box-shadow: var(--mat-sys-level2);
+}

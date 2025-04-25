@@ -20,7 +20,7 @@ import {MatTooltip} from '@angular/material/tooltip';
   styleUrl: './menu.component.scss'
 })
 export class MenuComponent implements OnInit {
-  protected links: Link[] = [
+  private static readonly _links: Link[] = [
     {
       name: "Accueil",
       icon: "home",
@@ -29,6 +29,7 @@ export class MenuComponent implements OnInit {
       name: "Pièces",
       icon: "settings_suggest",
       url: "/pieces",
+      onHomePage: true,
       separatorBefore: "Actions principales",
     }, {
       name: "Historique des pièces",
@@ -45,23 +46,28 @@ export class MenuComponent implements OnInit {
     }, {
       name: "Contacts",
       icon: "person_apron",
+      onHomePage: true,
       url: "/contacts",
     }, {
       name: "Fournisseurs",
       icon: "local_shipping",
+      onHomePage: true,
       url: "/fournisseurs",
     }, {
       name: "Catégories",
       icon: "category",
+      onHomePage: true,
       url: "/categories",
       separatorBefore: "Configuration",
     }, {
       name: "Localités",
       icon: "location_city",
+      onHomePage: true,
       url: "/localites",
     }, {
       name: "Pays",
       icon: "flag",
+      onHomePage: true,
       url: "/pays",
     },
     {
@@ -71,6 +77,14 @@ export class MenuComponent implements OnInit {
       separatorBefore: "Technique"
     },
   ];
+
+  static get links(): Link[] {
+    return this._links;
+  }
+
+  get links(): Link[] {
+    return MenuComponent._links;
+  }
 
   constructor(private readonly router: Router) {}
 
