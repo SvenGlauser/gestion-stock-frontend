@@ -29,7 +29,7 @@ export class PieceTableComponent {
   // Définition des colonnes
   protected readonly columns: Column[] = [
     ClassicColumn
-      .of(Piece.NUMERO_INVENTAIRE_LABEL, Piece.NUMERO_INVENTAIRE, "10%")
+      .of(Piece.NUMERO_INVENTAIRE_LABEL, Piece.NUMERO_INVENTAIRE, "15%")
       .sort(Order.ASC)
       .inputFilterOnSameField(),
     ClassicColumn
@@ -37,7 +37,7 @@ export class PieceTableComponent {
       .sort()
       .inputFilterOnSameField(),
     ClassicColumn
-      .of(Piece.DESCRIPTION_LABEL, Piece.DESCRIPTION, "20%"),
+      .of(Piece.DESCRIPTION_LABEL, Piece.DESCRIPTION, "15%"),
     ClassicColumn
       .of(Piece.CATEGORIE_LABEL, Piece.CATEGORIE.concat(".", Piece.CATEGORIE_NOM), "15%")
       .sort()

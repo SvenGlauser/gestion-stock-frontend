@@ -42,7 +42,7 @@ export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialo
       Piece.PANEL_DONNEES_GENERALES,
       [
         InputFormField
-          .ofValue(Piece.NUMERO_INVENTAIRE_LABEL, Piece.NUMERO_INVENTAIRE),
+          .ofValue(Piece.NOM_LABEL, Piece.NOM),
         AutocompleteFormField
           .ofValue(
             Piece.CATEGORIE_LABEL,
@@ -52,9 +52,6 @@ export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialo
             Categorie.NOM,
           ),
         InputFormField
-          .ofValue(Piece.NOM_LABEL, Piece.NOM)
-          .setColspan(2),
-        InputFormField
           .ofValue(Piece.DESCRIPTION_LABEL, Piece.DESCRIPTION)
           .setColspan(2),
       ],
@@ -62,7 +59,7 @@ export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialo
       Piece.PANEL_INFORMATIONS_FOURNISSEUR,
       [
         InputFormField
-          .ofValue(Piece.NUMERO_FOURNISSEUR_LABEL, Piece.NUMERO_FOURNISSEUR),
+          .ofValue(Piece.NUMERO_INVENTAIRE_LABEL, Piece.NUMERO_INVENTAIRE),
         AutocompleteFormField
           .ofValue(
             Piece.FOURNISSEUR_LABEL,
