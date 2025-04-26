@@ -1,4 +1,4 @@
-import {Type} from '../../../search/filter';
+import {FilterType} from '../../../search/filter';
 import {ColumnFilter} from './column-filter';
 
 /**
@@ -10,7 +10,7 @@ export class AutocompleteEnumFilter extends ColumnFilter {
   private constructor(filterField: string,
                       filterValue: any) {
 
-    super(filterField, filterValue, Type.EQUAL);
+    super(filterField, filterValue, FilterType.EQUAL);
 
     this.mapOfElements = new Map<any, string>();
   }

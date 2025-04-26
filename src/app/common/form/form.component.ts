@@ -16,6 +16,8 @@ import {
   MatExpansionPanelTitle
 } from '@angular/material/expansion';
 import {NumberFormField} from './field/number-form-field';
+import {AutocompleteMultipleFormField} from './field/autocomplete-multiple-form-field';
+import {AutocompleteMultipleComponent} from './input/autocomplete-multiple/autocomplete-multiple.component';
 
 @Component({
   selector: 'app-form',
@@ -32,7 +34,8 @@ import {NumberFormField} from './field/number-form-field';
     MatExpansionPanelHeader,
     MatExpansionPanel,
     MatExpansionPanelTitle,
-    NgClass
+    NgClass,
+    AutocompleteMultipleComponent
   ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
@@ -40,6 +43,7 @@ import {NumberFormField} from './field/number-form-field';
 export class FormComponent implements OnInit {
   // Constantes
   protected readonly AutocompleteFormField = AutocompleteFormField;
+  protected readonly AutocompleteMultipleFormField = AutocompleteMultipleFormField;
   protected readonly AutocompleteEnumFormField = AutocompleteEnumFormField;
   protected readonly InputFormField = InputFormField;
   protected readonly NumberFormField = NumberFormField;

@@ -45,6 +45,15 @@
                                 [autocompleteIdField]="AutocompleteFormField.cast(formField)!.autocompleteIdField"
                                 [autocompleteNameField]="AutocompleteFormField.cast(formField)!.autocompleteNameField"/>
             }
+            @else if (AutocompleteMultipleFormField.isInstanceOf(formField)) {
+              <app-autocomplete-multiple [ngClass]="{'colspan-1': formField.colspan === 1, 'colspan-2': formField.colspan === 2}"
+                                         [label]="formField.label"
+                                         [autocompleteFormControl]="formField.formControl"
+                                         [autocompleteMethod]="AutocompleteMultipleFormField.cast(formField)!.autocompleteMethod"
+                                         [autocompleteIdField]="AutocompleteMultipleFormField.cast(formField)!.autocompleteIdField"
+                                         [autocompleteNameFields]="AutocompleteMultipleFormField.cast(formField)!.autocompleteNameFields"
+                                         [separator]="AutocompleteMultipleFormField.cast(formField)!.separator"/>
+            }
             @else if (AutocompleteEnumFormField.isInstanceOf(formField)) {
               <app-autocomplete-enum [ngClass]="{'colspan-1': formField.colspan === 1, 'colspan-2': formField.colspan === 2}"
                                      [label]="formField.label"

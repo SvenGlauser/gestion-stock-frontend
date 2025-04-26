@@ -9,7 +9,6 @@ import {
   MatDialogTitle
 } from '@angular/material/dialog';
 import {PieceService} from '../piece.service';
-import {AutocompleteComponent} from '../../../common/form/input/autocomplete/autocomplete.component';
 import {Observable} from 'rxjs';
 import {Model} from '../../../common/model';
 import {MachineService} from '../../machine/machine.service';
@@ -18,6 +17,9 @@ import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
 import {FormControl} from '@angular/forms';
 import {ValidationException} from '../../../common/utils/validation-exception';
 import {Piece} from '../piece.model';
+import {
+  AutocompleteMultipleComponent
+} from '../../../common/form/input/autocomplete-multiple/autocomplete-multiple.component';
 
 @Component({
   selector: 'app-piece-selection-dialog',
@@ -27,14 +29,15 @@ import {Piece} from '../piece.model';
     MatDialogContent,
     MatDialogTitle,
     MatDialogClose,
-    AutocompleteComponent
+    AutocompleteMultipleComponent
   ],
   templateUrl: './piece-selection-dialog.component.html',
   styleUrl: './piece-selection-dialog.component.scss'
 })
 export class PieceSelectionDialogComponent implements OnInit {
   protected readonly FIELD_ID = Model.ID;
-  protected readonly FIELD_NAME = Piece.NOM;
+  protected readonly FIELDS_NAME = [Piece.NUMERO_INVENTAIRE, Piece.NOM];
+  protected readonly FIELDS_SEPARATOR = " / ";
 
   protected pieceFormControl: FormControl = new FormControl();
   protected machine: Machine | null = null;

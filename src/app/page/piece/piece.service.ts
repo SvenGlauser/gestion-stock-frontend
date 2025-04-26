@@ -5,7 +5,6 @@ import {Piece} from './piece.model';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
 import {BASE_URL} from '../../common/utils/http-client.configuration';
-import {Order, Type} from '../../common/search/filter';
 
 @Injectable({
   providedIn: 'root'
@@ -48,15 +47,10 @@ export class PieceService {
   }
 
   public autocomplete(value: string): Observable<Piece[]> {
-    return this.search({
-      page: 0,
-      pageSize: 25,
-      filters: [{
-        field: Piece.NOM,
-        value: value,
-        type: Type.STRING_LIKE,
-        order: Order.ASC
-      }]
-    }).pipe(map((result: SearchResult<Piece>) => result.elements));
+    return this.http
+      .get<SearchResult<Piece>>(this.URL_WITH_SLASH + "autocomplete?searchValue="+value)
+      .pipe(map(result => {
+        return result.elements.map(piece => new Piece(piece));
+      }));
   }
 }

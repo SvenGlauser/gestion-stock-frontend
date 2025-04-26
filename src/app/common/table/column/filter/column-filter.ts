@@ -1,4 +1,4 @@
-import {Type} from "../../../search/filter";
+import {FilterType} from "../../../search/filter";
 
 /**
  * Classe abstraite pour les filtres
@@ -6,11 +6,11 @@ import {Type} from "../../../search/filter";
 export abstract class ColumnFilter {
   public filterField: any;
   public filterValue: any;
-  public filterType: Type;
+  public filterType: FilterType;
 
   protected constructor(filterField: any,
                         filterValue: any,
-                        filterType: Type) {
+                        filterType: FilterType) {
     this.filterField = filterField;
     this.filterValue = filterValue;
     this.filterType = filterType;

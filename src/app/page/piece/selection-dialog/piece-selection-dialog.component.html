@@ -1,11 +1,12 @@
 <h1 mat-dialog-title>Sélection d'une pièce</h1>
 <div mat-dialog-content>
   <form>
-    <app-autocomplete label="Pièce"
-                      [autocompleteIdField]="this.FIELD_ID"
-                      [autocompleteNameField]="this.FIELD_NAME"
-                      [autocompleteMethod]="this.autocompletePiece.bind(this)"
-                      [autocompleteFormControl]="pieceFormControl"/>
+    <app-autocomplete-multiple label="Pièce"
+                               [autocompleteIdField]="this.FIELD_ID"
+                               [autocompleteNameFields]="this.FIELDS_NAME"
+                               [separator]="this.FIELDS_SEPARATOR"
+                               [autocompleteMethod]="this.autocompletePiece.bind(this)"
+                               [autocompleteFormControl]="pieceFormControl"/>
   </form>
 </div>
 <div mat-dialog-actions>

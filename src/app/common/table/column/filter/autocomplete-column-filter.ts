@@ -1,5 +1,5 @@
 import {AutocompleteMethod} from '../../../form/input/autocomplete/autocomplete';
-import {Type} from '../../../search/filter';
+import {FilterType} from '../../../search/filter';
 import {ColumnFilter} from './column-filter';
 
 /**
@@ -16,7 +16,7 @@ export class AutocompleteFilter<T extends Record<string, any>> extends ColumnFil
                       autocompleteIdField: string,
                       autocompleteNameField: string) {
 
-    super(filterField, filterValue, Type.EQUAL);
+    super(filterField, filterValue, FilterType.EQUAL);
 
     this.autocompleteMethod = autocompleteMethod;
     this.autocompleteIdField = autocompleteIdField;

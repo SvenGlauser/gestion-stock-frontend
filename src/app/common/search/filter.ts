@@ -1,7 +1,7 @@
 export interface Filter {
   field: string;
   value?: any;
-  type?: Type;
+  type?: FilterType;
   order?: Order;
 }
 
@@ -10,7 +10,7 @@ export enum Order {
   DESC = "DESC",
 }
 
-export enum Type {
+export enum FilterType {
   EQUAL = "EQUAL",
   STRING_LIKE = "STRING_LIKE",
 }

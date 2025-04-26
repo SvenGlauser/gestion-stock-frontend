@@ -1,6 +1,6 @@
 import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
-import {Filter, Order, Type} from '../../../common/search/filter';
+import {Filter, FilterType, Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {MachineService} from '../machine.service';
 import {SearchRequest} from '../../../common/search/searchRequest';
@@ -31,6 +31,7 @@ import {PieceSelectionDialogComponent} from '../../piece/selection-dialog/piece-
 import {Machine} from '../machine.model';
 import {Contact} from '../../contact/contact.model';
 import {Model} from '../../../common/model';
+import {FilterCombinatorType} from '../../../common/search/filter-combinator';
 
 @Component({
   selector: 'app-machine-table',
@@ -127,12 +128,15 @@ export class MachineTableComponent implements OnInit {
     }
 
     let searchRequestModified: SearchRequest = structuredClone(searchRequest);
-    searchRequestModified.filters.push(<Filter>{
-      field: Machine.CONTACT_ID,
-      value: this.contact.id,
-      type: Type.EQUAL,
-      order: undefined,
-    })
+    searchRequestModified.combinators.push({
+      filters: [
+        <Filter>{
+        field: Machine.CONTACT_ID,
+        value: this.contact.id,
+        type: FilterType.EQUAL,
+        order: undefined,
+      }],
+      type: FilterCombinatorType.AND})
     return this.machineService.search(searchRequestModified);
   }
 

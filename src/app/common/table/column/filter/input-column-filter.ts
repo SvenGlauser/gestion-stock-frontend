@@ -1,5 +1,5 @@
 import {ColumnFilter} from "./column-filter";
-import {Type} from "../../../search/filter";
+import {FilterType} from "../../../search/filter";
 
 /**
  * Filtre avec un simple input
@@ -7,7 +7,7 @@ import {Type} from "../../../search/filter";
 export class InputFilter extends ColumnFilter {
 
   constructor(filterField: any, filterValue: any) {
-    super(filterField, filterValue, Type.STRING_LIKE);
+    super(filterField, filterValue, FilterType.STRING_LIKE);
   }
 
   /**

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
-import {Filter, Order, Type} from '../../../common/search/filter';
+import {Filter, FilterType, Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {PieceHistoriqueService} from '../piece-historique.service';
 import {SearchRequest} from '../../../common/search/searchRequest';
@@ -18,6 +18,7 @@ import {DateColumn} from '../../../common/table/column/date-column';
 import {PieceHistoriqueSource, PieceHistoriqueSourceEnumValuesForAutocomplete} from '../piece-historique-source.enum';
 import {Piece} from '../../piece/piece.model';
 import {PieceService} from '../../piece/piece.service';
+import {FilterCombinatorType} from '../../../common/search/filter-combinator';
 
 @Component({
   selector: 'app-categorie-table',
@@ -97,11 +98,14 @@ export class PieceHistoriqueTableComponent implements OnInit {
     }
 
     let searchRequestModified: SearchRequest = structuredClone(searchRequest);
-    searchRequestModified.filters.push(<Filter>{
-      field: PieceHistorique.PIECE_ID,
-      value: this.piece.id,
-      type: Type.EQUAL,
-      order: undefined,
+    searchRequestModified.combinators.push({
+      type: FilterCombinatorType.AND,
+      filters: [<Filter>{
+        field: PieceHistorique.PIECE_ID,
+        value: this.piece.id,
+        type: FilterType.EQUAL,
+        order: undefined,
+      }]
     })
     return this.pieceHistoriqueService.search(searchRequestModified);
   }

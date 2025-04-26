@@ -5,7 +5,8 @@ import {Pays} from './pays.model';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
 import {BASE_URL} from '../../common/utils/http-client.configuration';
-import {Order, Type} from '../../common/search/filter';
+import {FilterType, Order} from '../../common/search/filter';
+import {FilterCombinatorType} from '../../common/search/filter-combinator';
 
 @Injectable({
   providedIn: 'root'
@@ -51,11 +52,14 @@ export class PaysService {
     return this.search({
       page: 0,
       pageSize: 25,
-      filters: [{
-        field: Pays.NOM,
-        value: value,
-        type: Type.STRING_LIKE,
-        order: Order.ASC
+      combinators: [{
+        type: FilterCombinatorType.AND,
+        filters: [{
+          field: Pays.NOM,
+          value: value,
+          type: FilterType.STRING_LIKE,
+          order: Order.ASC
+        }]
       }]
     }).pipe(map((result: SearchResult<Pays>) => result.elements));
   }

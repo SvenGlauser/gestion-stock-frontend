@@ -1,7 +1,7 @@
-import {Filter} from './filter';
+import {FilterCombinator} from './filter-combinator';
 
 export interface SearchRequest {
   page: number | null;
   pageSize: number | null;
-  filters: Filter[];
+  combinators: FilterCombinator[];
 }

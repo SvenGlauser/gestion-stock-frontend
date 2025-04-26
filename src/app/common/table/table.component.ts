@@ -47,6 +47,7 @@ import {RouterLink} from '@angular/router';
 import {CustomColumn} from './column/custom-column';
 import {AutocompleteEnumFilter} from './column/filter/autocomplete-enunm-column-filter';
 import {AutocompleteEnumComponent} from '../form/input/autocomplete-enum/autocomplete-enum.component';
+import {FilterCombinatorType} from '../search/filter-combinator';
 
 @Component({
   selector: 'app-table',
@@ -141,7 +142,10 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   private readonly searchRequest: SearchRequest = {
     page: 0,
     pageSize: null,
-    filters: []
+    combinators: [{
+      filters: [],
+      type: FilterCombinatorType.AND,
+    }]
   };
 
   constructor(private readonly cd: ChangeDetectorRef,
@@ -168,7 +172,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
       });
 
     // Crée tous les filtres
-    this.searchRequest.filters = this.columns
+    this.searchRequest.combinators[0].filters = this.columns
       .flatMap(column => column.filters)
       .map(columnFilter => {
         return <Filter>{
@@ -185,7 +189,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
       .forEach((column: Column) => {
         let founded: boolean = false;
 
-        this.searchRequest.filters.forEach((filter) => {
+        this.searchRequest.combinators[0].filters.forEach((filter) => {
           if (filter.field === column.field) {
             founded = true;
             filter.order = column.sortDefaultValue ?? undefined;
@@ -194,7 +198,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
 
         // Crée un nouveau filtre si aucun de trouvé
         if (!founded) {
-          this.searchRequest.filters.push({
+          this.searchRequest.combinators[0].filters.push({
             field: column.field,
             order: column.sortDefaultValue ?? undefined,
           });
@@ -243,7 +247,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   protected sort(sort: Sort): void {
     this.searchRequest.page = 0;
 
-    this.searchRequest.filters = this.searchRequest.filters.map(filter => {
+    this.searchRequest.combinators[0].filters = this.searchRequest.combinators[0].filters.map(filter => {
       if (filter.field === sort.active) {
         switch (sort.direction) {
           case "asc":
@@ -271,7 +275,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   protected filter(): void {
     this.searchRequest.page = 0;
 
-    this.searchRequest.filters = this.searchRequest.filters.map(filter => {
+    this.searchRequest.combinators[0].filters = this.searchRequest.combinators[0].filters.map(filter => {
       let columnFilter: ColumnFilter | undefined = this.columns.flatMap(column => column.filters).find(columnFilter => columnFilter.filterField === filter.field);
 
       if (!columnFilter) {
