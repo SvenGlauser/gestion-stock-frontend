@@ -27,7 +27,10 @@ export class PaysTableComponent {
       .of(Pays.NOM_LABEL, Pays.NOM, "45%")
       .sort(Order.ASC)
       .inputFilterOnSameField(),
-    ClassicColumn.of(Pays.ABREVIATION_LABEL, Pays.ABREVIATION, "45%"),
+    ClassicColumn
+      .of(Pays.ABREVIATION_LABEL, Pays.ABREVIATION, "45%")
+      .sort()
+      .inputFilterOnSameField(),
   ]
 
   // Définition des actions possibles

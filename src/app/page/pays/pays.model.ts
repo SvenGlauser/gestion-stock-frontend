@@ -20,7 +20,7 @@ export class Pays extends Model {
     super(pays);
 
     if (pays) {
-      this.abreviation = pays.nom;
+      this.abreviation = pays.abreviation;
       this.nom = pays.nom;
     }
   }
