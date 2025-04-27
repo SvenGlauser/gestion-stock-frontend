@@ -1,9 +1,11 @@
 export enum PieceHistoriqueSource {
-  AUTOMATIQUE = "AUTOMATIQUE",
+  CREATION = "CREATION",
+  MODIFICATION = "MODIFICATION",
   IMPORTATION = "IMPORTATION",
 }
 
 export const PieceHistoriqueSourceEnumValuesForAutocomplete: Map<PieceHistoriqueSource, string> = new Map([
-  [PieceHistoriqueSource.AUTOMATIQUE, "Automatique"],
+  [PieceHistoriqueSource.CREATION, "Création"],
+  [PieceHistoriqueSource.MODIFICATION, "Modification"],
   [PieceHistoriqueSource.IMPORTATION, "Importation"],
 ]);

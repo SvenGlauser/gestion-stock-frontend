@@ -1,0 +1,27 @@
+@if (value) {
+  @if (value.separatorBefore) {
+    <div class="separator">
+      <div class="separator-title">{{value.separatorBefore}}</div>
+      <div class="separator-line"></div>
+    </div>
+  }
+
+  <a mat-list-item
+     [activated]="value.activated ?? false"
+     [disabled]="value.disabled && !value.activated"
+     [routerLink]="!value.disabled ? value.url : null"
+     [matTooltip]="value.disabled && !value.activated && value.disabledLabel ? value.disabledLabel : null">
+    <div matListItemTitle class="mat-list-item-content">
+      <mat-icon>{{ value.icon }}</mat-icon>
+      {{ value.name }}
+    </div>
+  </a>
+
+  @if ((value.children?.length ?? 0) > 0) {
+    <div class="children">
+      @for (child of value.children; track child.name) {
+        <app-menu-item [value]="child"></app-menu-item>
+      }
+    </div>
+  }
+}

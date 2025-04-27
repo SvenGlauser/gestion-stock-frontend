@@ -9,6 +9,7 @@ import {PieceTableComponent} from './page/piece/table/piece-table.component';
 import {MachineTableComponent} from './page/machine/table/machine-table.component';
 import {ExceptionTableComponent} from './page/exception/table/exception-table.component';
 import {PieceHistoriqueTableComponent} from './page/piece-historique/table/piece-historique-table.component';
+import {TechniqueComponent} from './page/technique/technique.component';
 
 export const routes: Routes = [
   {
@@ -17,12 +18,16 @@ export const routes: Routes = [
     children: [],
   }, {
     path: 'pieces',
-    component: PieceTableComponent,
-    children: [],
-  }, {
-    path: 'pieces/historique/:id',
-    component: PieceHistoriqueTableComponent,
-    children: [],
+    children: [
+      {
+        path: '',
+        component: PieceTableComponent,
+      }, {
+        path: 'historique/:id',
+        component: PieceHistoriqueTableComponent,
+        children: [],
+      },
+    ],
   }, {
     path: 'machines/:id',
     component: MachineTableComponent,
@@ -48,8 +53,17 @@ export const routes: Routes = [
     component: PaysTableComponent,
     children: [],
   }, {
-    path: 'exceptions',
-    component: ExceptionTableComponent,
-    children: [],
-  }
+    path: 'technique',
+    children: [
+      {
+        path: '',
+        component: TechniqueComponent,
+        children: [],
+      }, {
+        path: 'exceptions',
+        component: ExceptionTableComponent,
+        children: [],
+      }
+    ],
+  },
 ];

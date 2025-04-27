@@ -1,5 +1,7 @@
 import {Model} from '../../common/model';
 import {Piece} from '../piece/piece.model';
+import {PieceHistoriqueSource} from './piece-historique-source.enum';
+import {PieceHistoriqueType} from './piece-historique-type.enum';
 
 /**
  * Class représentant un mouvement de pièce
@@ -24,8 +26,8 @@ export class PieceHistorique extends Model {
   public piece: Piece | null = null;
   public difference: string | null = null;
   public date: Date | null = null;
-  public type: string | null = null;
-  public source: string | null = null;
+  public type: PieceHistoriqueType | null = null;
+  public source: PieceHistoriqueSource | null = null;
 
   constructor(pieceHistorique?: PieceHistorique) {
     super(pieceHistorique);

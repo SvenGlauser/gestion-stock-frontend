@@ -4,6 +4,8 @@ import {provideRouter} from '@angular/router';
 import {routes} from './app.routes';
 import {provideHttpClient} from '@angular/common/http';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
+import {MatPaginatorIntl} from '@angular/material/paginator';
+import {AppPaginatorIntl} from './config/paginator-intl';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,5 +19,9 @@ export const appConfig: ApplicationConfig = {
         appearance: 'outline',
       }
     },
+    {
+      provide: MatPaginatorIntl,
+      useClass: AppPaginatorIntl,
+    }
   ]
 };

@@ -15,12 +15,13 @@ export abstract class Column {
   public sortable: boolean = false;
   public sortDefaultValue: Order | null = null;
   public width: string;
-  public style: string | null = null;
+  public style: string;
 
   protected constructor(label: string, field: string, width: string) {
     this.label = label;
     this.field = field;
     this.width = width;
+    this.style = "text-wrap: nowrap; text-overflow: ellipsis; overflow: hidden;"
   }
 
   /**

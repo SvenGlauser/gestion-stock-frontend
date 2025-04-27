@@ -39,7 +39,7 @@ export class PieceTableComponent {
     ClassicColumn
       .of(Piece.DESCRIPTION_LABEL, Piece.DESCRIPTION, "15%"),
     ClassicColumn
-      .of(Piece.CATEGORIE_LABEL, Piece.CATEGORIE.concat(".", Piece.CATEGORIE_NOM), "15%")
+      .of(Piece.CATEGORIE_LABEL, Piece.CATEGORIE_NOM, "15%")
       .sort()
       .autocompleteFilter(
         Piece.CATEGORIE.concat(".", Model.ID),

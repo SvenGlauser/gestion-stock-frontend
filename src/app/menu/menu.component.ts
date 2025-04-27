@@ -1,20 +1,15 @@
 import {Component, OnInit} from '@angular/core';
-import {MatListItem, MatListItemTitle, MatNavList} from '@angular/material/list';
-import {MatIcon} from '@angular/material/icon';
+import {MatNavList} from '@angular/material/list';
 import {Link} from './link';
-import {NavigationStart, Router, RouterLink} from '@angular/router';
+import {NavigationStart, Router} from '@angular/router';
 import {filter} from 'rxjs';
-import {MatTooltip} from '@angular/material/tooltip';
+import {MenuItemComponent} from './menu-item/menu-item.component';
 
 @Component({
   selector: 'app-menu',
   imports: [
     MatNavList,
-    MatListItem,
-    MatIcon,
-    RouterLink,
-    MatListItemTitle,
-    MatTooltip
+    MenuItemComponent
   ],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss'
@@ -31,12 +26,15 @@ export class MenuComponent implements OnInit {
       url: "/pieces",
       onHomePage: true,
       separatorBefore: "Actions principales",
-    }, {
-      name: "Historique des pièces",
-      icon: "history",
-      disabled: true,
-      disabledLabel: "Pour accéder à cette page, utilisez la page des pièces",
-      url: "/pieces/historique/",
+      children: [
+        {
+          name: "Historique des pièces",
+          icon: "history",
+          disabled: true,
+          disabledLabel: "Pour accéder à cette page, utilisez la page des pièces",
+          url: "/pieces/historique/",
+        }
+      ]
     }, {
       name: "Machines",
       icon: "agriculture",
@@ -71,10 +69,17 @@ export class MenuComponent implements OnInit {
       url: "/pays",
     },
     {
-      name: "Exceptions",
-      icon: "bug_report",
-      url: "/exceptions",
-      separatorBefore: "Technique"
+      name: "Technique",
+      icon: "build",
+      url: "/technique",
+      separatorBefore: "Technique",
+      children: [
+        {
+          name: "Exceptions",
+          icon: "bug_report",
+          url: "/technique/exceptions",
+        }
+      ]
     },
   ];
 
@@ -110,7 +115,7 @@ export class MenuComponent implements OnInit {
     let bestItem: Link | null = null;
     let lastLength: number = 0;
 
-    for (const item of this.links) {
+    for (const item of this.getLinksInCasacade(this.links)) {
       if(url.startsWith(item.url)) {
         let length = item.url.length;
 
@@ -126,5 +131,18 @@ export class MenuComponent implements OnInit {
     if (bestItem) {
       bestItem.activated = true;
     }
+  }
+
+  private getLinksInCasacade(links: Link[]): Link[] {
+    if (links.length === 0) {
+      return [];
+    }
+
+    let linksWithChildren: Link[] = [...links];
+    for (const link of links) {
+      linksWithChildren.push(link);
+      linksWithChildren.push(...this.getLinksInCasacade(link.children ?? []));
+    }
+    return linksWithChildren;
   }
 }

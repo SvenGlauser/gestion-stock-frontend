@@ -1,21 +1,5 @@
 <mat-nav-list>
   @for (link of links; track link.name) {
-    @if (link.separatorBefore) {
-      <div class="separator">
-        <div class="separator-title">{{link.separatorBefore}}</div>
-        <div class="separator-line"></div>
-      </div>
-    }
-
-    <a mat-list-item
-       [activated]="link.activated ?? false"
-       [disabled]="link.disabled && !link.activated"
-       [routerLink]="!link.disabled ? link.url : null"
-       [matTooltip]="link.disabled && !link.activated && link.disabledLabel ? link.disabledLabel : null">
-      <div matListItemTitle class="mat-list-item-content">
-        <mat-icon>{{ link.icon }}</mat-icon>
-        {{ link.name }}
-      </div>
-    </a>
+    <app-menu-item [value]="link" />
   }
 </mat-nav-list>

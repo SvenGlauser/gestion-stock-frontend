@@ -1,0 +1,33 @@
+<mat-form-field [floatLabel]="'always'">
+  <!-- Uniquement pour avoir le style du mat-form-field -->
+  <input
+    readonly
+    style="display: none;"
+    type="text"
+    matInput/>
+
+  <mat-label>
+    Fichier d'importation des pièces
+  </mat-label>
+
+  <div class="file-uploader-content">
+    @if (this.value) {
+      <button mat-stroked-button (click)="this.removeFile()">
+        Supprimer le fichier
+      </button>
+      <span>
+        {{this.value.name}}
+      </span>
+    } @else {
+      <button mat-stroked-button (click)="this.addFile()">
+        Ajouter un fichier
+      </button>
+    }
+  </div>
+
+  <input #inputFile
+         style="display: none"
+         type="file"
+         [accept]="this.formats.join(',')"
+         (change)="this.onFileChange($event)" />
+</mat-form-field>

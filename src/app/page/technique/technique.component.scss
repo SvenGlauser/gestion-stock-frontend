@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+h2 {
+  font: var(--mat-sys-headline-small);
+  margin: 0 0 20px 0;
+}
+
+.error, .info {
+  margin-top: 10px;
+
+  border-radius: 5px;
+  padding: 5px;
+  text-align: center;
+
+  white-space: pre;
+}
+
+.error {
+  color: var(--mat-sys-on-error-container);
+  background: var(--mat-sys-error-container);
+}
+
+.info {
+  color: var(--mat-sys-on-primary-container);
+  background: var(--mat-sys-primary-container);
+}
