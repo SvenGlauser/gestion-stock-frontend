@@ -1,0 +1,25 @@
+:host {
+  display: block;
+}
+
+.header {
+  display: var(--app-table-title-display, flex);
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+
+  h2 {
+    font: var(--mat-sys-headline-small);
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+
+    button {
+      box-shadow: var(--mat-sys-level2);
+    }
+  }
+}

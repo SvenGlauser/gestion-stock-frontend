@@ -69,7 +69,7 @@ export class PieceHistoriqueTableComponent implements OnInit {
               private readonly route: ActivatedRoute) {}
 
   /**
-   * Récupère le contact
+   * Récupère l'identité
    */
   public ngOnInit(): void {
     // For subscribing to the observable paramMap...

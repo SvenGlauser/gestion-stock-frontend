@@ -48,6 +48,8 @@ import {CustomColumn} from './column/custom-column';
 import {AutocompleteEnumFilter} from './column/filter/autocomplete-enunm-column-filter';
 import {AutocompleteEnumComponent} from '../form/input/autocomplete-enum/autocomplete-enum.component';
 import {FilterCombinatorType} from '../search/filter-combinator';
+import {ComponentType} from '@angular/cdk/portal';
+import {AbstractFormDialogComponent} from '../form/dialog/abstract-form-dialog.component';
 
 @Component({
   selector: 'app-table',
@@ -106,6 +108,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   @Input({required: true})
   public actionColumnInfo: ActionColumnInfo = {
     dialogComponent: null,
+    dialogComponentMethod: null,
     idField: '',
     clicOnLine: false,
     created: false,
@@ -177,7 +180,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
       .map(columnFilter => {
         return <Filter>{
           field: columnFilter.filterField,
-          value: columnFilter.getValue(),
+          value: columnFilter.getValue() ?? null,
           type: columnFilter.filterType,
           order: undefined,
         }
@@ -282,7 +285,12 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
         return filter;
       }
 
-      filter.value = columnFilter.getValue();
+      let value = columnFilter.getValue();
+      if (value === '') {
+        value = null;
+      }
+
+      filter.value = value;
 
       return filter;
     });
@@ -307,11 +315,19 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
    * @param type Type de dialog
    */
   public openDialog(element: T | null, type: DialogType): void {
-    if (!this.actionColumnInfo.dialogComponent) {
+    let dialogComponent: ComponentType<AbstractFormDialogComponent<any, any>> | null = null;
+
+    if (this.actionColumnInfo.dialogComponent) {
+      dialogComponent = this.actionColumnInfo.dialogComponent;
+    } else if (this.actionColumnInfo.dialogComponentMethod) {
+      dialogComponent = this.actionColumnInfo.dialogComponentMethod(element);
+    }
+
+    if (!dialogComponent) {
       return;
     }
 
-    const dialogRef = this.matDialog.open(this.actionColumnInfo.dialogComponent, {
+    const dialogRef = this.matDialog.open(dialogComponent, {
       maxWidth: 1000,
       data: <DialogData>{
         type : type,

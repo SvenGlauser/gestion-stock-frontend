@@ -6,7 +6,8 @@ import {Observable} from 'rxjs';
  * Configuraiton des informations pour les dialogues ouverts depuis la data table
  */
 export interface ActionColumnInfo {
-  dialogComponent: ComponentType<AbstractFormDialogComponent<any, any>> | null;
+  dialogComponent?: ComponentType<AbstractFormDialogComponent<any, any>> | null;
+  dialogComponentMethod?: ((element: any) => ComponentType<AbstractFormDialogComponent<any, any>> | null) | null;
   dialogSpecificData?: any;
   idField: string;
   read: boolean;

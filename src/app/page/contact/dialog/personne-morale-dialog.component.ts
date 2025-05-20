@@ -7,18 +7,16 @@ import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {FormComponent} from '../../../common/form/form.component';
-import {Contact} from '../contact.model';
-import {ContactService} from '../contact.service';
 import {LocaliteService} from '../../localite/localite.service';
 import {Localite} from '../../localite/localite.model';
 import {Adresse} from '../../adresse/adresse';
 import {InputFormField} from '../../../common/form/field/input-form-field';
 import {AutocompleteFormField} from '../../../common/form/field/autocomplete-form-field';
-import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete-enum-form-field';
-import {TitreEnumValuesForAutocomplete} from '../titre.enum';
+import {PersonneMorale} from '../personne-morale.model';
+import {PersonneMoraleService} from '../personne-morale.service';
 
 @Component({
-  selector: 'app-contact-dialog',
+  selector: 'app-personne-morale-dialog',
   imports: [
     MatDialogTitle,
     MatDialogContent,
@@ -32,37 +30,34 @@ import {TitreEnumValuesForAutocomplete} from '../titre.enum';
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
-export class ContactDialogComponent extends AbstractFormDialogComponent<ContactDialogComponent, Contact> {
+export class PersonneMoraleDialogComponent extends AbstractFormDialogComponent<PersonneMoraleDialogComponent, PersonneMorale> {
   // Constantes
   protected readonly ID_FIELD: string = Model.ID;
 
   // Définition des champs de formulaire
   protected formsMap: Map<string, FormField[]> = new Map([
     [
-      Contact.PANEL_DONNEES_GENERALES,
+      PersonneMorale.PANEL_DONNEES_GENERALES,
       [
-        AutocompleteEnumFormField
-          .ofValue(Contact.TITRE_LABEL, Contact.TITRE)
-          .addValues(TitreEnumValuesForAutocomplete)
+        InputFormField
+          .ofValue(PersonneMorale.RAISON_SOCIALE_LABEL, PersonneMorale.RAISON_SOCIALE)
           .setColspan(2),
-        InputFormField.ofValue(Contact.NOM_LABEL, Contact.NOM),
-        InputFormField.ofValue(Contact.PRENOM_LABEL, Contact.PRENOM),
       ],
     ], [
-      Contact.PANEL_INFORMATIONS_CONTACT,
+      PersonneMorale.PANEL_INFORMATIONS_IDENTITE,
       [
-        InputFormField.ofValue(Contact.EMAIL_LABEL, Contact.EMAIL),
-        InputFormField.ofValue(Contact.TELEPHONE_LABEL, Contact.TELEPHONE),
+        InputFormField.ofValue(PersonneMorale.EMAIL_LABEL, PersonneMorale.EMAIL),
+        InputFormField.ofValue(PersonneMorale.TELEPHONE_LABEL, PersonneMorale.TELEPHONE),
       ],
     ], [
       Adresse.PANEL_ADRESSE,
       [
-        InputFormField.ofValue(Adresse.RUE_LABEL, Contact.ADRESSE_RUE),
-        InputFormField.ofValue(Adresse.NUMERO_LABEL, Contact.ADRESSE_NUMERO),
+        InputFormField.ofValue(Adresse.RUE_LABEL, PersonneMorale.ADRESSE_RUE),
+        InputFormField.ofValue(Adresse.NUMERO_LABEL, PersonneMorale.ADRESSE_NUMERO),
         AutocompleteFormField
           .ofValue(
             Adresse.LOCALILTE_LABEL,
-            Contact.ADRESSE_LOCALITE,
+            PersonneMorale.ADRESSE_LOCALITE,
             this.autocompleteLocalite.bind(this),
             Model.ID,
             Localite.NOM,
@@ -70,34 +65,35 @@ export class ContactDialogComponent extends AbstractFormDialogComponent<ContactD
           .setColspan(2),
       ],
     ], [
-      Contact.PANEL_INFORMATIONS_SUPPLEMENTAIRES,
+      PersonneMorale.PANEL_INFORMATIONS_SUPPLEMENTAIRES,
       [
         InputFormField
-          .ofValue(Contact.REMARQUES_LABEL, Contact.REMARQUES)
+          .ofValue(PersonneMorale.REMARQUES_LABEL, PersonneMorale.REMARQUES)
           .setColspan(2),
       ]
     ]
   ]);
 
-  constructor(private readonly categorieService: ContactService,
+  constructor(private readonly personneMoraleService: PersonneMoraleService,
               private readonly localiteService: LocaliteService) {
     super();
   }
 
-  protected getDataMethod(id: number): Observable<Contact> {
-    return this.categorieService.get(id);
+  protected getDataMethod(id: number): Observable<PersonneMorale> {
+    return this.personneMoraleService.get(id);
   }
 
   protected deleteDataMethod(id: number): Observable<void> {
-    return this.categorieService.delete(id);
+    return this.personneMoraleService.delete(id);
   }
 
-  protected createDataMethod(categorie: Contact): Observable<Contact> {
-    return this.categorieService.create(categorie);
+  protected createDataMethod(personneMorale: PersonneMorale): Observable<PersonneMorale> {
+    personneMorale.identiteType = "PERSONNE_MORALE";
+    return this.personneMoraleService.create(personneMorale);
   }
 
-  protected modifyDataMethod(categorie: Contact): Observable<Contact> {
-    return this.categorieService.modify(categorie);
+  protected modifyDataMethod(personneMorale: PersonneMorale): Observable<PersonneMorale> {
+    return this.personneMoraleService.modify(personneMorale);
   }
 
   /**

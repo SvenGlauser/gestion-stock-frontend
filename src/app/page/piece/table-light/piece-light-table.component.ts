@@ -110,7 +110,7 @@ export class PieceLightTableComponent {
                 if (this.machine) {
                   this.machine.nom = machine.nom;
                   this.machine.description = machine.description;
-                  this.machine.contact = machine.contact;
+                  this.machine.proprietaire = machine.proprietaire;
                   this.machine.pieces = machine.pieces;
                 }
               }),

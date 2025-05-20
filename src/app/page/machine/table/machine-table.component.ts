@@ -10,7 +10,6 @@ import {TableComponent} from '../../../common/table/table.component';
 import {MachineDialogComponent} from '../dialog/machine-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
-import {ContactService} from '../../contact/contact.service';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {
   MatCell,
@@ -29,9 +28,11 @@ import {MatBadge, MatBadgeModule} from '@angular/material/badge';
 import {MatDialog} from '@angular/material/dialog';
 import {PieceSelectionDialogComponent} from '../../piece/selection-dialog/piece-selection-dialog.component';
 import {Machine} from '../machine.model';
-import {Contact} from '../../contact/contact.model';
+import {Identite} from '../../contact/identite.model';
 import {Model} from '../../../common/model';
 import {FilterCombinatorType} from '../../../common/search/filter-combinator';
+import {PersonnePhysiqueService} from '../../contact/personne-physique.service';
+import {PersonneMoraleService} from '../../contact/personne-morale.service';
 
 @Component({
   selector: 'app-machine-table',
@@ -62,7 +63,7 @@ export class MachineTableComponent implements OnInit {
       .sort(Order.ASC)
       .inputFilterOnSameField(),
     ClassicColumn.of(Machine.DESCRIPTION_LABEL, Machine.DESCRIPTION, "40%"),
-    MethodColumn.of(Machine.CONTACT_LABEL, Machine.CONTACT, "20%", Contact.contactNomPrenomToString),
+    MethodColumn.of(Machine.PROPRIETAIRE_LABEL, Machine.PROPRIETAIRE, "20%", (identite: Identite) => identite.getDesignation()),
   ]
 
   // Utilisé pour udpate la dataTable
@@ -76,7 +77,7 @@ export class MachineTableComponent implements OnInit {
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: MachineDialogComponent,
-    dialogSpecificData: { contact: null },
+    dialogSpecificData: { proprietaire: null },
     idField: Model.ID,
     clicOnLine: true,
     created: true,
@@ -88,27 +89,39 @@ export class MachineTableComponent implements OnInit {
     ]
   };
 
-  private currentContactId: number | null = null;
-  protected contact: Contact | null = null;
+  private currentProprietaireType: string | null = null;
+  private currentProprietaireId: number | null = null;
+  protected proprietaire: Identite | null = null;
   protected extendedRowId: number | null = null;
 
   constructor(private readonly machineService: MachineService,
-              private readonly contactService: ContactService,
+              private readonly personnePhysiqueService: PersonnePhysiqueService,
+              private readonly personneMoraleService: PersonneMoraleService,
               private readonly route: ActivatedRoute,
               private readonly matDialog: MatDialog) {}
 
   /**
-   * Récupère le contact
+   * Récupère le proprietaire
    */
   public ngOnInit(): void {
     // For subscribing to the observable paramMap...
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.currentContactId = Number.parseInt(params.get('id') ?? "");
+      this.currentProprietaireType = params.get('typeIdentite') ?? "";
+      this.currentProprietaireId = Number.parseInt(params.get('id') ?? "");
 
-      this.contactService.get(this.currentContactId).subscribe(contact => {
-        this.contact = contact;
-        this.actionColumnInfo.dialogSpecificData.contact = this.contact;
-      });
+      if (this.currentProprietaireType && this.currentProprietaireId) {
+        if (this.currentProprietaireType == 'morale') {
+          this.personneMoraleService.get(this.currentProprietaireId).subscribe(proprietaire => {
+            this.proprietaire = proprietaire;
+            this.actionColumnInfo.dialogSpecificData.proprietaire = this.proprietaire;
+          });
+        } else if (this.currentProprietaireType == 'physique') {
+          this.personnePhysiqueService.get(this.currentProprietaireId).subscribe(proprietaire => {
+            this.proprietaire = proprietaire;
+            this.actionColumnInfo.dialogSpecificData.proprietaire = this.proprietaire;
+          });
+        }
+      }
     });
   }
 
@@ -117,7 +130,7 @@ export class MachineTableComponent implements OnInit {
    * @param searchRequest SearchRequest
    */
   protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<Machine>> {
-    if (!this.contact) {
+    if (!this.proprietaire) {
       return of(<SearchResult<Machine>>{
         currentPage: 0,
         pageSize: 10,
@@ -131,8 +144,8 @@ export class MachineTableComponent implements OnInit {
     searchRequestModified.combinators.push({
       filters: [
         <Filter>{
-        field: Machine.CONTACT_ID,
-        value: this.contact.id,
+        field: Machine.PROPRIETAIRE_ID,
+        value: this.proprietaire.id,
         type: FilterType.EQUAL,
         order: undefined,
       }],
@@ -146,9 +159,9 @@ export class MachineTableComponent implements OnInit {
   protected getTableTitle(): string {
     let title: string = 'Liste des machines';
 
-    if (this.contact) {
+    if (this.proprietaire) {
       title += " - ";
-      title += this.contact.prenom + " " + this.contact.nom;
+      title += this.proprietaire.getDesignation();
     }
 
     return title;
@@ -191,7 +204,7 @@ export class MachineTableComponent implements OnInit {
           if (returnedMachine) {
             machine.nom = returnedMachine.nom;
             machine.description = returnedMachine.description;
-            machine.contact = returnedMachine.contact;
+            machine.proprietaire = returnedMachine.proprietaire;
             machine.pieces = returnedMachine.pieces;
             if (this.piecesLightsTables) {
               this.piecesLightsTables.forEach(table => {

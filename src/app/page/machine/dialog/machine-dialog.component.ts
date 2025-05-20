@@ -58,7 +58,7 @@ export class MachineDialogComponent extends AbstractFormDialogComponent<MachineD
   }
 
   protected createDataMethod(machine: Machine): Observable<Machine> {
-    machine.contact = this.data.specificData.contact;
+    machine.proprietaire = this.data.specificData.proprietaire;
     return this.machineService.create(machine);
   }
 

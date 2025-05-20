@@ -1,12 +1,14 @@
-<div class="header">
-  <h2>{{this.title}}</h2>
+@if (this.title && this.actionColumnInfo.created) {
+  <div class="header">
+    <h2>{{this.title}}</h2>
 
-  @if (this.actionColumnInfo.created) {
-    <div class="header-actions">
-      <button mat-flat-button (click)="openDialog(null, DialogType.CREATE)">Créer</button>
-    </div>
-  }
-</div>
+    @if (this.actionColumnInfo.created) {
+      <div class="header-actions">
+        <button mat-flat-button (click)="openDialog(null, DialogType.CREATE)">Créer</button>
+      </div>
+    }
+  </div>
+}
 
 <div class="table-encapsulation">
   @if (this.isLoadingData) {
