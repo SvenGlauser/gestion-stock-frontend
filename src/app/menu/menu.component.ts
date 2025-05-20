@@ -39,13 +39,13 @@ export class MenuComponent implements OnInit {
       name: "Machines",
       icon: "agriculture",
       disabled: true,
-      disabledLabel: "Pour accéder à cette page, utilisez la page des contacts",
+      disabledLabel: "Pour accéder à cette page, utilisez la page des identités",
       url: "/machines/",
     }, {
-      name: "Contacts",
+      name: "Identités",
       icon: "person_apron",
       onHomePage: true,
-      url: "/contacts",
+      url: "/identites",
     }, {
       name: "Fournisseurs",
       icon: "local_shipping",

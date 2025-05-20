@@ -28,11 +28,11 @@ import {MatBadge, MatBadgeModule} from '@angular/material/badge';
 import {MatDialog} from '@angular/material/dialog';
 import {PieceSelectionDialogComponent} from '../../piece/selection-dialog/piece-selection-dialog.component';
 import {Machine} from '../machine.model';
-import {Identite} from '../../contact/identite.model';
+import {Identite} from '../../identite/identite.model';
 import {Model} from '../../../common/model';
 import {FilterCombinatorType} from '../../../common/search/filter-combinator';
-import {PersonnePhysiqueService} from '../../contact/personne-physique.service';
-import {PersonneMoraleService} from '../../contact/personne-morale.service';
+import {PersonnePhysiqueService} from '../../identite/personne-physique.service';
+import {PersonneMoraleService} from '../../identite/personne-morale.service';
 
 @Component({
   selector: 'app-machine-table',

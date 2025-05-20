@@ -4,7 +4,7 @@ import {PaysTableComponent} from './page/pays/table/pays-table.component';
 import {LocaliteTableComponent} from './page/localite/table/localite-table.component';
 import {CategorieTableComponent} from './page/categorie/table/categorie-table.component';
 import {FournisseurTableComponent} from './page/fournisseur/table/fournisseur-table.component';
-import {IdentiteTableComponent} from './page/contact/table/identite-table.component';
+import {IdentiteTableComponent} from './page/identite/table/identite-table.component';
 import {PieceTableComponent} from './page/piece/table/piece-table.component';
 import {MachineTableComponent} from './page/machine/table/machine-table.component';
 import {ExceptionTableComponent} from './page/exception/table/exception-table.component';

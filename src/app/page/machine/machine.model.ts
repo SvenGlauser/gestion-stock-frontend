@@ -1,8 +1,8 @@
 import {Model} from '../../common/model';
-import {Identite} from '../contact/identite.model';
+import {Identite} from '../identite/identite.model';
 import {Piece} from '../piece/piece.model';
-import {PersonnePhysique} from '../contact/personne-physique.model';
-import {PersonneMorale} from '../contact/personne-morale.model';
+import {PersonnePhysique} from '../identite/personne-physique.model';
+import {PersonneMorale} from '../identite/personne-morale.model';
 
 /**
  * Class représentant une machine
