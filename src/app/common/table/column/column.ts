@@ -34,6 +34,15 @@ export abstract class Column {
   }
 
   /**
+   * Ajoute le style à l'existant
+   * @param style Style
+   */
+  public addStyle(style: string): this {
+    this.style += style;
+    return this;
+  }
+
+  /**
    * Set le style pre-wrap
    */
   public setStylePreWrap(): this {

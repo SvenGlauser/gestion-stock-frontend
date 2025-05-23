@@ -12,20 +12,20 @@ export class PieceHistorique extends Model {
   public static readonly PIECE = 'piece';
   public static readonly PIECE_ID = this.PIECE.concat(".", Model.ID);
   public static readonly DIFFERENCE = 'difference';
-  public static readonly DATE = 'date';
+  public static readonly HEURE = 'heure';
   public static readonly TYPE = 'type';
   public static readonly SOURCE = 'source';
 
   // Label constantes
   public static readonly PIECE_LABEL = 'Pièce';
   public static readonly DIFFERENCE_LABEL = 'Différence';
-  public static readonly DATE_LABEL = 'Date';
+  public static readonly HEURE_LABEL = 'Date et heure';
   public static readonly TYPE_LABEL = 'Type';
   public static readonly SOURCE_LABEL = 'Source';
 
   public piece: Piece | null = null;
   public difference: string | null = null;
-  public date: Date | null = null;
+  public heure: Date | null = null;
   public type: PieceHistoriqueType | null = null;
   public source: PieceHistoriqueSource | null = null;
 
@@ -37,8 +37,8 @@ export class PieceHistorique extends Model {
         this.piece = new Piece(pieceHistorique.piece);
       }
       this.difference = pieceHistorique.difference;
-      if (pieceHistorique.date) {
-        this.date = new Date(pieceHistorique.date);
+      if (pieceHistorique.heure) {
+        this.heure = new Date(pieceHistorique.heure);
       }
       this.type = pieceHistorique.type;
       this.source = pieceHistorique.source;

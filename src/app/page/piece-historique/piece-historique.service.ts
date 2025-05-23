@@ -29,4 +29,8 @@ export class PieceHistoriqueService {
         return result;
       }))
   }
+
+  public delete(id: number): Observable<void> {
+    return this.http.delete<void>(this.URL_WITH_SLASH + id);
+  }
 }

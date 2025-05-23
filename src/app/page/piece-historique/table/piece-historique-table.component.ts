@@ -32,7 +32,7 @@ export class PieceHistoriqueTableComponent implements OnInit {
   // Définition des colonnes
   protected readonly columns: Column[] = [
     DateColumn
-      .of(PieceHistorique.DATE_LABEL, PieceHistorique.DATE, "20%")
+      .of(PieceHistorique.HEURE_LABEL, PieceHistorique.HEURE, "20%")
       .sort(Order.ASC),
     MethodColumn
       .of(
@@ -57,7 +57,7 @@ export class PieceHistoriqueTableComponent implements OnInit {
     idField: Model.ID,
     clicOnLine: true,
     created: false,
-    delete: false,
+    delete: true,
     modify: false,
     read: true
   };

@@ -47,14 +47,16 @@ export class PieceTableComponent {
         Model.ID,
         Categorie.NOM,
       ),
-    ClassicColumn
-      .of(Piece.PRIX_LABEL, Piece.PRIX, "10%")
-      .sort(),
+    MethodColumn
+      .of(Piece.PRIX_LABEL, Piece.PRIX, "10%", (piece) => piece + " CHF", Piece.PRIX)
+      .sort()
+      .addStyle("text-align: right;"),
     ClassicColumn
       .of(Piece.QUANTITE_LABEL, Piece.QUANTITE, "10%")
       .sort(),
     MethodColumn
-      .of(Piece.TOTAL_LABEL, Piece.TOTAL, "10%", this.calculateTotal.bind(this), Piece.QUANTITE, Piece.PRIX),
+      .of(Piece.TOTAL_LABEL, Piece.TOTAL, "10%", this.calculateTotal.bind(this), Piece.QUANTITE, Piece.PRIX)
+      .addStyle("text-align: right;"),
   ]
 
   // Définition des actions possibles

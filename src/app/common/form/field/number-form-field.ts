@@ -88,7 +88,7 @@ export class NumberFormField extends FormField {
     let value = this.formControl.value;
     if (this.decimal) {
       if (typeof value === 'string') {
-        value = value.replace(',', '\.');
+        value = value.replace(',', '.');
       }
       return Number.parseFloat(value);
     }

@@ -44,7 +44,7 @@ export class PieceHistoriqueDialogComponent extends AbstractFormDialogComponent<
         AutocompleteEnumFormField
           .ofValue(PieceHistorique.SOURCE_LABEL, PieceHistorique.SOURCE)
           .addValues(PieceHistoriqueSourceEnumValuesForAutocomplete),
-        InputFormField.ofValue(PieceHistorique.DATE_LABEL, PieceHistorique.DATE),
+        InputFormField.ofValue(PieceHistorique.HEURE_LABEL, PieceHistorique.HEURE),
         InputFormField.ofValue(PieceHistorique.DIFFERENCE_LABEL, PieceHistorique.DIFFERENCE),
       ]
     ]
@@ -58,8 +58,8 @@ export class PieceHistoriqueDialogComponent extends AbstractFormDialogComponent<
     return this.pieceHistoriqueService.get(id);
   }
 
-  protected deleteDataMethod(_id: number): Observable<void> {
-    return of();
+  protected deleteDataMethod(id: number): Observable<void> {
+    return this.pieceHistoriqueService.delete(id);
   }
 
   protected createDataMethod(_pieceHistorique: PieceHistorique): Observable<PieceHistorique> {

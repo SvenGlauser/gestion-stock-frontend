@@ -1,12 +1,10 @@
 <div class="header">
   <h2>Liste des identités</h2>
 
-  @if (this.actionColumnInfo.created) {
-    <div class="header-actions">
-      <button mat-flat-button (click)="createPersonneMorale()">Créer une personne morale</button>
-      <button mat-flat-button (click)="createPersonnePhysique()">Créer une personne physique</button>
-    </div>
-  }
+  <div class="header-actions">
+    <button mat-flat-button (click)="createPersonneMorale()">Créer une personne morale</button>
+    <button mat-flat-button (click)="createPersonnePhysique()">Créer une personne physique</button>
+  </div>
 </div>
 
 <app-table [columns]="this.columns"

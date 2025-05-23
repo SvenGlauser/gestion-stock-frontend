@@ -73,7 +73,7 @@ export class IdentiteTableComponent {
     },
     idField: Model.ID,
     clicOnLine: true,
-    created: true,
+    created: false,
     delete: true,
     modify: true,
     read: true
