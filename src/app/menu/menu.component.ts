@@ -28,11 +28,9 @@ export class MenuComponent implements OnInit {
       separatorBefore: "Actions principales",
       children: [
         {
-          name: "Historique des pièces",
-          icon: "history",
-          disabled: true,
-          disabledLabel: "Pour accéder à cette page, utilisez la page des pièces",
-          url: "/pieces/historique/",
+          name: "Statistiques des pièces",
+          icon: "bar_chart",
+          url: "/pieces/statistiques",
         }
       ]
     }, {

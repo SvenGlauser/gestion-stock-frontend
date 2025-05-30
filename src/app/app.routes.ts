@@ -10,6 +10,7 @@ import {MachineTableComponent} from './page/machine/table/machine-table.componen
 import {ExceptionTableComponent} from './page/exception/table/exception-table.component';
 import {PieceHistoriqueTableComponent} from './page/piece-historique/table/piece-historique-table.component';
 import {TechniqueComponent} from './page/technique/technique.component';
+import {PieceStatistiqueComponent} from './page/piece/statistique/piece-statistique.component';
 
 export const routes: Routes = [
   {
@@ -22,6 +23,9 @@ export const routes: Routes = [
       {
         path: '',
         component: PieceTableComponent,
+      }, {
+        path: 'statistiques',
+        component: PieceStatistiqueComponent,
       }, {
         path: 'historique/:id',
         component: PieceHistoriqueTableComponent,

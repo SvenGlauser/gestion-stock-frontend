@@ -12,7 +12,9 @@ export class Piece extends Model {
   public static readonly NOM = 'nom';
   public static readonly DESCRIPTION = 'description';
   public static readonly FOURNISSEUR = 'fournisseur';
+  public static readonly FOURNISSEUR_ID = this.FOURNISSEUR.concat(".", Fournisseur.ID);
   public static readonly CATEGORIE = 'categorie';
+  public static readonly CATEGORIE_ID = this.CATEGORIE.concat(".", Categorie.ID);
   public static readonly CATEGORIE_NOM = this.CATEGORIE.concat(".", Categorie.NOM);
   public static readonly QUANTITE = 'quantite';
   public static readonly PRIX = 'prix';

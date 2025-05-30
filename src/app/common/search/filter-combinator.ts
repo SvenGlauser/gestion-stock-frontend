@@ -7,6 +7,5 @@ export interface FilterCombinator {
 
 export enum FilterCombinatorType {
   OR = "OR",
-  AND = "AND",
-  CONCAT_SLASH = "CONCAT_SLASH" // Fusionné avec ' / '
+  AND = "AND"
 }

@@ -5,6 +5,8 @@ import {Piece} from './piece.model';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
 import {BASE_URL} from '../../common/utils/http-client.configuration';
+import {PieceStatistique} from './statistique/piece-statistique';
+import {FilterCombinator} from '../../common/search/filter-combinator';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +46,12 @@ export class PieceService {
         result.elements = result.elements.map(piece => new Piece(piece));
         return result;
       }))
+  }
+
+  public statistiques(filters: FilterCombinator[]): Observable<PieceStatistique[]> {
+    return this.http
+      .post<PieceStatistique[]>(this.URL_WITH_SLASH + "statistiques", filters)
+      .pipe(map(piecesStat => piecesStat.map(pieceStat => new PieceStatistique(pieceStat))));
   }
 
   public autocomplete(value: string): Observable<Piece[]> {

@@ -1,0 +1,26 @@
+<div class="header">
+  <h2>Statistiques des pièces</h2>
+</div>
+
+<div class="filtres">
+  <app-autocomplete
+    [autocompleteMethod]="this.autocompleteCategories.bind(this)"
+    [autocompleteIdField]="Categorie.ID"
+    [autocompleteNameField]="Categorie.NOM"
+    label="Catégorie"
+    [(value)]="this.categorie"
+    (valueChange)="this.search()"/>
+  <app-autocomplete
+    [autocompleteMethod]="this.autocompleteFournisseurs.bind(this)"
+    [autocompleteIdField]="Fournisseur.ID"
+    [autocompleteNameField]="Fournisseur.NOM"
+    label="Fournisseur"
+    [(value)]="this.fournisseur"
+    (valueChange)="this.search()"/>
+</div>
+
+<div echarts
+     [options]="this.options"
+     [loading]="!this.loaded"
+     (chartInit)="this.storeChart($event)">
+</div>
