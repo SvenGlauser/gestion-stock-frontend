@@ -21,7 +21,8 @@ export class TechniqueComponent {
   protected readonly hasInfoImportationPiece: Signal<boolean> = computed((): boolean => this.infoImportationPiece() !== null);
   protected readonly hasErrorImportationPiece: Signal<boolean> = computed((): boolean => this.errorImportationPiece() !== null);
 
-  constructor(private readonly techniqueService: TechniqueService) {}
+  constructor(private readonly techniqueService: TechniqueService) {
+  }
 
   protected importPiece(): void {
     this.infoImportationPiece.set(null);

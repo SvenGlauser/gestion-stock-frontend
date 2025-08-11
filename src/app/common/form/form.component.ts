@@ -43,7 +43,7 @@ import {AutocompleteMultipleComponent} from './input/autocomplete/autocomplete-m
 export class FormComponent {
   // Constantes
   protected readonly AutocompleteFormField: typeof AutocompleteFormField = AutocompleteFormField;
-  protected readonly AutocompleteMultipleFormField: typeof AutocompleteMultipleFormField  = AutocompleteMultipleFormField;
+  protected readonly AutocompleteMultipleFormField: typeof AutocompleteMultipleFormField = AutocompleteMultipleFormField;
   protected readonly AutocompleteEnumFormField: typeof AutocompleteEnumFormField = AutocompleteEnumFormField;
   protected readonly InputFormField: typeof InputFormField = InputFormField;
   protected readonly NumberFormField: typeof NumberFormField = NumberFormField;

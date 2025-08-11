@@ -98,7 +98,7 @@ export class MenuService {
     const links: Link[] = structuredClone(this.links());
 
     for (const item of this.getLinksInCasacade(links)) {
-      if(url.startsWith(item.url)) {
+      if (url.startsWith(item.url)) {
         let length = item.url.length;
 
         if (length > lastLength) {

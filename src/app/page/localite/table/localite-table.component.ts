@@ -16,9 +16,9 @@ import {Column} from '../../../common/table/column/column';
 
 @Component({
   selector: 'app-localite',
-    imports: [
-        TableComponent
-    ],
+  imports: [
+    TableComponent
+  ],
   templateUrl: './localite-table.component.html',
   styleUrl: './localite-table.component.scss'
 })
@@ -55,7 +55,8 @@ export class LocaliteTableComponent {
   };
 
   constructor(private readonly localiteService: LocaliteService,
-              private readonly paysService: PaysService) {}
+              private readonly paysService: PaysService) {
+  }
 
   /**
    * Méthode de recherche pour le tableau

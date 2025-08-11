@@ -31,6 +31,6 @@ export class PersonnePhysique extends Identite {
   }
 
   public getDesignation(): string {
-    return this.prenom + " " +  this.nom;
+    return this.prenom + " " + this.nom;
   }
 }

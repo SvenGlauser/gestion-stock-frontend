@@ -15,7 +15,8 @@ export class PieceService {
   private readonly URL: string = BASE_URL + 'piece';
   private readonly URL_WITH_SLASH: string = this.URL + '/';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
   public get(id: number): Observable<Piece> {
     return this.http
@@ -56,7 +57,7 @@ export class PieceService {
 
   public autocomplete(value: string): Observable<Piece[]> {
     return this.http
-      .get<SearchResult<Piece>>(this.URL_WITH_SLASH + "autocomplete?searchValue="+value)
+      .get<SearchResult<Piece>>(this.URL_WITH_SLASH + "autocomplete?searchValue=" + value)
       .pipe(map(result => {
         return result.elements.map(piece => new Piece(piece));
       }));

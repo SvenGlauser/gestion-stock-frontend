@@ -45,7 +45,7 @@ export class PieceLightTableComponent {
     modify: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB
     delete: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB
     actions: [
-      { name: "Retirer la pièce de la machine", action: this.unlinkPiece.bind(this) }
+      {name: "Retirer la pièce de la machine", action: this.unlinkPiece.bind(this)}
     ]
   };
 
@@ -53,7 +53,8 @@ export class PieceLightTableComponent {
   public readonly table: Signal<TableComponent<Piece>> = viewChild.required<TableComponent<Piece>>(TableComponent);
 
   constructor(private readonly machineService: MachineService,
-              private readonly matDialog: MatDialog) {}
+              private readonly matDialog: MatDialog) {
+  }
 
   /**
    * Récupère la liste à afficher dans le tableau

@@ -73,7 +73,7 @@ export class MachineTableComponent {
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: MachineDialogComponent,
-    dialogSpecificData: { proprietaire: null },
+    dialogSpecificData: {proprietaire: null},
     idField: Model.ID,
     clicOnLine: true,
     created: true,
@@ -81,7 +81,7 @@ export class MachineTableComponent {
     modify: true,
     read: true,
     actions: [
-      { name: "Ajouter une pièce à la machine", action: this.linkPiece.bind(this) }
+      {name: "Ajouter une pièce à la machine", action: this.linkPiece.bind(this)}
     ]
   };
 
@@ -137,12 +137,13 @@ export class MachineTableComponent {
     searchRequestModified.combinators.push({
       filters: [
         <Filter>{
-        field: Machine.PROPRIETAIRE_ID,
-        value: this.proprietaire.id,
-        type: FilterType.EQUAL,
-        order: undefined,
-      }],
-      type: FilterCombinatorType.AND})
+          field: Machine.PROPRIETAIRE_ID,
+          value: this.proprietaire.id,
+          type: FilterType.EQUAL,
+          order: undefined,
+        }],
+      type: FilterCombinatorType.AND
+    })
     return this.machineService.search(searchRequestModified);
   }
 

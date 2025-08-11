@@ -82,7 +82,8 @@ export class IdentiteTableComponent {
   private readonly matTable: Signal<TableComponent<Machine>> = viewChild.required<TableComponent<Machine>>(TableComponent);
 
   constructor(private readonly identiteService: IdentiteService,
-              private readonly matDialog: MatDialog) {}
+              private readonly matDialog: MatDialog) {
+  }
 
   /**
    * Récupère la liste à afficher dans le tableau
@@ -104,7 +105,7 @@ export class IdentiteTableComponent {
     const dialogRef = this.matDialog.open(dialog, {
       maxWidth: 1000,
       data: <DialogData>{
-        type : DialogType.CREATE,
+        type: DialogType.CREATE,
         id: null,
         specificData: this.actionColumnInfo.dialogSpecificData,
       },

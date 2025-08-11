@@ -15,7 +15,8 @@ export class FournisseurService {
   private readonly URL: string = BASE_URL + 'fournisseur';
   private readonly URL_WITH_SLASH: string = this.URL + '/';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
   public get(id: number): Observable<Fournisseur> {
     return this.http

@@ -27,10 +27,10 @@ echarts.use([
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
     provideHttpClient(withFetch()),
-    provideEchartsCore({ echarts }),
+    provideEchartsCore({echarts}),
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: {

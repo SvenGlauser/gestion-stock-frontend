@@ -95,7 +95,8 @@ export class ExceptionTableComponent {
 
   protected extendedRowId: number | null = null;
 
-  constructor(private readonly exceptionService: ExceptionService) {}
+  constructor(private readonly exceptionService: ExceptionService) {
+  }
 
   /**
    * Affiche / Cache le tableau des pieces pour cet élément

@@ -16,5 +16,6 @@ import {MenuService} from './menu.service';
 export class MenuComponent {
   protected readonly links: Signal<Link[]> = computed(() => this.menuService.links());
 
-  constructor(private readonly menuService: MenuService) {}
+  constructor(private readonly menuService: MenuService) {
+  }
 }

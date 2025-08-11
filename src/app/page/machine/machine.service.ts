@@ -15,7 +15,8 @@ export class MachineService {
   private readonly URL: string = BASE_URL + 'machine';
   private readonly URL_WITH_SLASH: string = this.URL + '/';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
   public get(id: number): Observable<Machine> {
     return this.http

@@ -28,7 +28,7 @@
         *matCellDef="let element"
         class="extended-row"
         [attr.colspan]="this.columns.length + 1">
-      <div>{{element.stacktrace}}</div>
+      <div>{{ element.stacktrace }}</div>
     </td>
   </ng-container>
   <tr mat-row *matRowDef="let row; columns: ['stacktrace']; when: this.viewRow.bind(this)"></tr>

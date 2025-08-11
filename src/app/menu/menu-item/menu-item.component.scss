@@ -4,7 +4,7 @@
 
 a {
   &.mdc-list-item--activated {
-  --mat-list-active-indicator-color: var(--mat-sys-primary);
+    --mat-list-active-indicator-color: var(--mat-sys-primary);
 
     .mat-list-item-content {
       color: var(--mat-sys-on-primary);

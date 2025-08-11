@@ -18,5 +18,6 @@ export class AccueilComponent {
       .filter(link => link.onHomePage)
   });
 
-  constructor(private readonly menuService: MenuService) {}
+  constructor(private readonly menuService: MenuService) {
+  }
 }

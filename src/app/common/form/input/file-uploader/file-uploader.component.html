@@ -16,7 +16,7 @@
         Supprimer le fichier
       </button>
       <span>
-        {{this.value()!.name}}
+        {{ this.value()!.name }}
       </span>
     } @else {
       <button mat-stroked-button (click)="this.addFile()">
@@ -29,5 +29,5 @@
          style="display: none"
          type="file"
          [accept]="this.formats().join(',')"
-         (change)="this.onFileChange($event)" />
+         (change)="this.onFileChange($event)"/>
 </mat-form-field>

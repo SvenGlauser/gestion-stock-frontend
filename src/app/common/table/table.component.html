@@ -1,6 +1,6 @@
 @if (this.title() || this.actionColumnInfo().created) {
   <div class="header">
-    <h2>{{this.title()}}</h2>
+    <h2>{{ this.title() }}</h2>
 
     @if (this.actionColumnInfo().created) {
       <div class="header-actions">
@@ -45,7 +45,7 @@
                    (click)="$event.stopPropagation()"
                    target="_blank">
                   <button mat-icon-button>
-                    <mat-icon>{{LinkColumn.cast(column)!.icon}}</mat-icon>
+                    <mat-icon>{{ LinkColumn.cast(column)!.icon }}</mat-icon>
                   </button>
                 </a>
               } @else {
@@ -53,7 +53,7 @@
                    (keydown.enter)="$event.stopPropagation()"
                    (click)="$event.stopPropagation()">
                   <button mat-icon-button>
-                    <mat-icon>{{LinkColumn.cast(column)!.icon}}</mat-icon>
+                    <mat-icon>{{ LinkColumn.cast(column)!.icon }}</mat-icon>
                   </button>
                 </a>
               }
@@ -75,7 +75,7 @@
                   (click)="viewFilter.set(false)">
             <mat-icon>filter_alt</mat-icon>
           </button>
-        } @else if(this.existFilter()) {
+        } @else if (this.existFilter()) {
           <button mat-icon-button
                   (click)="viewFilter.set(true)">
             <mat-icon>filter_alt_off</mat-icon>
@@ -86,9 +86,9 @@
           *matCellDef="let element"
           [style.text-align]="'right'">
         @if (this.actionColumnInfo().read
-            || this.actionColumnInfo().modify
-            || this.actionColumnInfo().delete
-            || this.canViewOneAction(element)) {
+        || this.actionColumnInfo().modify
+        || this.actionColumnInfo().delete
+        || this.canViewOneAction(element)) {
           <button mat-icon-button
                   [matMenuTriggerFor]="menu"
                   (keydown.enter)="$event.stopPropagation()"
@@ -105,7 +105,7 @@
             @for (action of this.actionColumnInfo().actions ?? []; track action.name) {
               @if (!action.condition || action.condition(element)) {
                 <button mat-menu-item (click)="this.run(action.action, element)">
-                  {{action.name}}
+                  {{ action.name }}
                 </button>
               }
             }

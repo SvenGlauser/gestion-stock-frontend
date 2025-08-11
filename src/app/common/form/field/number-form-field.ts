@@ -42,7 +42,7 @@ export class NumberFormField extends FormField {
         }
 
         if (value !== initialValue) {
-          formField.formControl.setValue(value, { emitEvent: false });
+          formField.formControl.setValue(value, {emitEvent: false});
         }
       });
 

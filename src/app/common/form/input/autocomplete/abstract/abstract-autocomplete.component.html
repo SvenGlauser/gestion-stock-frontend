@@ -1,6 +1,6 @@
 <mat-form-field>
   @if (this.label() !== null) {
-    <mat-label>{{this.label()}}</mat-label>
+    <mat-label>{{ this.label() }}</mat-label>
   }
 
   <input
@@ -16,14 +16,14 @@
     #auto="matAutocomplete">
 
     @for (option of this.results(); track this.track(option)) {
-      <mat-option [value]="option">{{this.stringify(option)}}</mat-option>
+      <mat-option [value]="option">{{ this.stringify(option) }}</mat-option>
     }
 
   </mat-autocomplete>
 
   @if (this.autocompleteFormControl().hasError("validation")) {
     <mat-error class="error">
-      {{this.autocompleteFormControl().getError("validation")}}
+      {{ this.autocompleteFormControl().getError("validation") }}
     </mat-error>
   }
 </mat-form-field>

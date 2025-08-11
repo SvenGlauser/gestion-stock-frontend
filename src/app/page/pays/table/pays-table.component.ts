@@ -44,7 +44,8 @@ export class PaysTableComponent {
     read: true
   };
 
-  constructor(private readonly paysService: PaysService) {}
+  constructor(private readonly paysService: PaysService) {
+  }
 
   /**
    * Récupère la liste à afficher dans le tableau

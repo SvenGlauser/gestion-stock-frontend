@@ -1,8 +1,8 @@
 <h2>Page technique</h2>
 <app-file-uploader [formats]="['.csv']" [(value)]="this.file" (valueChange)="this.importPiece()"/>
 @if (this.hasErrorImportationPiece()) {
-  <div class="error">{{this.errorImportationPiece()}}</div>
+  <div class="error">{{ this.errorImportationPiece() }}</div>
 }
 @if (this.hasInfoImportationPiece()) {
-  <div class="info">{{this.infoImportationPiece()}}</div>
+  <div class="info">{{ this.infoImportationPiece() }}</div>
 }

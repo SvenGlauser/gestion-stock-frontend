@@ -294,7 +294,7 @@ export class TableComponent<T extends Record<string, any>> {
     const dialogRef = this.matDialog.open(dialogComponent, {
       maxWidth: 1000,
       data: <DialogData>{
-        type : type,
+        type: type,
         id: element ? element[this.actionColumnInfo().idField] : null,
         specificData: this.actionColumnInfo().dialogSpecificData,
       },
@@ -375,9 +375,12 @@ export class TableComponent<T extends Record<string, any>> {
 
     if (column) {
       switch (column.sortDefaultValue) {
-        case Order.ASC: return "asc";
-        case Order.DESC: return "desc";
-        default: return "";
+        case Order.ASC:
+          return "asc";
+        case Order.DESC:
+          return "desc";
+        default:
+          return "";
       }
     }
 

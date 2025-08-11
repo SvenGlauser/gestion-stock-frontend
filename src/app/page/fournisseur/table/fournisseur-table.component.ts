@@ -48,7 +48,8 @@ export class FournisseurTableComponent {
     read: true
   };
 
-  constructor(private readonly fournisseurService: FournisseurService) {}
+  constructor(private readonly fournisseurService: FournisseurService) {
+  }
 
   /**
    * Récupère la liste à afficher dans le tableau

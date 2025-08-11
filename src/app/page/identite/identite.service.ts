@@ -13,7 +13,8 @@ export class IdentiteService {
   private readonly URL: string = BASE_URL + 'identite';
   private readonly URL_WITH_SLASH: string = this.URL + '/';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<IdentiteLight>> {
     return this.http
