@@ -34,7 +34,7 @@ import {PersonnePhysiqueService} from '../personne-physique.service';
 })
 export class PersonnePhysiqueDialogComponent extends AbstractFormDialogComponent<PersonnePhysiqueDialogComponent, PersonnePhysique> {
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       PersonnePhysique.PANEL_DONNEES_GENERALES,
       [

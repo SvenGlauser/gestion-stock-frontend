@@ -51,7 +51,7 @@ export class AutocompleteEnumComponent<T> extends AbstractAutocompleteComponent<
     return value;
   }
 
-  protected override isValidSelection(value: string | T | null): boolean {
+  protected override isInvalidSelection(value: string | T | null): boolean {
     return value === null || (typeof value === "string" && !this.mapOfElements().has(value));
   }
 }

@@ -32,7 +32,7 @@ import {Model} from '../../../common/model';
 })
 export class FournisseurDialogComponent extends AbstractFormDialogComponent<FournisseurDialogComponent, Fournisseur> {
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       Fournisseur.PANEL_DONNEES_GENERALES,
       [

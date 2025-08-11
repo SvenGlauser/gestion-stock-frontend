@@ -11,12 +11,12 @@
   </mat-label>
 
   <div class="file-uploader-content">
-    @if (this.value) {
+    @if (this.isFileSelected()) {
       <button mat-stroked-button (click)="this.removeFile()">
         Supprimer le fichier
       </button>
       <span>
-        {{this.value.name}}
+        {{this.value()!.name}}
       </span>
     } @else {
       <button mat-stroked-button (click)="this.addFile()">
@@ -28,6 +28,6 @@
   <input #inputFile
          style="display: none"
          type="file"
-         [accept]="this.formats.join(',')"
+         [accept]="this.formats().join(',')"
          (change)="this.onFileChange($event)" />
 </mat-form-field>

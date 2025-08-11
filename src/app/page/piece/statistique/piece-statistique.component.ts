@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, effect, signal, WritableSignal} from '@angular/core';
 import {NgxEchartsDirective} from 'ngx-echarts';
 import * as echarts from 'echarts/core';
 import {PieceService} from '../piece.service';
@@ -11,6 +11,7 @@ import {Piece} from '../piece.model';
 import {CategorieService} from '../../categorie/categorie.service';
 import {FournisseurService} from '../../fournisseur/fournisseur.service';
 import {Observable} from 'rxjs';
+import {PieceStatistique} from './piece-statistique';
 
 @Component({
   selector: 'app-statistique',
@@ -18,21 +19,18 @@ import {Observable} from 'rxjs';
   templateUrl: './piece-statistique.component.html',
   styleUrl: './piece-statistique.component.scss'
 })
-export class PieceStatistiqueComponent implements OnInit {
+export class PieceStatistiqueComponent {
 
-  protected readonly Categorie = Categorie;
-  protected readonly Fournisseur = Fournisseur;
+  protected readonly Categorie: typeof Categorie = Categorie;
+  protected readonly Fournisseur: typeof Fournisseur = Fournisseur;
 
-  protected loaded: boolean = false;
-  protected categorie: Categorie | null = null;
-  protected fournisseur: Fournisseur | null = null;
+  protected readonly loading: WritableSignal<boolean> = signal(true);
+  protected readonly categorie: WritableSignal<Categorie | null> = signal(null);
+  protected readonly fournisseur: WritableSignal<Fournisseur | null> = signal(null);
 
-  protected options: any = {
+  protected readonly options: WritableSignal<any> = signal({
     tooltip: {
-      trigger: 'axis',
-      position: function (pt: any) {
-        return [pt[0], '10%'];
-      }
+      trigger: 'axis'
     },
     title: {
       left: 'center',
@@ -108,40 +106,41 @@ export class PieceStatistiqueComponent implements OnInit {
         data: []
       }
     ]
-  };
-
-  private chart: any;
+  });
 
   constructor(private readonly pieceService: PieceService,
               private readonly categorieService: CategorieService,
-              private readonly fournisseurService: FournisseurService) {}
+              private readonly fournisseurService: FournisseurService) {
+    effect((): void => {
+      const categorie: Categorie | null = this.categorie();
+      const fournisseur: Fournisseur | null = this.fournisseur();
 
-  public ngOnInit(): void {
-    this.search();
+      this.search(categorie, fournisseur);
+    });
   }
 
-  protected search(): void {
-    this.loaded = false;
+  private search(categorie: Categorie | null, fournisseur: Fournisseur | null): void {
+    this.loading.set(true);
 
     this.pieceService.statistiques([{
       filters: [{
         field: Piece.CATEGORIE_ID,
-        value: this.categorie?.id,
+        value: categorie?.id,
         type: FilterType.EQUAL
       }, {
         field: Piece.FOURNISSEUR_ID,
-        value: this.fournisseur?.id,
+        value: fournisseur?.id,
         type: FilterType.EQUAL
       }],
       type: FilterCombinatorType.AND
-    }]).subscribe(statistiques => {
-      this.options.series[0].data = statistiques.map(stat => stat.quantite);
-      this.options.series[1].data = statistiques.map(stat => stat.montantTotal);
-      this.options.xAxis.data = statistiques.map(stat => stat.date?.toLocaleDateString());
+    }]).subscribe((statistiques: PieceStatistique[]): void => {
+      const options: any = this.options();
+      options.series[0].data = statistiques.map(stat => stat.quantite);
+      options.series[1].data = statistiques.map(stat => stat.montantTotal);
+      options.xAxis.data = statistiques.map(stat => stat.date?.toLocaleDateString());
+      this.options.set(structuredClone(options));
 
-      this.chart.setOption(this.options);
-
-      this.loaded = true;
+      this.loading.set(false);
     })
   }
 
@@ -151,9 +150,5 @@ export class PieceStatistiqueComponent implements OnInit {
 
   protected autocompleteFournisseurs(value: string): Observable<Fournisseur[]> {
     return this.fournisseurService.autocomplete(value);
-  }
-
-  protected storeChart(chart: any) {
-    this.chart = chart;
   }
 }

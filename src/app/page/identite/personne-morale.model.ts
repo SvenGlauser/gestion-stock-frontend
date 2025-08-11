@@ -22,6 +22,6 @@ export class PersonneMorale extends Identite {
   }
 
   public getDesignation(): string {
-    return this.raisonSociale || '';
+    return this.raisonSociale ?? '';
   }
 }

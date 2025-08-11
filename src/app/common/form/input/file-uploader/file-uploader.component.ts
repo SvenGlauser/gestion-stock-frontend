@@ -1,4 +1,14 @@
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  input,
+  InputSignal,
+  model,
+  ModelSignal,
+  Signal,
+  viewChild
+} from '@angular/core';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -17,17 +27,12 @@ import {MatButton} from '@angular/material/button';
   styleUrl: './file-uploader.component.scss'
 })
 export class FileUploaderComponent {
-  @Input({required: true})
-  public formats: string[] = [];
 
-  @Input()
-  public value: File | null = null;
+  public readonly formats: InputSignal<string[]> = input.required();
+  public readonly value: ModelSignal<File | null> = model<File | null>(null);
 
-  @Output()
-  public valueChange: EventEmitter<File | null> = new EventEmitter<File | null>();
-
-  @ViewChild('inputFile')
-  public inputFile: ElementRef<HTMLInputElement> | null = null;
+  protected readonly isFileSelected: Signal<boolean> = computed((): boolean => this.value() !== null);
+  private readonly inputFile: Signal<ElementRef<HTMLInputElement>> = viewChild.required('inputFile');
 
   /**
    * Récupère le fichier
@@ -39,23 +44,21 @@ export class FileUploaderComponent {
       return;
     }
 
-    this.value = files[0];
-    this.valueChange.emit(this.value);
+    this.value.set(files[0]);
   }
 
   /**
    * Ajoute un fichier
    */
   protected addFile(): void {
-    this.inputFile?.nativeElement.click();
+    this.inputFile().nativeElement.click();
   }
 
   /**
    * Supprime un fichier
    */
   protected removeFile(): void {
-    this.inputFile!.nativeElement.value = "";
-    this.value = null;
-    this.valueChange.emit(this.value);
+    this.inputFile().nativeElement.value = "";
+    this.value.set(null);
   }
 }

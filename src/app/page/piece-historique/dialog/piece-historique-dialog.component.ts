@@ -30,7 +30,7 @@ import {PieceHistoriqueSourceEnumValuesForAutocomplete} from '../piece-historiqu
 })
 export class PieceHistoriqueDialogComponent extends AbstractFormDialogComponent<PieceHistoriqueDialogComponent, PieceHistorique> {
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       PieceHistorique.PANEL_DONNEES_GENERALES,
       [

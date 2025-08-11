@@ -28,7 +28,7 @@ export abstract class AbstractAutocompleteComponent<T> {
 
   // Saisie de valeur
   public readonly value: ModelSignal<T | null> = model<T | null>(null);
-  public readonly autocompleteFormControl: InputSignal<FormControl<string | T | null>> = input(new FormControl<string | T | null>(null));
+  public readonly autocompleteFormControl: InputSignal<FormControl<NullableStringOrGeneric<T>>> = input(new FormControl<NullableStringOrGeneric<T>>(null));
 
   // ViewChild
   private readonly trigger: Signal<MatAutocompleteTrigger> = viewChild.required(MatAutocompleteTrigger);
@@ -50,7 +50,7 @@ export abstract class AbstractAutocompleteComponent<T> {
         .pipe(
           startWith(this.autocompleteFormControl().value), // Valeur initiale
           debounceTime(500), // Ne fait une nouvelle requête que toutes les 500 ms
-          map((value: string | T | null): string => {
+          map((value: NullableStringOrGeneric<T>): string => {
             if (value === null) {
               return "";
             }
@@ -68,10 +68,10 @@ export abstract class AbstractAutocompleteComponent<T> {
       this.trigger().panelClosingActions.subscribe((event: MatOptionSelectionChange<any> | null): void => {
         // Si le panel n'est pas fermé suite à clic du bouton
         if (!event?.source) {
-          const value: string | T | null = this.autocompleteFormControl().value;
+          const value: NullableStringOrGeneric<T> = this.autocompleteFormControl().value;
 
           // Et que le type n'est pas un objet
-          if (!this.isValidSelection(value)) {
+          if (this.isInvalidSelection(value)) {
             // Réinitialiser la valeur
             this.autocompleteFormControl().setValue(null);
             this.emitValue(null);
@@ -124,10 +124,12 @@ export abstract class AbstractAutocompleteComponent<T> {
   }
 
   /**
-   * Vérifie si la sélection est valide
+   * Vérifie si la sélection est invalide
    * @param value Valeur sélectionnée
    */
-  protected isValidSelection(value: string | T | null): boolean {
+  protected isInvalidSelection(value: NullableStringOrGeneric<T>): boolean {
     return value === null || typeof value === "string";
   }
 }
+
+type NullableStringOrGeneric<T> = string | T | null;

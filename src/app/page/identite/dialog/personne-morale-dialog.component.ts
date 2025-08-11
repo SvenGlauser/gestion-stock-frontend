@@ -32,7 +32,7 @@ import {PersonneMoraleService} from '../personne-morale.service';
 })
 export class PersonneMoraleDialogComponent extends AbstractFormDialogComponent<PersonneMoraleDialogComponent, PersonneMorale> {
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       PersonneMorale.PANEL_DONNEES_GENERALES,
       [

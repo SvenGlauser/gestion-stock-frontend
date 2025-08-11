@@ -34,7 +34,7 @@ import {NumberFormField} from '../../../common/form/field/number-form-field';
 })
 export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialogComponent, Piece> {
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       Piece.PANEL_DONNEES_GENERALES,
       [

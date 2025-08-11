@@ -59,8 +59,7 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
    * Si en mode suppression ou lecture, on désactive les formulaires
    */
   private disableFormIfNeeded(): void {
-    if (this.data.type === DialogType.READ
-        || this.data.type === DialogType.DELETE) {
+    if ([DialogType.READ, DialogType.DELETE].includes(this.data.type)) {
 
       for (const forms of this.formsMap.values()) {
         forms.forEach(form => {
@@ -75,10 +74,7 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
    */
   private loadOldData(): void {
     // Ne s'exécute pas à la création
-    if (this.data.type === DialogType.READ
-        || this.data.type === DialogType.MODIFY
-        || this.data.type === DialogType.DELETE) {
-
+    if ([DialogType.READ, DialogType.MODIFY, DialogType.DELETE].includes(this.data.type)) {
       // Récupère l'objet
       this.getDataMethod(this.data.id!).subscribe((data: E): void => {
         this.oldObject = data;
@@ -187,8 +183,8 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
         let errorsMessages: string = this.createErrorMessage(errors);
 
         // Assignement du message
-        this.formComponent().formGroup?.setErrors({"validation": errorsMessages});
-        this.formComponent().formGroup?.markAsTouched();
+        this.formComponent().formGroup.setErrors({"validation": errorsMessages});
+        this.formComponent().formGroup.markAsTouched();
       }
     }
   }

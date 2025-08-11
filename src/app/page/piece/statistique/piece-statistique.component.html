@@ -8,19 +8,16 @@
     [autocompleteIdField]="Categorie.ID"
     [autocompleteNameField]="Categorie.NOM"
     label="Catégorie"
-    [(value)]="this.categorie"
-    (valueChange)="this.search()"/>
+    [(value)]="this.categorie"/>
   <app-autocomplete
     [autocompleteMethod]="this.autocompleteFournisseurs.bind(this)"
     [autocompleteIdField]="Fournisseur.ID"
     [autocompleteNameField]="Fournisseur.NOM"
     label="Fournisseur"
-    [(value)]="this.fournisseur"
-    (valueChange)="this.search()"/>
+    [(value)]="this.fournisseur"/>
 </div>
 
 <div echarts
-     [options]="this.options"
-     [loading]="!this.loaded"
-     (chartInit)="this.storeChart($event)">
+     [options]="this.options()"
+     [loading]="this.loading()">
 </div>

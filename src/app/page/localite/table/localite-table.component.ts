@@ -12,6 +12,7 @@ import {Model} from '../../../common/model';
 import {LocaliteDialogComponent} from '../dialog/localite-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {Localite} from '../localite.model';
+import {Column} from '../../../common/table/column/column';
 
 @Component({
   selector: 'app-localite',
@@ -23,7 +24,7 @@ import {Localite} from '../localite.model';
 })
 export class LocaliteTableComponent {
   // Définition des colonnes
-  protected columns = [
+  protected readonly columns: Column[] = [
     ClassicColumn
       .of(Localite.NOM_LABEL, Localite.NOM, "40%")
       .sort(Order.ASC)

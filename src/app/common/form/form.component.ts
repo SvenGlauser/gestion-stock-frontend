@@ -50,7 +50,6 @@ export class FormComponent {
 
   public formsMap: InputSignal<Map<string, FormField[]>> = input.required();
 
-  // Public, car doit être accédé s'il faut ajouter une erreur globale
   public formGroup: FormGroup = new FormGroup({});
 
   constructor() {

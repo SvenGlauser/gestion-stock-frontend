@@ -31,7 +31,7 @@ import {Pays} from '../../pays/pays.model';
 })
 export class LocaliteDialogComponent extends AbstractFormDialogComponent<LocaliteDialogComponent, Localite> {
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       Localite.PANEL_DONNEES_GENERALES,
       [

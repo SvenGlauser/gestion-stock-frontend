@@ -28,7 +28,7 @@ import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete
 })
 export class CategorieDialogComponent extends AbstractFormDialogComponent<CategorieDialogComponent, Categorie> {
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       Categorie.PANEL_DONNEES_GENERALES,
       [

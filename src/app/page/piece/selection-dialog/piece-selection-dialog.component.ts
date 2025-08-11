@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -32,26 +32,22 @@ import {AutocompleteMultipleComponent} from '../../../common/form/input/autocomp
   templateUrl: './piece-selection-dialog.component.html',
   styleUrl: './piece-selection-dialog.component.scss'
 })
-export class PieceSelectionDialogComponent implements OnInit {
+export class PieceSelectionDialogComponent {
   protected readonly FIELD_ID = Model.ID;
   protected readonly FIELDS_NAME = [Piece.NUMERO_INVENTAIRE, Piece.NOM];
   protected readonly FIELDS_SEPARATOR = " / ";
 
-  protected pieceFormControl: FormControl = new FormControl();
-  protected machine: Machine | null = null;
+  private readonly machineId: number = inject(MAT_DIALOG_DATA);
+
+  protected readonly pieceFormControl: FormControl = new FormControl();
+  private machine: Machine | null = null;
 
   constructor(private readonly pieceService: PieceService,
               private readonly machineService: MachineService,
-              private readonly dialogRef: MatDialogRef<PieceSelectionDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public machineId: number) {}
-
-  /**
-   * Récupère la machine en cours de traitement
-   */
-  public ngOnInit(): void {
+              private readonly dialogRef: MatDialogRef<PieceSelectionDialogComponent>) {
     this.machineService
       .get(this.machineId)
-      .subscribe((machine: Machine) => this.machine = machine);
+      .subscribe((machine: Machine): Machine => this.machine = machine);
   }
 
   /**

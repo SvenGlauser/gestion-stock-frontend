@@ -27,7 +27,7 @@ import {Pays} from '../pays.model';
 })
 export class PaysDialogComponent extends AbstractFormDialogComponent<PaysDialogComponent, Pays> {
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       Pays.PANEL_DONNEES_GENERALES,
       [

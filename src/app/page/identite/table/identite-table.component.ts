@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, Signal, viewChild} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
@@ -79,9 +79,7 @@ export class IdentiteTableComponent {
     read: true
   };
 
-  // Utilisé pour udpate la dataTable
-  @ViewChild(TableComponent)
-  public matTable: TableComponent<Machine> | null = null;
+  private readonly matTable: Signal<TableComponent<Machine>> = viewChild.required<TableComponent<Machine>>(TableComponent);
 
   constructor(private readonly identiteService: IdentiteService,
               private readonly matDialog: MatDialog) {}
@@ -114,7 +112,7 @@ export class IdentiteTableComponent {
 
     dialogRef.afterClosed().subscribe(modification => {
       if (modification) {
-        this.matTable?.update();
+        this.matTable().update();
       }
     });
   }

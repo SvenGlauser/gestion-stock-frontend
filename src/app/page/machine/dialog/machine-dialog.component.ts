@@ -27,7 +27,7 @@ import {Machine} from '../machine.model';
 })
 export class MachineDialogComponent extends AbstractFormDialogComponent<MachineDialogComponent, Machine> {
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       Machine.PANEL_DONNEES_GENERALES,
       [
