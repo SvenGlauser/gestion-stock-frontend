@@ -11,12 +11,12 @@
 
   <mat-autocomplete
     autoActiveFirstOption
-    [displayWith]="this.displayName.bind(this)"
+    [displayWith]="this.stringify.bind(this)"
     (optionSelected)="this.selectValue($event)"
     #auto="matAutocomplete">
 
-    @for (option of this.results(); track option[this.autocompleteIdField()]) {
-      <mat-option [value]="option">{{option[this.autocompleteNameField()]}}</mat-option>
+    @for (option of this.results(); track this.track(option)) {
+      <mat-option [value]="option">{{this.stringify(option)}}</mat-option>
     }
 
   </mat-autocomplete>

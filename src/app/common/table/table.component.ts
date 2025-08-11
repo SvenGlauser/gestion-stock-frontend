@@ -50,7 +50,7 @@ import {LinkColumn} from './column/link-column';
 import {RouterLink} from '@angular/router';
 import {CustomColumn} from './column/custom-column';
 import {AutocompleteEnumFilter} from './column/filter/autocomplete-enunm-column-filter';
-import {AutocompleteEnumComponent} from '../form/input/autocomplete-enum/autocomplete-enum.component';
+import {AutocompleteEnumComponent} from '../form/input/autocomplete/autocomplete-enum.component';
 import {FilterCombinatorType} from '../search/filter-combinator';
 import {ComponentType} from '@angular/cdk/portal';
 import {AbstractFormDialogComponent} from '../form/dialog/abstract-form-dialog.component';

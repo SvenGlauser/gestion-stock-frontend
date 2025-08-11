@@ -2,13 +2,12 @@ import {Component, input, InputSignal} from '@angular/core';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from '@angular/material/autocomplete';
-import {AutocompleteMethod} from './autocomplete';
 import {MatInput} from '@angular/material/input';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {AbstractAutocompleteComponent} from './abstract/abstract-autocomplete.component';
 
 @Component({
-  selector: 'app-autocomplete',
+  selector: 'app-autocomplete-enum',
   imports: [
     MatFormField,
     FormsModule,
@@ -23,26 +22,36 @@ import {AbstractAutocompleteComponent} from './abstract/abstract-autocomplete.co
   templateUrl: './abstract/abstract-autocomplete.component.html',
   styleUrl: './abstract/abstract-autocomplete.component.scss'
 })
-export class AutocompleteComponent<T extends Record<string, any>> extends AbstractAutocompleteComponent<T> {
-
+export class AutocompleteEnumComponent<T> extends AbstractAutocompleteComponent<T> {
   // Infos de l'autocomplete
-  public readonly autocompleteMethod: InputSignal<AutocompleteMethod<T>> = input.required();
-  public readonly autocompleteIdField: InputSignal<string> = input.required();
-  public readonly autocompleteNameField: InputSignal<string> = input.required();
+  public readonly mapOfElements: InputSignal<Map<any, string>> = input.required();
 
-  protected override autocomplete(value: string): Observable<T[]> {
-    return this.autocompleteMethod()(value);
+  protected override autocomplete(stringValue: string): Observable<T[]> {
+    const results: T[] = [];
+
+    for (let [key, value] of this.mapOfElements()) {
+      if (value.toLowerCase().includes(stringValue?.toLowerCase() ?? "")) {
+        results.push(key);
+      }
+    }
+
+    // Exécute la recherche
+    return of(results);
   }
 
-  protected override stringify(value: T | null): string {
+  protected override stringify(value: T): string {
     if (value === null) {
       return "";
     }
 
-    return value[this.autocompleteNameField()];
+    return this.mapOfElements().get(value) ?? "";
   }
 
   protected override track(value: T): any {
-    return value[this.autocompleteIdField()];
+    return value;
+  }
+
+  protected override isValidSelection(value: string | T | null): boolean {
+    return value === null || (typeof value === "string" && !this.mapOfElements().has(value));
   }
 }

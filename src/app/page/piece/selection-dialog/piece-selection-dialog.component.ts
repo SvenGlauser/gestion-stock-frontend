@@ -17,9 +17,7 @@ import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
 import {FormControl} from '@angular/forms';
 import {ValidationException} from '../../../common/utils/validation-exception';
 import {Piece} from '../piece.model';
-import {
-  AutocompleteMultipleComponent
-} from '../../../common/form/input/autocomplete-multiple/autocomplete-multiple.component';
+import {AutocompleteMultipleComponent} from '../../../common/form/input/autocomplete/autocomplete-multiple.component';
 
 @Component({
   selector: 'app-piece-selection-dialog',
