@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input, InputSignal} from '@angular/core';
 import {Link} from '../link';
 import {MatIcon} from '@angular/material/icon';
 import {MatListItem, MatListItemTitle} from '@angular/material/list';
@@ -18,6 +18,5 @@ import {MatTooltip} from '@angular/material/tooltip';
   styleUrl: './menu-item.component.scss'
 })
 export class MenuItemComponent {
-  @Input({required: true})
-  public value: Link | null = null;
+  public value: InputSignal<Link> = input.required();
 }

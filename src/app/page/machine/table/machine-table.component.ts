@@ -177,7 +177,7 @@ export class MachineTableComponent implements OnInit {
     } else {
       this.extendedRowId = element.id;
     }
-    this.matTable?.table?.renderRows();
+    this.matTable?.renderRows();
   }
 
   /**

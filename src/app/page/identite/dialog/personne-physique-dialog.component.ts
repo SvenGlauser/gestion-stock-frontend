@@ -33,9 +33,6 @@ import {PersonnePhysiqueService} from '../personne-physique.service';
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
 export class PersonnePhysiqueDialogComponent extends AbstractFormDialogComponent<PersonnePhysiqueDialogComponent, PersonnePhysique> {
-  // Constantes
-  protected readonly ID_FIELD: string = Model.ID;
-
   // Définition des champs de formulaire
   protected formsMap: Map<string, FormField[]> = new Map([
     [

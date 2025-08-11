@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {afterNextRender, Component, input, InputSignal} from '@angular/core';
+import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {FormField} from './field/form-field';
@@ -40,41 +40,43 @@ import {AutocompleteMultipleComponent} from './input/autocomplete-multiple/autoc
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
-export class FormComponent implements OnInit {
+export class FormComponent {
   // Constantes
-  protected readonly AutocompleteFormField = AutocompleteFormField;
-  protected readonly AutocompleteMultipleFormField = AutocompleteMultipleFormField;
-  protected readonly AutocompleteEnumFormField = AutocompleteEnumFormField;
-  protected readonly InputFormField = InputFormField;
-  protected readonly NumberFormField = NumberFormField;
+  protected readonly AutocompleteFormField: typeof AutocompleteFormField = AutocompleteFormField;
+  protected readonly AutocompleteMultipleFormField: typeof AutocompleteMultipleFormField  = AutocompleteMultipleFormField;
+  protected readonly AutocompleteEnumFormField: typeof AutocompleteEnumFormField = AutocompleteEnumFormField;
+  protected readonly InputFormField: typeof InputFormField = InputFormField;
+  protected readonly NumberFormField: typeof NumberFormField = NumberFormField;
 
-  @Input({required: true})
-  public formsMap: Map<string, FormField[]> = new Map();
+  public formsMap: InputSignal<Map<string, FormField[]>> = input.required();
 
   // Public, car doit être accédé s'il faut ajouter une erreur globale
-  public formGroup: FormGroup | null = null;
+  public formGroup: FormGroup = new FormGroup({});
+
+  constructor() {
+    afterNextRender((): void => this.initFormGroup());
+  }
 
   /**
    * Ajoute les FormControl au FormGroup
    */
-  public ngOnInit(): void {
-    let controls: Record<string, FormControl> = {};
-
-    for (const forms of this.formsMap.values()) {
+  private initFormGroup(): void {
+    for (const forms of this.formsMap().values()) {
       forms.forEach((form: FormField): void => {
-        controls[form.field.replace(".", "-")] = form.formControl;
-      })
+        this.formGroup.addControl(
+          form.field.replace(".", "-"),
+          form.formControl
+        );
+      });
     }
-
-    this.formGroup = new FormGroup(controls);
   }
 
   /**
    * Garde le tri par défaut de la Map
-   * @param a Objet A
-   * @param b Objet B
+   * @param _a Objet A
+   * @param _b Objet B
    */
-  protected unsortedMap(a: any, b: any): number {
+  protected unsortedMap(_a: any, _b: any): number {
     return 0;
   }
 }

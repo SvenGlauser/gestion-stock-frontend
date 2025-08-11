@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-form-dialog.component';
-import {Model} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
 import {Observable} from 'rxjs';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
@@ -28,9 +27,6 @@ import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
 export class CategorieDialogComponent extends AbstractFormDialogComponent<CategorieDialogComponent, Categorie> {
-  // Constantes
-  protected readonly ID_FIELD: string = Model.ID;
-
   // Définition des champs de formulaire
   protected formsMap: Map<string, FormField[]> = new Map([
     [

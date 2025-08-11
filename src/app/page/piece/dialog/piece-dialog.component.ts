@@ -33,9 +33,6 @@ import {NumberFormField} from '../../../common/form/field/number-form-field';
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
 export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialogComponent, Piece> {
-  // Constantes
-  protected readonly ID_FIELD: string = Model.ID;
-
   // Définition des champs de formulaire
   protected formsMap: Map<string, FormField[]> = new Map([
     [

@@ -1,26 +1,29 @@
 <mat-form-field>
-  @if (this.label) {
-    <mat-label>{{this.label}}</mat-label>
+  @if (this.label() !== null) {
+    <mat-label>{{this.label()}}</mat-label>
   }
+
   <input
     type="text"
     matInput
-    [formControl]="this.autocompleteFormControl"
+    [formControl]="this.autocompleteFormControl()"
     [matAutocomplete]="auto"/>
+
   <mat-autocomplete
     autoActiveFirstOption
     [displayWith]="this.displayName.bind(this)"
     (optionSelected)="this.selectValue($event)"
     #auto="matAutocomplete">
-    @if (this.autocompleteMethod && this.autocompleteNameField && this.autocompleteIdField) {
-      @for (option of results; track option[this.autocompleteIdField]) {
-        <mat-option [value]="option">{{option[this.autocompleteNameField]}}</mat-option>
-      }
+
+    @for (option of this.results(); track option[this.autocompleteIdField()]) {
+      <mat-option [value]="option">{{option[this.autocompleteNameField()]}}</mat-option>
     }
+
   </mat-autocomplete>
-  @if (this.autocompleteFormControl.hasError("validation")) {
+
+  @if (this.autocompleteFormControl().hasError("validation")) {
     <mat-error class="error">
-      {{this.autocompleteFormControl.getError("validation")}}
+      {{this.autocompleteFormControl().getError("validation")}}
     </mat-error>
   }
 </mat-form-field>

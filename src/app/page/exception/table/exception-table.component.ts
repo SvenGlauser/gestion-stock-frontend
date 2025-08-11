@@ -108,7 +108,7 @@ export class ExceptionTableComponent {
     } else {
       this.extendedRowId = element.id;
     }
-    this.matTable?.table?.renderRows();
+    this.matTable?.renderRows();
   }
 
   /**

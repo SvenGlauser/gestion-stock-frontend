@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ this.getTitle() }}</h2>
+<h2 mat-dialog-title>{{ this.dialogTitle }}</h2>
 
 <mat-dialog-content>
   <app-form [formsMap]="this.formsMap"/>
@@ -7,20 +7,17 @@
 <mat-dialog-actions>
   @switch (this.data.type) {
     @case (DialogType.CREATE) {
-      <button mat-button
-              (click)="create()">
+      <button mat-button (click)="create()">
         Créer
       </button>
     }
     @case (DialogType.MODIFY) {
-      <button mat-button
-              (click)="modify()">
+      <button mat-button (click)="modify()">
         Modifier
       </button>
     }
     @case (DialogType.DELETE) {
-      <button mat-button
-              (click)="delete()">
+      <button mat-button (click)="delete()">
         Supprimer
       </button>
     }

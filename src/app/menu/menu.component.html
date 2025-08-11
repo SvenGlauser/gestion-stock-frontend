@@ -1,5 +1,5 @@
 <mat-nav-list>
-  @for (link of links; track link.name) {
+  @for (link of this.links(); track link.name) {
     <app-menu-item [value]="link" />
   }
 </mat-nav-list>

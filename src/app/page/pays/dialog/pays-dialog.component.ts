@@ -9,7 +9,6 @@ import {PaysService} from '../pays.service';
 import {Observable} from 'rxjs';
 import {InputFormField} from "../../../common/form/field/input-form-field";
 import {Pays} from '../pays.model';
-import {Model} from '../../../common/model';
 
 @Component({
   selector: 'app-dialog',
@@ -27,9 +26,6 @@ import {Model} from '../../../common/model';
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
 export class PaysDialogComponent extends AbstractFormDialogComponent<PaysDialogComponent, Pays> {
-  // Constantes
-  protected readonly ID_FIELD: string = Model.ID;
-
   // Définition des champs de formulaire
   protected formsMap: Map<string, FormField[]> = new Map([
     [

@@ -1,13 +1,18 @@
 import {
-  AfterViewInit,
+  afterNextRender,
   Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  InputSignal,
+  model,
+  ModelSignal,
+  signal,
+  Signal,
+  untracked,
+  viewChild,
+  WritableSignal
 } from '@angular/core';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -20,6 +25,8 @@ import {
 import {MatInput} from '@angular/material/input';
 import {debounceTime, map, startWith} from 'rxjs';
 import {KeyValuePipe} from '@angular/common';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {MatOptionSelectionChange} from '@angular/material/core';
 
 @Component({
   selector: 'app-autocomplete-enum',
@@ -38,98 +45,85 @@ import {KeyValuePipe} from '@angular/common';
   templateUrl: './autocomplete-enum.component.html',
   styleUrl: './autocomplete-enum.component.scss'
 })
-export class AutocompleteEnumComponent implements OnInit, AfterViewInit, OnChanges {
-  @Input({required: true})
-  public mapOfElements: Map<any, string> | null = null;
+export class AutocompleteEnumComponent {
+  // Infos de l'autocomplete
+  public readonly mapOfElements: InputSignal<Map<any, string>> = input.required();
 
-  @Input()
-  public label: string | null = null;
+  // Label
+  public readonly label: InputSignal<string | null> = input<string | null>(null);
 
-  @Input()
-  public value: any = null;
-  @Output()
-  public valueChange: EventEmitter<any> = new EventEmitter<any>();
+  // Saisie de valeur
+  public readonly value: ModelSignal<any> = model<any>(null);
+  public readonly autocompleteFormControl: InputSignal<FormControl<any>> = input(new FormControl<any>(null));
 
-  @Input()
-  public autocompleteFormControl = new FormControl<any>(null);
+  // ViewChild
+  private readonly trigger: Signal<MatAutocompleteTrigger> = viewChild.required(MatAutocompleteTrigger);
 
-  @ViewChild(MatAutocompleteTrigger)
-  public trigger: MatAutocompleteTrigger | null = null;
+  // Options de l'autocomplete
+  protected readonly results: WritableSignal<Map<any, string>> = signal(new Map());
 
-  protected results: Map<any, string> = new Map<any, string>();
+  constructor() {
+    // Modification de la valeur dans le formControl
+    effect((): void => {
+      const value: any = this.value();
+      untracked((): void => this.setValue(value));
+    });
 
-  /**
-   * Initialise les events listeners
-   */
-  public ngOnInit(): void {
-    // Sélectionne la valeur par défaut
-    if (this.value !== null) {
-      this.autocompleteFormControl.setValue(this.value);
-    }
+    const destroyRef: DestroyRef = inject(DestroyRef);
 
-    this.autocompleteFormControl.valueChanges.pipe(
-      startWith(""), // Valeur initiale
-      debounceTime(500), // Ne fait une nouvelle requête que toutes les 500 ms
-      map(value => {
-        // Si le composant n'est pas correctement initialisé
-        if (!this.mapOfElements) {
-          return new Map<any, string>();
-        }
+    afterNextRender((): void => {
+      this.autocompleteFormControl().valueChanges
+        .pipe(
+          startWith(this.autocompleteFormControl().value), // Valeur initiale
+          debounceTime(500), // Ne fait une nouvelle requête que toutes les 500 ms
+          map((value: any): Map<any, string> => {
+            let stringValue: string | null;
 
-        let stringValue: string | null;
+            // Si la valeur n'est pas null et pas de type string
+            if (value === null) {
+              stringValue = null;
+            } else if (typeof value === 'string') {
+              stringValue = value;
+            } else {
+              // Récupère la valeur affichée pour faire la recherche
+              stringValue = this.mapOfElements().get(value) ?? null;
+            }
 
-        // Si la valeur n'est pas null et pas de type string
-        if (value === null) {
-          stringValue = null;
-        } else if (typeof value === 'string') {
-          stringValue = value;
-        } else {
-          // Récupère la valeur affichée pour faire la recherche
-          stringValue = this.mapOfElements.get(value) ?? null;
-        }
+            const result: Map<any, string> = new Map<any, string>();
 
-        let result: Map<any, string> = new Map<any, string>();
+            for (let [key, value] of this.mapOfElements()) {
+              if (value.toLowerCase().includes(stringValue?.toLowerCase() ?? "")) {
+                result.set(key, value);
+              }
+            }
 
-        for (let [key, value] of this.mapOfElements) {
-          if (value.toLowerCase().includes(stringValue?.toLowerCase() ?? "")) {
-            result.set(key, value);
+            // Exécute la recherche
+            return result;
+          }),
+          takeUntilDestroyed(destroyRef))
+        .subscribe((results: Map<any, string>): void => this.results.set(results));
+
+      this.trigger().panelClosingActions.subscribe((event: MatOptionSelectionChange<any> | null): void => {
+        // Si le panel n'est pas fermé suite à clic du bouton
+        if (!event?.source) {
+          const value: any = this.autocompleteFormControl().value;
+
+          // Et que le type n'est pas un objet
+          if (value === null
+              || (typeof value === "string" && !this.mapOfElements().has(value))) {
+
+            // Réinitialiser la valeur
+            this.autocompleteFormControl().setValue(null);
+            this.emitValue(null);
           }
         }
-
-        // Exécute la recherche
-        return result;
-      }))
-      .subscribe(result => this.results = result);
+      });
+    })
   }
 
-  /**
-   * Initialise les events listeners
-   */
-  public ngAfterViewInit(): void {
-    this.trigger!.panelClosingActions.subscribe((event) => {
-      // Si le panel n'est pas fermé suite à clic du bouton
-      if (!event?.source) {
-
-        // Et que le type n'est pas un objet
-        if (this.autocompleteFormControl.value === null ||
-            (typeof this.autocompleteFormControl.value === "string" && this.mapOfElements?.has(this.autocompleteFormControl.value) === false)) {
-          // Réinitialiser la valeur
-          this.autocompleteFormControl.setValue(null);
-          this.emitValue(null);
-        }
-      }
-    });
-  }
-
-  /**
-   * Catch les changements de valeur et update le formcontrol
-   * @param changes Changement de valeur
-   */
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes['value']) {
-      if (this.autocompleteFormControl.value !== this.value) {
-        this.autocompleteFormControl.setValue(this.value);
-      }
+  private setValue(value: any): void {
+    if (this.autocompleteFormControl().value !== value) {
+      this.autocompleteFormControl().setValue(value);
     }
   }
 
@@ -146,11 +140,13 @@ export class AutocompleteEnumComponent implements OnInit, AfterViewInit, OnChang
    * @param value Valeur à émettre
    */
   private emitValue(value: any): void {
-    if (value === this.value) {
-      return;
-    }
+    untracked((): void => {
+      if (value === this.value()) {
+        return;
+      }
 
-    this.valueChange.emit(value);
+      this.value.set(value);
+    });
   }
 
   /**
@@ -158,14 +154,10 @@ export class AutocompleteEnumComponent implements OnInit, AfterViewInit, OnChang
    * @param value Valeur
    */
   protected displayName(value: any): string {
-    if (!this.mapOfElements) {
-      return "";
-    }
-
     if (value === null) {
       return "";
     }
 
-    return this.mapOfElements.get(value) ?? "";
+    return this.mapOfElements().get(value) ?? "";
   }
 }

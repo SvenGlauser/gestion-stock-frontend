@@ -1,8 +1,8 @@
-@if (this.title || this.actionColumnInfo.created) {
+@if (this.title() || this.actionColumnInfo().created) {
   <div class="header">
-    <h2>{{this.title}}</h2>
+    <h2>{{this.title()}}</h2>
 
-    @if (this.actionColumnInfo.created) {
+    @if (this.actionColumnInfo().created) {
       <div class="header-actions">
         <button mat-flat-button (click)="openDialog(null, DialogType.CREATE)">Créer</button>
       </div>
@@ -11,20 +11,21 @@
 }
 
 <div class="table-encapsulation">
-  @if (this.isLoadingData) {
+  @if (this.isLoading()) {
     <mat-spinner [diameter]="50"></mat-spinner>
     <div class="ui-hide"></div>
   }
 
-  <table mat-table
-         multiTemplateDataRows
-         [dataSource]="data ? data.elements : []"
-         matSort
-         (matSortChange)="sort($event)"
-         [matSortActive]="getDefaultSort()"
-         [matSortDirection]="getDefaultOrder()">
+  <table
+    mat-table
+    [dataSource]="this.tableElements()"
+    [multiTemplateDataRows]="true"
+    matSort
+    (matSortChange)="sort($event)"
+    [matSortActive]="this.defaultSortColumn()"
+    [matSortDirection]="this.defaultSortDirection()">
 
-    @for (column of this.getColumnsToGenerateList(); track column.field) {
+    @for (column of this.columnsToGenerateAutomatically(); track column.field) {
       <ng-container [matColumnDef]="column.field">
         <th mat-header-cell
             *matHeaderCellDef
@@ -69,14 +70,14 @@
           *matHeaderCellDef
           [style.width]="'10%'"
           [style.text-align]="'right'">
-        @if (this.viewFilter) {
+        @if (this.viewFilter()) {
           <button mat-icon-button
-                  (click)="viewFilter = false">
+                  (click)="viewFilter.set(false)">
             <mat-icon>filter_alt</mat-icon>
           </button>
-        } @else if(this.existFilter) {
+        } @else if(this.existFilter()) {
           <button mat-icon-button
-                  (click)="viewFilter = true">
+                  (click)="viewFilter.set(true)">
             <mat-icon>filter_alt_off</mat-icon>
           </button>
         }
@@ -84,7 +85,10 @@
       <td mat-cell
           *matCellDef="let element"
           [style.text-align]="'right'">
-        @if (this.actionColumnInfo.read || this.actionColumnInfo.modify || this.actionColumnInfo.delete || this.canViewOneAction(element)) {
+        @if (this.actionColumnInfo().read
+            || this.actionColumnInfo().modify
+            || this.actionColumnInfo().delete
+            || this.canViewOneAction(element)) {
           <button mat-icon-button
                   [matMenuTriggerFor]="menu"
                   (keydown.enter)="$event.stopPropagation()"
@@ -92,21 +96,21 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            @if (this.actionColumnInfo.read) {
-              <button mat-menu-item (click)="openDialog(element, DialogType.READ)">Afficher</button>
+            @if (this.actionColumnInfo().read) {
+              <button mat-menu-item (click)="this.openDialog(element, DialogType.READ)">Afficher</button>
             }
-            @if (this.actionColumnInfo.modify) {
-              <button mat-menu-item (click)="openDialog(element, DialogType.MODIFY)">Modifier</button>
+            @if (this.actionColumnInfo().modify) {
+              <button mat-menu-item (click)="this.openDialog(element, DialogType.MODIFY)">Modifier</button>
             }
-            @for (action of this.actionColumnInfo.actions ?? []; track action.name) {
+            @for (action of this.actionColumnInfo().actions ?? []; track action.name) {
               @if (!action.condition || action.condition(element)) {
                 <button mat-menu-item (click)="this.run(action.action, element)">
                   {{action.name}}
                 </button>
               }
             }
-            @if (this.actionColumnInfo.delete) {
-              <button mat-menu-item (click)="openDialog(element, DialogType.DELETE)">Supprimer</button>
+            @if (this.actionColumnInfo().delete) {
+              <button mat-menu-item (click)="this.openDialog(element, DialogType.DELETE)">Supprimer</button>
             }
           </mat-menu>
         }
@@ -116,10 +120,10 @@
     <ng-container [matColumnDef]="'filters'">
       <th mat-header-cell
           *matHeaderCellDef
-          [colSpan]="displayedColumns.length"
+          [colSpan]="this.displayedColumns().length"
           class="filters-cell">
 
-        @for (column of columns; track column.field) {
+        @for (column of columns(); track column.field) {
           <div [style.width]="column.width">
             @for (columnFilter of column.filters; track columnFilter.filterField) {
               @if (InputFilter.isInstanceOf(columnFilter)) {
@@ -156,22 +160,22 @@
 
     <ng-content></ng-content>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-header-row *matHeaderRowDef="this.displayedColumns()"></tr>
     <tr mat-header-row
         *matHeaderRowDef="['filters']"
-        [ngClass]="{'closed': !viewFilter}"></tr>
+        [ngClass]="{'closed': !this.viewFilter()}"></tr>
 
-    @if (this.actionColumnInfo.clicOnLine) {
+    @if (this.actionColumnInfo().clicOnLine) {
       <tr mat-row
-          *matRowDef="let row; columns: displayedColumns;"
+          *matRowDef="let row; columns: this.displayedColumns();"
           class="mat-row-clickable"
           (keydown.enter)="openDialog(row, DialogType.READ)"
           (click)="openDialog(row, DialogType.READ)"></tr>
     } @else {
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let ignored; columns: this.displayedColumns();"></tr>
     }
   </table>
-  @if (!this.data?.elements?.length) {
+  @if (this.tableLength() === 0) {
     <div class="empty-table">Aucun élément dans la liste</div>
   }
   <mat-paginator [pageSizeOptions]="[10, 20, 50]"

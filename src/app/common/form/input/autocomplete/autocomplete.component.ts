@@ -1,13 +1,18 @@
 import {
-  AfterViewInit,
+  afterNextRender,
   Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  InputSignal,
+  model,
+  ModelSignal,
+  signal,
+  Signal,
+  untracked,
+  viewChild,
+  WritableSignal
 } from '@angular/core';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -19,7 +24,9 @@ import {
 } from '@angular/material/autocomplete';
 import {AutocompleteMethod} from './autocomplete';
 import {MatInput} from '@angular/material/input';
-import {debounceTime, mergeMap, of, startWith} from 'rxjs';
+import {debounceTime, mergeMap, Observable, startWith} from 'rxjs';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {MatOptionSelectionChange} from '@angular/material/core';
 
 @Component({
   selector: 'app-autocomplete',
@@ -37,93 +44,78 @@ import {debounceTime, mergeMap, of, startWith} from 'rxjs';
   templateUrl: './autocomplete.component.html',
   styleUrl: './autocomplete.component.scss'
 })
-export class AutocompleteComponent<T extends Record<string, any>> implements OnInit, AfterViewInit, OnChanges {
-  @Input({required: true})
-  public autocompleteMethod: AutocompleteMethod<T> | null = null;
-  @Input({required: true})
-  public autocompleteIdField: string | null = null;
-  @Input({required: true})
-  public autocompleteNameField: string | null = null;
+export class AutocompleteComponent<T extends AutocompleteValueType> {
 
-  @Input()
-  public label: string | null = null;
+  // Infos de l'autocomplete
+  public readonly autocompleteMethod: InputSignal<AutocompleteMethod<T>> = input.required();
+  public readonly autocompleteIdField: InputSignal<string> = input.required();
+  public readonly autocompleteNameField: InputSignal<string> = input.required();
 
-  @Input()
-  public value: T | null = null;
-  @Output()
-  public valueChange: EventEmitter<T | null> = new EventEmitter<T | null>();
+  // Label
+  public readonly label: InputSignal<string | null> = input<string | null>(null);
 
-  @Input()
-  public autocompleteFormControl = new FormControl<string | T | null>(null);
+  // Saisie de valeur
+  public readonly value: ModelSignal<T | null> = model<T | null>(null);
+  public readonly autocompleteFormControl: InputSignal<FormControl<FormControlValueType>> = input(new FormControl<FormControlValueType>(null));
 
-  @ViewChild(MatAutocompleteTrigger)
-  public trigger: MatAutocompleteTrigger | null = null;
+  // ViewChild
+  private readonly trigger: Signal<MatAutocompleteTrigger> = viewChild.required(MatAutocompleteTrigger);
 
-  protected results: T[] = [];
+  // Options de l'autocomplete
+  protected readonly results: WritableSignal<T[]> = signal([]);
 
-  /**
-   * Initialise les events listeners
-   */
-  public ngOnInit(): void {
-    // Sélectionne la valeur par défaut
-    if (this.value) {
-      this.autocompleteFormControl.setValue(this.value);
-    }
-
-    this.autocompleteFormControl.valueChanges.pipe(
-      startWith(""), // Valeur initiale
-      debounceTime(500), // Ne fait une nouvelle requête que toutes les 500 ms
-      mergeMap(value => {
-        // Si le composant n'est pas correctement initialisé
-        if (!this.autocompleteMethod || !this.autocompleteIdField || !this.autocompleteNameField) {
-          return of([]);
-        }
-
-        let stringValue: string | null;
-
-        // Si la valeur n'est pas null et pas de type string
-        if (!value) {
-          stringValue = "";
-        } else if (typeof value === 'string') {
-          stringValue = value;
-        } else {
-          // Récupère la valeur affichée pour faire la recherche
-          stringValue = value[this.autocompleteNameField];
-        }
-
-        // Exécute la recherche
-        return this.autocompleteMethod(stringValue ?? "");
-      }))
-      .subscribe(result => this.results = result);
-  }
-
-  /**
-   * Initialise les events listeners
-   */
-  public ngAfterViewInit(): void {
-    this.trigger!.panelClosingActions.subscribe((event) => {
-      // Si le panel n'est pas fermé suite à clic du bouton
-      if (!event?.source) {
-
-        // Et que le type n'est pas un objet
-        if (!this.autocompleteFormControl.value || typeof this.autocompleteFormControl.value === "string") {
-          // Réinitialiser la valeur
-          this.autocompleteFormControl.setValue(null);
-          this.emitValue(null);
-        }
-      }
+  constructor() {
+    // Modification de la valeur dans le formControl
+    effect((): void => {
+      const value: T | null = this.value();
+      untracked((): void => this.setValue(value));
     });
+
+    const destroyRef: DestroyRef = inject(DestroyRef);
+
+    afterNextRender((): void => {
+      this.autocompleteFormControl().valueChanges
+        .pipe(
+          startWith(this.autocompleteFormControl().value), // Valeur initiale
+          debounceTime(500), // Ne fait une nouvelle requête que toutes les 500 ms
+          mergeMap((value: FormControlValueType): Observable<T[]> => {
+            let stringValue: string | null;
+
+            // Si la valeur n'est pas null et pas de type string
+            if (!value) {
+              stringValue = "";
+            } else if (typeof value === 'string') {
+              stringValue = value;
+            } else {
+              // Récupère la valeur affichée pour faire la recherche
+              stringValue = value[this.autocompleteNameField()];
+            }
+
+            // Exécute la recherche
+            return this.autocompleteMethod()(stringValue ?? "");
+          }),
+          takeUntilDestroyed(destroyRef))
+        .subscribe((results: T[]): void => this.results.set(results));
+
+      this.trigger().panelClosingActions.subscribe((event: MatOptionSelectionChange<any> | null): void => {
+        // Si le panel n'est pas fermé suite à clic du bouton
+        if (!event?.source) {
+          const value: FormControlValueType = this.autocompleteFormControl().value;
+
+          // Et que le type n'est pas un objet
+          if (value === null || typeof value === "string") {
+            // Réinitialiser la valeur
+            this.autocompleteFormControl().setValue(null);
+            this.emitValue(null);
+          }
+        }
+      });
+    })
   }
 
-  /**
-   * Catch les changements de valeur et update le formcontrol
-   * @param changes Changement de valeur
-   */
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes['value']) {
-      if (this.autocompleteFormControl.value !== this.value) {
-        this.autocompleteFormControl.setValue(this.value);
-      }
+  private setValue(value: T | null): void {
+    if (this.autocompleteFormControl().value !== value) {
+      this.autocompleteFormControl().setValue(value);
     }
   }
 
@@ -140,26 +132,27 @@ export class AutocompleteComponent<T extends Record<string, any>> implements OnI
    * @param value Valeur à émettre
    */
   private emitValue(value: T | null): void {
-    if (value === this.value) {
-      return;
-    }
+    untracked((): void => {
+      if (value === this.value()) {
+        return;
+      }
 
-    this.valueChange.emit(value);
+      this.value.set(value);
+    });
   }
 
   /**
    * Récupère le nom pour l'affichage dans l'autocomplete
    * @param value Valeur
    */
-  protected displayName(value: T): string {
-    if (!this.autocompleteNameField) {
+  protected displayName(value: T | null): string {
+    if (value === null) {
       return "";
     }
 
-    if (!value) {
-      return "";
-    }
-
-    return value[this.autocompleteNameField] ?? "";
+    return value[this.autocompleteNameField()] ?? "";
   }
 }
+
+type AutocompleteValueType = Record<string, any>;
+type FormControlValueType = string | AutocompleteValueType | null;
