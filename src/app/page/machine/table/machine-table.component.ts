@@ -200,11 +200,12 @@ export class MachineTableComponent {
             machine.description = returnedMachine.description;
             machine.proprietaire = returnedMachine.proprietaire;
             machine.pieces = returnedMachine.pieces;
-            this.piecesLightsTables().forEach(table => {
+
+            for (const table of this.piecesLightsTables()) {
               if (table.machine().id === machine.id) {
                 table.table().update();
               }
-            });
+            }
           }
         }),
         map(() => false));

@@ -56,7 +56,7 @@ export class FournisseurService {
       combinators: [{
         type: FilterCombinatorType.AND,
         filters: [{
-          field: Fournisseur.NOM,
+          field: Fournisseur.IDENTITE_DESIGNATION,
           value: value,
           type: FilterType.STRING_LIKE,
           order: Order.ASC

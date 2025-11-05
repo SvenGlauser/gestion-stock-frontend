@@ -11,7 +11,7 @@ import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
 import {PersonnePhysiqueDialogComponent} from '../dialog/personne-physique-dialog.component';
 import {LinkColumn} from '../../../common/table/column/link-column';
-import {IdentiteLight} from '../identite.model';
+import {IdentiteLight, IdentiteType} from '../identite.model';
 import {Adresse} from '../../adresse/adresse';
 import {Model} from '../../../common/model';
 import {PersonneMoraleDialogComponent} from '../dialog/personne-morale-dialog.component';
@@ -47,9 +47,9 @@ export class IdentiteTableComponent {
     LinkColumn
       .of(IdentiteLight.MACHINES_LABEL, IdentiteLight.MACHINES, "10%", (identite: IdentiteLight) => {
         let url = "/machines/";
-        if (identite.identiteType == 'PERSONNE_MORALE') {
+        if (identite.identiteType == IdentiteType.PERSONNE_MORALE) {
           url += "morale/";
-        } else if (identite.identiteType == 'PERSONNE_PHYSIQUE') {
+        } else if (identite.identiteType == IdentiteType.PERSONNE_PHYSIQUE) {
           url += "physique/";
         } else {
           throw new Error("Type d'identité non implémenté")
@@ -63,10 +63,10 @@ export class IdentiteTableComponent {
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponentMethod: (identite: IdentiteLight) => {
-      if (identite.identiteType == 'PERSONNE_PHYSIQUE') {
+      if (identite.identiteType == IdentiteType.PERSONNE_PHYSIQUE) {
         return PersonnePhysiqueDialogComponent;
       }
-      if (identite.identiteType == 'PERSONNE_MORALE') {
+      if (identite.identiteType == IdentiteType.PERSONNE_MORALE) {
         return PersonneMoraleDialogComponent;
       }
       return null;

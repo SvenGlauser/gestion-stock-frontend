@@ -61,12 +61,12 @@ export class FormComponent {
    */
   private initFormGroup(): void {
     for (const forms of this.formsMap().values()) {
-      forms.forEach((form: FormField): void => {
+      for (const form of forms) {
         this.formGroup.addControl(
           form.field.replace(".", "-"),
           form.formControl
         );
-      });
+      }
     }
   }
 

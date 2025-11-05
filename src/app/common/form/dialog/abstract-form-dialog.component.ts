@@ -62,9 +62,9 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
     if ([DialogType.READ, DialogType.DELETE].includes(this.data.type)) {
 
       for (const forms of this.formsMap.values()) {
-        forms.forEach(form => {
+        for (const form of forms) {
           form.formControl.disable();
-        })
+        }
       }
     }
   }
@@ -85,13 +85,13 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
 
         // Rempli le formulaire avec les nouvelles données
         for (const forms of this.formsMap.values()) {
-          forms.forEach((form: FormField) => {
+          for (const form of forms) {
             let oldValue: any = getValueFromAttributeInCascade(form.field, this.oldObject);
 
             if (oldValue !== null) {
               form.formControl.setValue(oldValue);
             }
-          });
+          }
         }
       });
     }
@@ -125,9 +125,9 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
     let element: E = structuredClone(this.oldObject) ?? <E>{};
 
     for (const forms of this.formsMap.values()) {
-      forms.forEach((form: FormField): void => {
+      for (const form of forms) {
         setValueOfAttributeInCascade(form.field, element, form.getValue());
-      });
+      }
     }
 
     return element;
@@ -157,7 +157,7 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
   private traiterErreur(errors: ValidationException[]): void {
     // Traiter les erreurs liées à un champ connu
     for (const forms of this.formsMap.values()) {
-      forms.forEach((form: FormField) => {
+      for (const form of forms) {
         // Récupération des erreurs
         let errorsAssignedToField = errors.filter(error => error.field == form.field)
 
@@ -173,7 +173,7 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
           // Suppression des erreurs dans la liste
           errors = errors.filter(error => !errorsAssignedToField.includes(error));
         }
-      });
+      }
     }
 
     // Gestion des erreurs inconnues

@@ -63,7 +63,7 @@ export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialo
             Piece.FOURNISSEUR,
             this.autocompleteFournisseur.bind(this),
             Model.ID,
-            Fournisseur.NOM,
+            Fournisseur.IDENTITE_DESIGNATION,
           ),
       ],
     ], [

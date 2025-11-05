@@ -6,6 +6,7 @@ import {AutocompleteMethod} from './autocomplete';
 import {MatInput} from '@angular/material/input';
 import {Observable} from 'rxjs';
 import {AbstractAutocompleteComponent} from './abstract/abstract-autocomplete.component';
+import {getValueFromAttributeInCascade} from '../../../utils/function.utils';
 
 @Component({
   selector: 'app-autocomplete',
@@ -39,7 +40,7 @@ export class AutocompleteComponent<T extends Record<string, any>> extends Abstra
       return "";
     }
 
-    return value[this.autocompleteNameField()];
+    return getValueFromAttributeInCascade(this.autocompleteNameField(), value);
   }
 
   protected override track(value: T): any {

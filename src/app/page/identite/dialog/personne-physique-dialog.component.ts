@@ -16,6 +16,7 @@ import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete
 import {TitreEnumValuesForAutocomplete} from '../titre.enum';
 import {PersonnePhysique} from '../personne-physique.model';
 import {PersonnePhysiqueService} from '../personne-physique.service';
+import {IdentiteType} from '../identite.model';
 
 @Component({
   selector: 'app-personne-physique-dialog',
@@ -90,7 +91,7 @@ export class PersonnePhysiqueDialogComponent extends AbstractFormDialogComponent
   }
 
   protected createDataMethod(personnePhysique: PersonnePhysique): Observable<PersonnePhysique> {
-    personnePhysique.identiteType = "PERSONNE_PHYSIQUE";
+    personnePhysique.identiteType = IdentiteType.PERSONNE_PHYSIQUE;
     return this.personnePhysiqueService.create(personnePhysique);
   }
 

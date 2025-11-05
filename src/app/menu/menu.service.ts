@@ -124,8 +124,9 @@ export class MenuService {
 
     let linksWithChildren: Link[] = [...links];
     for (const link of links) {
-      linksWithChildren.push(link);
-      linksWithChildren.push(...this.getLinksInCasacade(link.children ?? []));
+      linksWithChildren.push(
+        link,
+        ...this.getLinksInCasacade(link.children ?? []));
     }
     return linksWithChildren;
   }

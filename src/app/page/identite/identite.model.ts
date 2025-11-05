@@ -2,9 +2,21 @@ import {Model} from '../../common/model';
 import {Adresse} from '../adresse/adresse';
 
 /**
+ * Enumération des types d'dentités
+ */
+export enum IdentiteType {
+  PERSONNE_PHYSIQUE = 'PERSONNE_PHYSIQUE',
+  PERSONNE_MORALE = 'PERSONNE_MORALE',
+}
+
+/**
  * Class représentant une identité
  */
 export abstract class Identite extends Model {
+
+  // Fake field in database
+  public static readonly DESIGNATION = 'designation';
+  public static readonly DESIGNATION_LABEL = 'Prénom et nom / Raison sociale';
 
   // Field constantes
   public static readonly EMAIL = 'email';
@@ -29,7 +41,10 @@ export abstract class Identite extends Model {
   public static readonly PANEL_INFORMATIONS_IDENTITE = "Informations de l'identité";
   public static readonly PANEL_INFORMATIONS_SUPPLEMENTAIRES = 'Informations supplémentaires';
 
-  public identiteType: 'PERSONNE_PHYSIQUE' | 'PERSONNE_MORALE' | null = null;
+  // FAKE FIELD for getting designatin with API
+  public designation: string | null = null;
+
+  public identiteType: IdentiteType | null = null;
   public email: string | null = null;
   public telephone: string | null = null;
   public adresse: Adresse | null = null;
@@ -53,10 +68,11 @@ export abstract class Identite extends Model {
 }
 
 export class IdentiteLight extends Identite {
-  public static readonly DESIGNATION = 'designation';
-  public static readonly DESIGNATION_LABEL = 'Prénom et nom / Raison sociale';
+  public static override readonly DESIGNATION = 'designation';
+  public static override readonly DESIGNATION_LABEL = 'Prénom et nom / Raison sociale';
 
-  public designation: string | null = null;
+  // Real field for the light API
+  public override designation: string | null = null;
 
   constructor(identite?: IdentiteLight) {
     super(identite);

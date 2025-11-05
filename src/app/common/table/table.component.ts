@@ -213,7 +213,7 @@ export class TableComponent<T extends Record<string, any>> {
   protected sort(sort: Sort): void {
     this.searchRequest.page = 0;
 
-    this.searchRequest.combinators[0].filters.forEach((filter: Filter): void => {
+    for (const filter of this.searchRequest.combinators[0].filters) {
       if (filter.field === sort.active) {
         switch (sort.direction) {
           case "asc":
@@ -229,7 +229,7 @@ export class TableComponent<T extends Record<string, any>> {
       } else {
         filter.order = undefined;
       }
-    });
+    }
 
     this.update();
   }
@@ -240,7 +240,7 @@ export class TableComponent<T extends Record<string, any>> {
   protected filter(): void {
     this.searchRequest.page = 0;
 
-    this.searchRequest.combinators[0].filters.forEach((filter: Filter): void => {
+    for (const filter of this.searchRequest.combinators[0].filters) {
       let columnFilter: ColumnFilter | undefined = this.columns().flatMap(column => column.filters).find(columnFilter => columnFilter.filterField === filter.field);
 
       if (columnFilter !== undefined) {
@@ -251,7 +251,7 @@ export class TableComponent<T extends Record<string, any>> {
 
         filter.value = value;
       }
-    });
+    }
 
     this.update();
   }
@@ -311,11 +311,9 @@ export class TableComponent<T extends Record<string, any>> {
    * Efface les filtres
    */
   protected clearAllFilters(): void {
-    this.columns()
-      .flatMap(column => column.filters)
-      .forEach((filter) => {
+    for (const filter of this.columns().flatMap(column => column.filters)) {
         filter.filterValue = null;
-      });
+      }
 
     this.filter();
   }
@@ -496,6 +494,6 @@ export class TableComponent<T extends Record<string, any>> {
    * Vérifie s'il existe des filtres dans les nouvelles colonnes de l'input
    */
   private getExistFilter(): boolean {
-    return this.columns().filter(column => column.filters.length !== 0).length !== 0
+    return this.columns().some(column => column.filters.length !== 0);
   }
 }

@@ -18,6 +18,7 @@ export class PersonneMorale extends Identite {
 
     if (personneMorale) {
       this.raisonSociale = personneMorale.raisonSociale;
+      this.designation = this.getDesignation();
     }
   }
 
