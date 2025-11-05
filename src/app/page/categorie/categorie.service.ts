@@ -15,7 +15,8 @@ export class CategorieService {
   private readonly URL: string = BASE_URL + 'categorie';
   private readonly URL_WITH_SLASH: string = this.URL + '/';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
   public get(id: number): Observable<Categorie> {
     return this.http

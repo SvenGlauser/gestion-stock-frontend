@@ -1,5 +1,5 @@
 import {Model} from '../../common/model';
-import {Identite} from '../identite/identite.model';
+import {Identite, IdentiteType} from '../identite/identite.model';
 import {Piece} from '../piece/piece.model';
 import {PersonnePhysique} from '../identite/personne-physique.model';
 import {PersonneMorale} from '../identite/personne-morale.model';
@@ -37,9 +37,9 @@ export class Machine extends Model {
       this.nom = machine.nom;
       this.description = machine.description;
       if (machine.proprietaire) {
-        if (machine.proprietaire.identiteType == "PERSONNE_MORALE") {
+        if (machine.proprietaire.identiteType == IdentiteType.PERSONNE_MORALE) {
           this.proprietaire = new PersonneMorale(machine.proprietaire as PersonneMorale);
-        } else if (machine.proprietaire.identiteType == "PERSONNE_PHYSIQUE") {
+        } else if (machine.proprietaire.identiteType == IdentiteType.PERSONNE_PHYSIQUE) {
           this.proprietaire = new PersonnePhysique(machine.proprietaire as PersonnePhysique);
         } else {
           throw new Error("Type d'identité inconnu")

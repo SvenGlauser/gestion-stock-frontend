@@ -1,13 +1,17 @@
 import {
-  AfterContentInit,
-  ChangeDetectorRef,
+  afterNextRender,
   Component,
-  ContentChildren,
-  EventEmitter,
-  Input,
-  OnInit,
-  QueryList,
-  ViewChild
+  computed,
+  contentChildren,
+  effect,
+  input,
+  InputSignal,
+  linkedSignal,
+  signal,
+  Signal,
+  untracked,
+  viewChild,
+  WritableSignal
 } from '@angular/core';
 import {
   MatCell,
@@ -26,8 +30,8 @@ import {SearchResult} from '../search/searchResult';
 import {Column} from './column/column';
 import {SearchRequest} from '../search/searchRequest';
 import {Filter, Order} from '../search/filter';
-import {debounceTime, mergeMap, Observable, tap} from 'rxjs';
-import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
+import {debounceTime, mergeMap, Observable, Subject, tap} from 'rxjs';
+import {MatSort, MatSortHeader, Sort, SortDirection} from '@angular/material/sort';
 import {MatFormField, MatInput} from '@angular/material/input';
 import {FormsModule} from '@angular/forms';
 import {AutocompleteComponent} from '../form/input/autocomplete/autocomplete.component';
@@ -46,10 +50,11 @@ import {LinkColumn} from './column/link-column';
 import {RouterLink} from '@angular/router';
 import {CustomColumn} from './column/custom-column';
 import {AutocompleteEnumFilter} from './column/filter/autocomplete-enunm-column-filter';
-import {AutocompleteEnumComponent} from '../form/input/autocomplete-enum/autocomplete-enum.component';
+import {AutocompleteEnumComponent} from '../form/input/autocomplete/autocomplete-enum.component';
 import {FilterCombinatorType} from '../search/filter-combinator';
 import {ComponentType} from '@angular/cdk/portal';
 import {AbstractFormDialogComponent} from '../form/dialog/abstract-form-dialog.component';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-table',
@@ -85,7 +90,7 @@ import {AbstractFormDialogComponent} from '../form/dialog/abstract-form-dialog.c
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
 })
-export class TableComponent<T extends Record<string, any>> implements OnInit, AfterContentInit {
+export class TableComponent<T extends Record<string, any>> {
   // Constantes
   protected readonly DialogType = DialogType;
   protected readonly InputFilter = InputFilter;
@@ -93,53 +98,44 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   protected readonly AutocompleteEnumFilter = AutocompleteEnumFilter;
   protected readonly LinkColumn = LinkColumn;
 
-  @Input()
-  public title: string = "";
+  // Configuration
+  private readonly alwaysDisplayedColumns: string[] = ["actions"];
 
-  // Configuration des colonnes
-  @Input({required: true})
-  public columns: Column[] = [];
+  // Input
+  public readonly title: InputSignal<string> = input("");
+  public readonly columns: InputSignal<Column[]> = input.required();
+  public readonly updateMethod: InputSignal<((searchRequest: SearchRequest) => Observable<SearchResult<T>>)> = input.required();
+  public readonly actionColumnInfo: InputSignal<ActionColumnInfo> = input.required();
 
-  // Méthode de mise à jour
-  @Input({required: true})
-  public updateMethod: ((searchRequest: SearchRequest) => Observable<SearchResult<T>>) | null = null;
+  // Enfants
+  private readonly paginator: Signal<MatPaginator | undefined> = viewChild(MatPaginator);
+  private readonly table: Signal<MatTable<T> | undefined> = viewChild(MatTable);
 
-  // Composant à afficher dans le dialog
-  @Input({required: true})
-  public actionColumnInfo: ActionColumnInfo = {
-    dialogComponent: null,
-    dialogComponentMethod: null,
-    idField: '',
-    clicOnLine: false,
-    created: false,
-    delete: false,
-    modify: false,
-    read: false
-  };
+  // Contenu
+  private readonly columnDefs: Signal<readonly MatColumnDef[]> = contentChildren(MatColumnDef);
+  private readonly rowDefs: Signal<readonly MatRowDef<T>[]> = contentChildren(MatRowDef);
 
-  // Composant de pagination
-  @ViewChild(MatPaginator)
-  protected paginator: MatPaginator | undefined;
+  // Données
+  private readonly data: WritableSignal<SearchResult<T> | undefined> = signal(undefined);
+  protected readonly tableLength: Signal<number> = computed((): number => this.data()?.elements.length ?? 0);
+  protected readonly tableElements: Signal<T[]> = computed((): T[] => this.data()?.elements ?? []);
 
-  // Génération de colonnes
-  @ViewChild(MatTable, {static: true})
-  public table: MatTable<T> | undefined;
-  @ContentChildren(MatColumnDef)
-  protected columnDefs: QueryList<MatColumnDef> | undefined;
-  @ContentChildren(MatRowDef)
-  protected rowDefs: QueryList<MatRowDef<T>> | undefined;
+  // Configuration table
+  protected readonly displayedColumns: Signal<string[]> = computed((): string[] => this.getColumnsToDisplay());
+  protected readonly columnsToGenerateAutomatically: Signal<Column[]> = computed((): Column[] => this.getColumnsToGenerateList())
 
-  // Données pour la MatTable
-  protected data: SearchResult<T> | undefined;
-  protected displayedColumns: string[] = ["actions"];
+  // Configuration tri par défaut
+  private readonly firstSortabeColumn: Signal<Column | null> = computed((): Column | null => this.getFirstSortableColum())
+  protected readonly defaultSortDirection: Signal<SortDirection> = computed((): SortDirection => this.getDefaultSortDirection())
+  protected readonly defaultSortColumn: Signal<string> = computed((): string => this.getDefaultSortColumn());
 
   // Configuration de l'affichage
-  protected isLoadingData: boolean = false;
-  protected existFilter: boolean = true;
-  protected viewFilter: boolean = true;
+  protected readonly isLoading: WritableSignal<boolean> = signal(false);
+  protected readonly existFilter: Signal<boolean> = computed((): boolean => this.getExistFilter());
+  protected readonly viewFilter: WritableSignal<boolean> = linkedSignal((): boolean => this.existFilter());
 
   // Événement de recherche
-  private readonly searchEvent: EventEmitter<void> = new EventEmitter();
+  private readonly searchEvent: Subject<void> = new Subject();
 
   // Champ dans lequel sont stockés les filtres pour la prochaine requête
   private readonly searchRequest: SearchRequest = {
@@ -151,86 +147,52 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
     }]
   };
 
-  constructor(private readonly cd: ChangeDetectorRef,
-              private readonly matDialog: MatDialog) {}
-
-  /**
-   * Initialise la data table
-   */
-  public ngOnInit(): void {
+  constructor(private readonly matDialog: MatDialog) {
     // Initialise l'événement qui doit s'exécuter lors d'une recherche
     this.searchEvent
       .pipe(
-        tap(() => {
-          this.isLoadingData = true;
-          this.cd.detectChanges();
-        }),
+        tap((): void => this.isLoading.set(true)),
         debounceTime(500),
         mergeMap(() => {
-          return this.updateMethod!(this.searchRequest);
-        }))
+          return this.updateMethod()(this.searchRequest);
+        }),
+        takeUntilDestroyed())
       .subscribe((result) => {
-        this.isLoadingData = false;
+        this.isLoading.set(false);
         this.updateTable(result);
       });
 
-    // Crée tous les filtres
-    this.searchRequest.combinators[0].filters = this.columns
-      .flatMap(column => column.filters)
-      .map(columnFilter => {
-        return <Filter>{
-          field: columnFilter.filterField,
-          value: columnFilter.getValue() ?? null,
-          type: columnFilter.filterType,
-          order: undefined,
-        }
-      });
+    effect((): void => {
+      const table: MatTable<T> | undefined = this.table();
+      const manuallyAddedRows: readonly MatRowDef<T>[] = this.rowDefs();
+      const manuallyAddedColumns: readonly MatColumnDef[] = this.columnDefs();
 
-    // Ajoute le tri
-    this.columns
-      .filter((column: Column) => column.sortable)
-      .forEach((column: Column) => {
-        let founded: boolean = false;
+      if (table !== undefined) {
+        untracked(() => this.updateManualRowsAndColumns(table, manuallyAddedRows, manuallyAddedColumns));
+      }
+    }, {debugName: "Manual columns/rows update"});
 
-        this.searchRequest.combinators[0].filters.forEach((filter) => {
-          if (filter.field === column.field) {
-            founded = true;
-            filter.order = column.sortDefaultValue ?? undefined;
-          }
-        });
+    effect((): void => {
+      const columns: Column[] = this.columns();
 
-        // Crée un nouveau filtre si aucun de trouvé
-        if (!founded) {
-          this.searchRequest.combinators[0].filters.push({
-            field: column.field,
-            order: column.sortDefaultValue ?? undefined,
-          });
-        }
-      });
+      untracked(() => this.updateSearchRequestFilter(columns));
+    }, {debugName: "SearchRequest filters initialize"})
 
-    // Génère la liste des colonnes à afficher
-    this.displayedColumns = this.columns.map(column => column.field).concat(this.displayedColumns);
-    this.existFilter = this.columns.flatMap(column => column.filters).length > 0;
-    this.viewFilter = this.existFilter;
+    afterNextRender((): void => this.update());
   }
 
   /**
-   * Recherche initiale après que tout a été initialisé
+   * Actualise les colonnes de la table
    */
-  public ngAfterContentInit(): void {
-    // Initialise les colonnes automatiques/lignes
-    this.columnDefs?.forEach(column => this.table?.addColumnDef(column));
-    this.rowDefs?.forEach(row => this.table?.addRowDef(row));
-
-    // Initialise les valeurs du tableau
-    this.searchEvent.emit();
+  public renderRows(): void {
+    this.table()?.renderRows();
   }
 
   /**
    * Met à jour la table
    */
   public update(): void {
-    this.searchEvent.emit();
+    this.searchEvent.next();
   }
 
   /**
@@ -240,7 +202,8 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   protected changePage(page: PageEvent): void {
     this.searchRequest.page = page.pageIndex;
     this.searchRequest.pageSize = page.pageSize;
-    this.searchEvent.emit();
+
+    this.update();
   }
 
   /**
@@ -250,7 +213,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   protected sort(sort: Sort): void {
     this.searchRequest.page = 0;
 
-    this.searchRequest.combinators[0].filters = this.searchRequest.combinators[0].filters.map(filter => {
+    for (const filter of this.searchRequest.combinators[0].filters) {
       if (filter.field === sort.active) {
         switch (sort.direction) {
           case "asc":
@@ -266,10 +229,9 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
       } else {
         filter.order = undefined;
       }
+    }
 
-      return filter;
-    });
-    this.searchEvent.emit();
+    this.update();
   }
 
   /**
@@ -278,24 +240,20 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   protected filter(): void {
     this.searchRequest.page = 0;
 
-    this.searchRequest.combinators[0].filters = this.searchRequest.combinators[0].filters.map(filter => {
-      let columnFilter: ColumnFilter | undefined = this.columns.flatMap(column => column.filters).find(columnFilter => columnFilter.filterField === filter.field);
+    for (const filter of this.searchRequest.combinators[0].filters) {
+      let columnFilter: ColumnFilter | undefined = this.columns().flatMap(column => column.filters).find(columnFilter => columnFilter.filterField === filter.field);
 
-      if (!columnFilter) {
-        return filter;
+      if (columnFilter !== undefined) {
+        let value = columnFilter.getValue();
+        if (value === '') {
+          value = null;
+        }
+
+        filter.value = value;
       }
+    }
 
-      let value = columnFilter.getValue();
-      if (value === '') {
-        value = null;
-      }
-
-      filter.value = value;
-
-      return filter;
-    });
-
-    this.searchEvent.emit();
+    this.update();
   }
 
   /**
@@ -303,10 +261,14 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
    * @param searchResult Résultat de la recherche
    */
   private updateTable(searchResult: SearchResult<T>): void {
-    this.data = searchResult;
-    this.paginator!.pageIndex = searchResult.currentPage;
-    this.paginator!.pageSize = searchResult.pageSize;
-    this.paginator!.length = searchResult.totalElements;
+    this.data.set(searchResult);
+
+    const paginator: MatPaginator | undefined = this.paginator();
+    if (paginator !== undefined) {
+      paginator.pageIndex = searchResult.currentPage;
+      paginator.pageSize = searchResult.pageSize;
+      paginator.length = searchResult.totalElements;
+    }
   }
 
   /**
@@ -317,10 +279,12 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   public openDialog(element: T | null, type: DialogType): void {
     let dialogComponent: ComponentType<AbstractFormDialogComponent<any, any>> | null = null;
 
-    if (this.actionColumnInfo.dialogComponent) {
-      dialogComponent = this.actionColumnInfo.dialogComponent;
-    } else if (this.actionColumnInfo.dialogComponentMethod) {
-      dialogComponent = this.actionColumnInfo.dialogComponentMethod(element);
+    const dialogComponentFromActions = this.actionColumnInfo().dialogComponent
+    const dialogComponentMethodFromActions = this.actionColumnInfo().dialogComponentMethod
+    if (dialogComponentFromActions) {
+      dialogComponent = dialogComponentFromActions;
+    } else if (dialogComponentMethodFromActions) {
+      dialogComponent = dialogComponentMethodFromActions(element);
     }
 
     if (!dialogComponent) {
@@ -330,15 +294,15 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
     const dialogRef = this.matDialog.open(dialogComponent, {
       maxWidth: 1000,
       data: <DialogData>{
-        type : type,
-        id: element ? element[this.actionColumnInfo.idField] : null,
-        specificData: this.actionColumnInfo.dialogSpecificData,
+        type: type,
+        id: element ? element[this.actionColumnInfo().idField] : null,
+        specificData: this.actionColumnInfo().dialogSpecificData,
       },
     });
 
     dialogRef.afterClosed().subscribe(modification => {
       if (modification) {
-        this.searchEvent.emit();
+        this.update();
       }
     });
   }
@@ -347,11 +311,9 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
    * Efface les filtres
    */
   protected clearAllFilters(): void {
-    this.columns
-      .flatMap(column => column.filters)
-      .forEach((filter) => {
+    for (const filter of this.columns().flatMap(column => column.filters)) {
         filter.filterValue = null;
-      });
+      }
 
     this.filter();
   }
@@ -359,8 +321,8 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   /**
    * Retourne la liste des colonnes à créer
    */
-  protected getColumnsToGenerateList(): Column[] {
-    return this.columns.filter(column => !(column instanceof CustomColumn));
+  private getColumnsToGenerateList(): Column[] {
+    return this.columns().filter(column => !(column instanceof CustomColumn));
   }
 
   /**
@@ -372,7 +334,7 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   protected run(action: (value: any) => Observable<boolean>, element: T): void {
     action(element).subscribe((needToRefresh: boolean) => {
       if (needToRefresh) {
-        this.searchEvent.emit();
+        this.update();
       }
     })
   }
@@ -380,10 +342,9 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   /**
    * Vérifier si au moins une action est affiché
    * @param element
-   * @protected
    */
-  protected canViewOneAction(element: T) {
-    for (const action of this.actionColumnInfo.actions ?? []) {
+  protected canViewOneAction(element: T): boolean {
+    for (const action of this.actionColumnInfo().actions ?? []) {
       if (!action.condition || action.condition(element)) {
         return true;
       }
@@ -394,8 +355,8 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   /**
    * Récupère le premier tri
    */
-  protected getDefaultSort(): string {
-    let column: Column | null = this.getFirstSortableColum();
+  private getDefaultSortColumn(): string {
+    let column: Column | null = this.firstSortabeColumn();
 
     if (column) {
       return column.field;
@@ -407,14 +368,17 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
   /**
    * Récupère le premier ordre de tri
    */
-  protected getDefaultOrder(): "asc" | "desc" | "" {
-    let column: Column | null = this.getFirstSortableColum();
+  private getDefaultSortDirection(): SortDirection {
+    let column: Column | null = this.firstSortabeColumn();
 
     if (column) {
       switch (column.sortDefaultValue) {
-        case Order.ASC: return "asc";
-        case Order.DESC: return "desc";
-        default: return "";
+        case Order.ASC:
+          return "asc";
+        case Order.DESC:
+          return "desc";
+        default:
+          return "";
       }
     }
 
@@ -425,14 +389,10 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
    * Récupère la première colonne à ordrer
    */
   private getFirstSortableColum(): Column | null {
-    if (!this.columns) {
-      return null;
-    }
-
-    let columns: Column[] = this.columns.filter(column => column.sortable && column.sortDefaultValue);
+    let columns: Column[] = this.columns().filter(column => column.sortable && column.sortDefaultValue);
 
     if (columns.length == 0) {
-      columns = this.columns.filter(column => column.sortable);
+      columns = this.columns().filter(column => column.sortable);
     }
 
     if (columns.length > 0) {
@@ -440,5 +400,100 @@ export class TableComponent<T extends Record<string, any>> implements OnInit, Af
     }
 
     return null;
+  }
+
+  /**
+   * Mets à jour les colonnes manuelles dans la MatTable
+   * @param table Table
+   * @param manuallyAddedRows Lignes manuelles
+   * @param manuallyAddedColumns Colonnes manuelles
+   */
+  private updateManualRowsAndColumns(table: MatTable<T>,
+                                     manuallyAddedRows: readonly MatRowDef<T>[],
+                                     manuallyAddedColumns: readonly MatColumnDef[]): void {
+    for (const manuallyAddedRow of manuallyAddedRows) {
+      table.addRowDef(manuallyAddedRow);
+    }
+
+    for (const manuallyAddedColumn of manuallyAddedColumns) {
+      table.addColumnDef(manuallyAddedColumn);
+    }
+  }
+
+  /**
+   * Mets à jour la liste des filtres de la SearchRequest
+   * @param columns Nouvelles colonnes
+   */
+  private updateSearchRequestFilter(columns: Column[]): void {
+    if (this.searchRequest.combinators.length === 0) {
+      return;
+    }
+
+    const filtersToGenerate: Filter[] = [];
+
+    for (let column of columns) {
+      const filtersToGenerateForThisColumn: Filter[] = [];
+
+      for (const filter of column.filters) {
+        filtersToGenerateForThisColumn.push({
+          field: filter.filterField,
+          value: filter.filterValue ?? null,
+          type: filter.filterType
+        });
+      }
+
+      if (column.sortable) {
+        const order: Order | undefined = column.sortDefaultValue ?? undefined;
+
+        let needToGenerateOne: boolean = true;
+
+        for (const filter of filtersToGenerateForThisColumn) {
+          if (filter.field == column.field) {
+            filter.order = order;
+            needToGenerateOne = false;
+          }
+        }
+
+        if (needToGenerateOne) {
+          filtersToGenerateForThisColumn.push({
+            field: column.field,
+            order: order,
+          });
+        }
+      }
+
+      filtersToGenerate.push(...filtersToGenerateForThisColumn);
+    }
+
+    const filtersToKeep: Filter[] = [];
+
+    for (const filterToGenerate of filtersToGenerate) {
+      const currentFilter: Filter | undefined = this.searchRequest.combinators[0].filters
+        .find(filter => filter.field === filterToGenerate.field);
+
+      if (currentFilter === undefined) {
+        filtersToKeep.push(filterToGenerate);
+      } else {
+        filtersToKeep.push(currentFilter);
+      }
+    }
+
+    this.searchRequest.combinators[0].filters = filtersToKeep;
+  }
+
+  /**
+   * Récupère la liste des colonnes à afficher
+   */
+  private getColumnsToDisplay(): string[] {
+    return this.columns()
+      .map(column => column.field)
+      .concat(this.alwaysDisplayedColumns);
+  }
+
+  /**
+   * Vérifie s'il existe des filtres dans les nouvelles colonnes de l'input
+   */
+  private getExistFilter(): boolean {
+    return this.columns().some(column => column.filters.length !== 0);
   }
 }

@@ -10,7 +10,8 @@ export class TechniqueService {
   private readonly URL: string = BASE_URL + 'technique';
   private readonly URL_WITH_SLASH: string = this.URL + '/';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
   public importPieces(file: File): Observable<void> {
     const formData = new FormData();

@@ -9,7 +9,6 @@ import {FormComponent} from '../../../common/form/form.component';
 import {PieceHistoriqueService} from '../piece-historique.service';
 import {InputFormField} from '../../../common/form/field/input-form-field';
 import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete-enum-form-field';
-import {Model} from '../../../common/model';
 import {PieceHistorique} from '../piece-historique.model';
 import {PieceHistoriqueTypeEnumValuesForAutocomplete} from '../piece-historique-type.enum';
 import {PieceHistoriqueSourceEnumValuesForAutocomplete} from '../piece-historique-source.enum';
@@ -30,11 +29,8 @@ import {PieceHistoriqueSourceEnumValuesForAutocomplete} from '../piece-historiqu
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
 export class PieceHistoriqueDialogComponent extends AbstractFormDialogComponent<PieceHistoriqueDialogComponent, PieceHistorique> {
-  // Constantes
-  protected readonly ID_FIELD: string = Model.ID;
-
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       PieceHistorique.PANEL_DONNEES_GENERALES,
       [

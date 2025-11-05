@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input, InputSignal} from '@angular/core';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatIcon} from '@angular/material/icon';
 import {RouterLink} from '@angular/router';
@@ -15,12 +15,7 @@ import {RouterLink} from '@angular/router';
   styleUrl: './widget.component.scss'
 })
 export class WidgetComponent {
-  @Input()
-  public label: string | null = null;
-
-  @Input()
-  public url: string | null = null;
-
-  @Input()
-  public icon: string | null = null;
+  public label: InputSignal<string> = input.required();
+  public url: InputSignal<string> = input.required();
+  public icon: InputSignal<string> = input.required();
 }

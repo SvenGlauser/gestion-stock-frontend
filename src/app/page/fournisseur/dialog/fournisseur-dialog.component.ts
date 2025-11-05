@@ -7,13 +7,12 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
 import {FormComponent} from '../../../common/form/form.component';
 import {FournisseurService} from '../fournisseur.service';
-import {LocaliteService} from '../../localite/localite.service';
 import {InputFormField} from '../../../common/form/field/input-form-field';
 import {AutocompleteFormField} from '../../../common/form/field/autocomplete-form-field';
 import {Fournisseur} from '../fournisseur.model';
-import {Adresse} from '../../adresse/adresse';
-import {Localite} from '../../localite/localite.model';
 import {Model} from '../../../common/model';
+import {IdentiteService} from '../../identite/identite.service';
+import {Identite, IdentiteLight} from '../../identite/identite.model';
 
 @Component({
   selector: 'app-fournisseur-dialog',
@@ -31,16 +30,19 @@ import {Model} from '../../../common/model';
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
 export class FournisseurDialogComponent extends AbstractFormDialogComponent<FournisseurDialogComponent, Fournisseur> {
-  // Constantes
-  protected readonly ID_FIELD: string = Model.ID;
-
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       Fournisseur.PANEL_DONNEES_GENERALES,
       [
-        InputFormField
-          .ofValue(Fournisseur.NOM_LABEL, Fournisseur.NOM)
+        AutocompleteFormField
+          .ofValue(
+            Fournisseur.IDENTITE_LABEL,
+            Fournisseur.IDENTITE,
+            this.autocompleteIdentite.bind(this),
+            Model.ID,
+            Identite.DESIGNATION,
+          )
           .setColspan(2),
         InputFormField
           .ofValue(Fournisseur.DESCRIPTION_LABEL, Fournisseur.DESCRIPTION)
@@ -49,50 +51,35 @@ export class FournisseurDialogComponent extends AbstractFormDialogComponent<Four
           .ofValue(Fournisseur.URL_LABEL, Fournisseur.URL)
           .setColspan(2),
       ],
-    ], [
-      Adresse.PANEL_ADRESSE,
-      [
-        InputFormField.ofValue(Adresse.RUE_LABEL, Fournisseur.ADRESSE_RUE),
-        InputFormField.ofValue(Adresse.NUMERO_LABEL, Fournisseur.ADRESSE_NUMERO),
-        AutocompleteFormField
-          .ofValue(
-            Adresse.LOCALILTE_LABEL,
-            Fournisseur.ADRESSE_LOCALITE,
-            this.autocompleteLocalite.bind(this),
-            Model.ID,
-            Localite.NOM,
-          )
-          .setColspan(2),
-      ]
     ]
   ]);
 
-  constructor(private readonly categorieService: FournisseurService,
-              private readonly localiteService: LocaliteService) {
+  constructor(private readonly fournisseurService: FournisseurService,
+              private readonly identiteService: IdentiteService) {
     super();
   }
 
   protected getDataMethod(id: number): Observable<Fournisseur> {
-    return this.categorieService.get(id);
+    return this.fournisseurService.get(id);
   }
 
   protected deleteDataMethod(id: number): Observable<void> {
-    return this.categorieService.delete(id);
+    return this.fournisseurService.delete(id);
   }
 
   protected createDataMethod(categorie: Fournisseur): Observable<Fournisseur> {
-    return this.categorieService.create(categorie);
+    return this.fournisseurService.create(categorie);
   }
 
   protected modifyDataMethod(categorie: Fournisseur): Observable<Fournisseur> {
-    return this.categorieService.modify(categorie);
+    return this.fournisseurService.modify(categorie);
   }
 
   /**
-   * Méthode d'autocomplétion des localités
+   * Méthode d'autocomplétion des identités
    * @param value Valeur de recherche
    */
-  protected autocompleteLocalite(value: string): Observable<Localite[]> {
-    return this.localiteService.autocomplete(value);
+  private autocompleteIdentite(value: string): Observable<IdentiteLight[]> {
+    return this.identiteService.autocomplete(value);
   }
 }

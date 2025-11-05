@@ -1,4 +1,4 @@
-import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, Signal, viewChild, viewChildren} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {Filter, FilterType, Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
@@ -33,6 +33,7 @@ import {Model} from '../../../common/model';
 import {FilterCombinatorType} from '../../../common/search/filter-combinator';
 import {PersonnePhysiqueService} from '../../identite/personne-physique.service';
 import {PersonneMoraleService} from '../../identite/personne-morale.service';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-machine-table',
@@ -54,7 +55,7 @@ import {PersonneMoraleService} from '../../identite/personne-morale.service';
   templateUrl: './machine-table.component.html',
   styleUrl: './machine-table.component.scss'
 })
-export class MachineTableComponent implements OnInit {
+export class MachineTableComponent {
   // Définition des colonnes
   protected readonly columns: Column[] = [
     CustomColumn.of("", Machine.ROW_EXTENDER, "10%"),
@@ -66,18 +67,13 @@ export class MachineTableComponent implements OnInit {
     MethodColumn.of(Machine.PROPRIETAIRE_LABEL, Machine.PROPRIETAIRE, "20%", (identite: Identite) => identite.getDesignation()),
   ]
 
-  // Utilisé pour udpate la dataTable
-  @ViewChild(TableComponent)
-  public matTable: TableComponent<Machine> | null = null;
-
-  // Utilisé pour udpate la dataTable
-  @ViewChildren(PieceLightTableComponent)
-  public piecesLightsTables:  QueryList<PieceLightTableComponent> | null = null;
+  private readonly matTable: Signal<TableComponent<Machine>> = viewChild.required<TableComponent<Machine>>(TableComponent);
+  private readonly piecesLightsTables: Signal<readonly PieceLightTableComponent[]> = viewChildren<PieceLightTableComponent>(PieceLightTableComponent);
 
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: MachineDialogComponent,
-    dialogSpecificData: { proprietaire: null },
+    dialogSpecificData: {proprietaire: null},
     idField: Model.ID,
     clicOnLine: true,
     created: true,
@@ -85,7 +81,7 @@ export class MachineTableComponent implements OnInit {
     modify: true,
     read: true,
     actions: [
-      { name: "Ajouter une pièce à la machine", action: this.linkPiece.bind(this) }
+      {name: "Ajouter une pièce à la machine", action: this.linkPiece.bind(this)}
     ]
   };
 
@@ -98,31 +94,28 @@ export class MachineTableComponent implements OnInit {
               private readonly personnePhysiqueService: PersonnePhysiqueService,
               private readonly personneMoraleService: PersonneMoraleService,
               private readonly route: ActivatedRoute,
-              private readonly matDialog: MatDialog) {}
+              private readonly matDialog: MatDialog) {
+    this.route
+      .paramMap
+      .pipe(takeUntilDestroyed())
+      .subscribe((params: ParamMap) => {
+        this.currentProprietaireType = params.get('typeIdentite') ?? "";
+        this.currentProprietaireId = Number.parseInt(params.get('id') ?? "");
 
-  /**
-   * Récupère le proprietaire
-   */
-  public ngOnInit(): void {
-    // For subscribing to the observable paramMap...
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      this.currentProprietaireType = params.get('typeIdentite') ?? "";
-      this.currentProprietaireId = Number.parseInt(params.get('id') ?? "");
-
-      if (this.currentProprietaireType && this.currentProprietaireId) {
-        if (this.currentProprietaireType == 'morale') {
-          this.personneMoraleService.get(this.currentProprietaireId).subscribe(proprietaire => {
-            this.proprietaire = proprietaire;
-            this.actionColumnInfo.dialogSpecificData.proprietaire = this.proprietaire;
-          });
-        } else if (this.currentProprietaireType == 'physique') {
-          this.personnePhysiqueService.get(this.currentProprietaireId).subscribe(proprietaire => {
-            this.proprietaire = proprietaire;
-            this.actionColumnInfo.dialogSpecificData.proprietaire = this.proprietaire;
-          });
+        if (this.currentProprietaireType && this.currentProprietaireId) {
+          if (this.currentProprietaireType == 'morale') {
+            this.personneMoraleService.get(this.currentProprietaireId).subscribe(proprietaire => {
+              this.proprietaire = proprietaire;
+              this.actionColumnInfo.dialogSpecificData.proprietaire = this.proprietaire;
+            });
+          } else if (this.currentProprietaireType == 'physique') {
+            this.personnePhysiqueService.get(this.currentProprietaireId).subscribe(proprietaire => {
+              this.proprietaire = proprietaire;
+              this.actionColumnInfo.dialogSpecificData.proprietaire = this.proprietaire;
+            });
+          }
         }
-      }
-    });
+      });
   }
 
   /**
@@ -144,12 +137,13 @@ export class MachineTableComponent implements OnInit {
     searchRequestModified.combinators.push({
       filters: [
         <Filter>{
-        field: Machine.PROPRIETAIRE_ID,
-        value: this.proprietaire.id,
-        type: FilterType.EQUAL,
-        order: undefined,
-      }],
-      type: FilterCombinatorType.AND})
+          field: Machine.PROPRIETAIRE_ID,
+          value: this.proprietaire.id,
+          type: FilterType.EQUAL,
+          order: undefined,
+        }],
+      type: FilterCombinatorType.AND
+    })
     return this.machineService.search(searchRequestModified);
   }
 
@@ -177,7 +171,7 @@ export class MachineTableComponent implements OnInit {
     } else {
       this.extendedRowId = element.id;
     }
-    this.matTable?.table?.renderRows();
+    this.matTable().renderRows();
   }
 
   /**
@@ -206,12 +200,11 @@ export class MachineTableComponent implements OnInit {
             machine.description = returnedMachine.description;
             machine.proprietaire = returnedMachine.proprietaire;
             machine.pieces = returnedMachine.pieces;
-            if (this.piecesLightsTables) {
-              this.piecesLightsTables.forEach(table => {
-                if (table.machine?.id === machine.id) {
-                  table.table!.update();
-                }
-              })
+
+            for (const table of this.piecesLightsTables()) {
+              if (table.machine().id === machine.id) {
+                table.table().update();
+              }
             }
           }
         }),

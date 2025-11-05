@@ -81,7 +81,8 @@ export class PieceTableComponent {
 
   constructor(private readonly pieceService: PieceService,
               private readonly categorieService: CategorieService,
-              private readonly router: Router) {}
+              private readonly router: Router) {
+  }
 
   /**
    * Récupère la liste à afficher dans le tableau

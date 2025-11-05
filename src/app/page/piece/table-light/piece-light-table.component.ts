@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, input, InputSignal, Signal, viewChild} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {SearchRequest} from '../../../common/search/searchRequest';
@@ -45,18 +45,16 @@ export class PieceLightTableComponent {
     modify: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB
     delete: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB
     actions: [
-      { name: "Retirer la pièce de la machine", action: this.unlinkPiece.bind(this) }
+      {name: "Retirer la pièce de la machine", action: this.unlinkPiece.bind(this)}
     ]
   };
 
-  @Input({required: true})
-  public machine: Machine | null = null;
-
-  @ViewChild(TableComponent)
-  public table: TableComponent<Piece> | null = null;
+  public readonly machine: InputSignal<Machine> = input.required();
+  public readonly table: Signal<TableComponent<Piece>> = viewChild.required<TableComponent<Piece>>(TableComponent);
 
   constructor(private readonly machineService: MachineService,
-              private readonly matDialog: MatDialog) {}
+              private readonly matDialog: MatDialog) {
+  }
 
   /**
    * Récupère la liste à afficher dans le tableau
@@ -65,9 +63,9 @@ export class PieceLightTableComponent {
   protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<Piece>> {
     const page: number = searchRequest.page ?? 0;
     const pageSize: number = searchRequest.pageSize ?? 10;
-    const orignalPiecesList: Piece[] = this.machine?.pieces ?? [];
+    const orignalPiecesList: Piece[] = this.machine().pieces ?? [];
 
-    let pieces: Piece[] = [...(this.machine?.pieces ?? [])].sort((a, b) => a.numeroInventaire!.localeCompare(b.numeroInventaire!));
+    let pieces: Piece[] = [...(this.machine().pieces ?? [])].sort((a, b) => a.numeroInventaire!.localeCompare(b.numeroInventaire!));
 
     let numberElementToRemove: number = page * pageSize;
 
@@ -89,35 +87,29 @@ export class PieceLightTableComponent {
    * @param piece Pièce à retirer
    */
   private unlinkPiece(piece: Piece): Observable<boolean> {
-    if (this.machine) {
-      return this.matDialog
-        .open(ConfirmationDialogComponent, {
-          data: "Voulez-vous vraiment retirer la pièce ?"
-        })
-        .afterClosed()
-        .pipe(mergeMap((confirmation: boolean): Observable<boolean> => {
-          if (!this.machine || !confirmation) {
-            return of(false);
-          }
+    return this.matDialog
+      .open(ConfirmationDialogComponent, {
+        data: "Voulez-vous vraiment retirer la pièce ?"
+      })
+      .afterClosed()
+      .pipe(mergeMap((confirmation: boolean): Observable<boolean> => {
+        if (!this.machine() || !confirmation) {
+          return of(false);
+        }
 
-          let machine = structuredClone(this.machine);
-          machine.pieces = machine.pieces.filter(pieceFromFilter => pieceFromFilter.id !== piece.id);
+        let machine = structuredClone(this.machine());
+        machine.pieces = machine.pieces.filter(pieceFromFilter => pieceFromFilter.id !== piece.id);
 
-          return this.machineService
-            .modify(machine)
-            .pipe(
-              tap(machine => {
-                if (this.machine) {
-                  this.machine.nom = machine.nom;
-                  this.machine.description = machine.description;
-                  this.machine.proprietaire = machine.proprietaire;
-                  this.machine.pieces = machine.pieces;
-                }
-              }),
-              map(() => true));
-        }));
-    }
-
-    return of(false);
+        return this.machineService
+          .modify(machine)
+          .pipe(
+            tap(machine => {
+              this.machine().nom = machine.nom;
+              this.machine().description = machine.description;
+              this.machine().proprietaire = machine.proprietaire;
+              this.machine().pieces = machine.pieces;
+            }),
+            map(() => true));
+      }));
   }
 }

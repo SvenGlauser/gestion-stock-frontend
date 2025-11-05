@@ -30,11 +30,8 @@ import {Pays} from '../../pays/pays.model';
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
 export class LocaliteDialogComponent extends AbstractFormDialogComponent<LocaliteDialogComponent, Localite> {
-  // Constantes
-  protected readonly ID_FIELD: string = Model.ID;
-
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       Localite.PANEL_DONNEES_GENERALES,
       [

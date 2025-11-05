@@ -14,6 +14,7 @@ import {InputFormField} from '../../../common/form/field/input-form-field';
 import {AutocompleteFormField} from '../../../common/form/field/autocomplete-form-field';
 import {PersonneMorale} from '../personne-morale.model';
 import {PersonneMoraleService} from '../personne-morale.service';
+import {IdentiteType} from '../identite.model';
 
 @Component({
   selector: 'app-personne-morale-dialog',
@@ -31,11 +32,8 @@ import {PersonneMoraleService} from '../personne-morale.service';
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
 export class PersonneMoraleDialogComponent extends AbstractFormDialogComponent<PersonneMoraleDialogComponent, PersonneMorale> {
-  // Constantes
-  protected readonly ID_FIELD: string = Model.ID;
-
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       PersonneMorale.PANEL_DONNEES_GENERALES,
       [
@@ -88,7 +86,7 @@ export class PersonneMoraleDialogComponent extends AbstractFormDialogComponent<P
   }
 
   protected createDataMethod(personneMorale: PersonneMorale): Observable<PersonneMorale> {
-    personneMorale.identiteType = "PERSONNE_MORALE";
+    personneMorale.identiteType = IdentiteType.PERSONNE_MORALE;
     return this.personneMoraleService.create(personneMorale);
   }
 

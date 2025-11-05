@@ -15,7 +15,8 @@ export class PaysService {
   private readonly URL: string = BASE_URL + 'pays';
   private readonly URL_WITH_SLASH: string = this.URL + '/';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
   public get(id: number): Observable<Pays> {
     return this.http

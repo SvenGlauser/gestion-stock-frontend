@@ -44,7 +44,8 @@ export class CategorieTableComponent {
     read: true
   };
 
-  constructor(private readonly categorieService: CategorieService) {}
+  constructor(private readonly categorieService: CategorieService) {
+  }
 
   /**
    * Récupère la liste à afficher dans le tableau

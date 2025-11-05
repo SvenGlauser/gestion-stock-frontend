@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {Filter, FilterType, Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
@@ -19,6 +19,7 @@ import {PieceHistoriqueSource, PieceHistoriqueSourceEnumValuesForAutocomplete} f
 import {Piece} from '../../piece/piece.model';
 import {PieceService} from '../../piece/piece.service';
 import {FilterCombinatorType} from '../../../common/search/filter-combinator';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-categorie-table',
@@ -28,7 +29,7 @@ import {FilterCombinatorType} from '../../../common/search/filter-combinator';
   templateUrl: './piece-historique-table.component.html',
   styleUrl: './piece-historique-table.component.scss'
 })
-export class PieceHistoriqueTableComponent implements OnInit {
+export class PieceHistoriqueTableComponent {
   // Définition des colonnes
   protected readonly columns: Column[] = [
     DateColumn
@@ -66,20 +67,18 @@ export class PieceHistoriqueTableComponent implements OnInit {
 
   constructor(private readonly pieceHistoriqueService: PieceHistoriqueService,
               private readonly pieceService: PieceService,
-              private readonly route: ActivatedRoute) {}
-
-  /**
-   * Récupère l'identité
-   */
-  public ngOnInit(): void {
+              private readonly route: ActivatedRoute) {
     // For subscribing to the observable paramMap...
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      let currentPieceId = Number.parseInt(params.get('id') ?? "");
+    this.route
+      .paramMap
+      .pipe(takeUntilDestroyed())
+      .subscribe((params: ParamMap): void => {
+        let currentPieceId = Number.parseInt(params.get('id') ?? "");
 
-      this.pieceService.get(currentPieceId).subscribe(piece => {
-        this.piece = piece;
+        this.pieceService.get(currentPieceId).subscribe((piece: Piece): void => {
+          this.piece = piece;
+        });
       });
-    });
   }
 
   /**

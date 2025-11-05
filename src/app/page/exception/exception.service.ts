@@ -13,7 +13,8 @@ export class ExceptionService {
   private readonly URL: string = BASE_URL + 'exception';
   private readonly URL_WITH_SLASH: string = this.URL + '/';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
   public changeStatus(id: number, actif: boolean): Observable<void> {
     return this.http.put<void>(this.URL_WITH_SLASH + id + "/" + actif, null);

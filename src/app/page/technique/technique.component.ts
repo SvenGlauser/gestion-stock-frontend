@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, computed, Signal, signal, WritableSignal} from '@angular/core';
 import {FileUploaderComponent} from '../../common/form/input/file-uploader/file-uploader.component';
 import {TechniqueService} from './technique.service';
 import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
@@ -14,33 +14,38 @@ import {ValidationException} from '../../common/utils/validation-exception';
 })
 export class TechniqueComponent {
 
-  protected file: File | null = null;
-  protected infoImportationPiece: string | null = null;
-  protected errorImportationPiece: string | null = null;
+  protected readonly file: WritableSignal<File | null> = signal(null);
+  protected readonly infoImportationPiece: WritableSignal<string | null> = signal(null);
+  protected readonly errorImportationPiece: WritableSignal<string | null> = signal(null);
 
-  constructor(private readonly techniqueService: TechniqueService) {}
+  protected readonly hasInfoImportationPiece: Signal<boolean> = computed((): boolean => this.infoImportationPiece() !== null);
+  protected readonly hasErrorImportationPiece: Signal<boolean> = computed((): boolean => this.errorImportationPiece() !== null);
+
+  constructor(private readonly techniqueService: TechniqueService) {
+  }
 
   protected importPiece(): void {
-    this.infoImportationPiece = null;
-    this.errorImportationPiece = null;
+    this.infoImportationPiece.set(null);
+    this.errorImportationPiece.set(null);
 
-    if (this.file == null) {
+    const file: File | null = this.file();
+    if (file == null) {
       return;
     }
 
-    this.techniqueService.importPieces(this.file).subscribe({
-      complete: () => {
-        this.file = null;
-        this.infoImportationPiece = "Importé avec succès";
-        this.errorImportationPiece = null;
+    this.techniqueService.importPieces(file).subscribe({
+      complete: (): void => {
+        this.file.set(null);
+        this.infoImportationPiece.set("Importé avec succès");
+        this.errorImportationPiece.set(null);
       },
       error: (error: HttpErrorResponse) => {
-        this.file = null;
-        this.infoImportationPiece = null;
+        this.file.set(null);
+        this.errorImportationPiece.set(null);
         if (error.status === HttpStatusCode.NotAcceptable) {
           this.traiterErreur(error.error);
         } else {
-          this.errorImportationPiece = "Importation en erreur";
+          this.errorImportationPiece.set("Importation en erreur");
         }
       },
     });
@@ -51,8 +56,8 @@ export class TechniqueComponent {
    * @param errors Erreurs
    */
   private traiterErreur(errors: ValidationException[]): void {
-    this.errorImportationPiece = errors
+    this.errorImportationPiece.set(errors
       .map(error => error.message)
-      .join('\n');
+      .join('\n'));
   }
 }

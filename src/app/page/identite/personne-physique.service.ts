@@ -11,7 +11,8 @@ export class PersonnePhysiqueService {
   private readonly URL: string = BASE_URL + 'identite/physique';
   private readonly URL_WITH_SLASH: string = this.URL + '/';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
   public get(id: number): Observable<PersonnePhysique> {
     return this.http

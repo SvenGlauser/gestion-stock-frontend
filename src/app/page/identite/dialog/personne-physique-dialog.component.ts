@@ -16,6 +16,7 @@ import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete
 import {TitreEnumValuesForAutocomplete} from '../titre.enum';
 import {PersonnePhysique} from '../personne-physique.model';
 import {PersonnePhysiqueService} from '../personne-physique.service';
+import {IdentiteType} from '../identite.model';
 
 @Component({
   selector: 'app-personne-physique-dialog',
@@ -33,11 +34,8 @@ import {PersonnePhysiqueService} from '../personne-physique.service';
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
 export class PersonnePhysiqueDialogComponent extends AbstractFormDialogComponent<PersonnePhysiqueDialogComponent, PersonnePhysique> {
-  // Constantes
-  protected readonly ID_FIELD: string = Model.ID;
-
   // Définition des champs de formulaire
-  protected formsMap: Map<string, FormField[]> = new Map([
+  protected readonly formsMap: Map<string, FormField[]> = new Map([
     [
       PersonnePhysique.PANEL_DONNEES_GENERALES,
       [
@@ -93,7 +91,7 @@ export class PersonnePhysiqueDialogComponent extends AbstractFormDialogComponent
   }
 
   protected createDataMethod(personnePhysique: PersonnePhysique): Observable<PersonnePhysique> {
-    personnePhysique.identiteType = "PERSONNE_PHYSIQUE";
+    personnePhysique.identiteType = IdentiteType.PERSONNE_PHYSIQUE;
     return this.personnePhysiqueService.create(personnePhysique);
   }
 

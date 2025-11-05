@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, Signal, viewChild} from '@angular/core';
 import {ExceptionService} from '../exception.service';
 import {SearchRequest} from '../../../common/search/searchRequest';
 import {TableComponent} from '../../../common/table/table.component';
@@ -91,12 +91,12 @@ export class ExceptionTableComponent {
   };
 
   // Utilisé pour udpate la dataTable
-  @ViewChild(TableComponent)
-  public matTable: TableComponent<Machine> | null = null;
+  private readonly matTable: Signal<TableComponent<Machine>> = viewChild.required<TableComponent<Machine>>(TableComponent);
 
   protected extendedRowId: number | null = null;
 
-  constructor(private readonly exceptionService: ExceptionService) {}
+  constructor(private readonly exceptionService: ExceptionService) {
+  }
 
   /**
    * Affiche / Cache le tableau des pieces pour cet élément
@@ -108,7 +108,7 @@ export class ExceptionTableComponent {
     } else {
       this.extendedRowId = element.id;
     }
-    this.matTable?.table?.renderRows();
+    this.matTable().renderRows();
   }
 
   /**

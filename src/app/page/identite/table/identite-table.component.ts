@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, Signal, viewChild} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
@@ -11,7 +11,7 @@ import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
 import {PersonnePhysiqueDialogComponent} from '../dialog/personne-physique-dialog.component';
 import {LinkColumn} from '../../../common/table/column/link-column';
-import {IdentiteLight} from '../identite.model';
+import {IdentiteLight, IdentiteType} from '../identite.model';
 import {Adresse} from '../../adresse/adresse';
 import {Model} from '../../../common/model';
 import {PersonneMoraleDialogComponent} from '../dialog/personne-morale-dialog.component';
@@ -47,9 +47,9 @@ export class IdentiteTableComponent {
     LinkColumn
       .of(IdentiteLight.MACHINES_LABEL, IdentiteLight.MACHINES, "10%", (identite: IdentiteLight) => {
         let url = "/machines/";
-        if (identite.identiteType == 'PERSONNE_MORALE') {
+        if (identite.identiteType == IdentiteType.PERSONNE_MORALE) {
           url += "morale/";
-        } else if (identite.identiteType == 'PERSONNE_PHYSIQUE') {
+        } else if (identite.identiteType == IdentiteType.PERSONNE_PHYSIQUE) {
           url += "physique/";
         } else {
           throw new Error("Type d'identité non implémenté")
@@ -63,10 +63,10 @@ export class IdentiteTableComponent {
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponentMethod: (identite: IdentiteLight) => {
-      if (identite.identiteType == 'PERSONNE_PHYSIQUE') {
+      if (identite.identiteType == IdentiteType.PERSONNE_PHYSIQUE) {
         return PersonnePhysiqueDialogComponent;
       }
-      if (identite.identiteType == 'PERSONNE_MORALE') {
+      if (identite.identiteType == IdentiteType.PERSONNE_MORALE) {
         return PersonneMoraleDialogComponent;
       }
       return null;
@@ -79,12 +79,11 @@ export class IdentiteTableComponent {
     read: true
   };
 
-  // Utilisé pour udpate la dataTable
-  @ViewChild(TableComponent)
-  public matTable: TableComponent<Machine> | null = null;
+  private readonly matTable: Signal<TableComponent<Machine>> = viewChild.required<TableComponent<Machine>>(TableComponent);
 
   constructor(private readonly identiteService: IdentiteService,
-              private readonly matDialog: MatDialog) {}
+              private readonly matDialog: MatDialog) {
+  }
 
   /**
    * Récupère la liste à afficher dans le tableau
@@ -106,7 +105,7 @@ export class IdentiteTableComponent {
     const dialogRef = this.matDialog.open(dialog, {
       maxWidth: 1000,
       data: <DialogData>{
-        type : DialogType.CREATE,
+        type: DialogType.CREATE,
         id: null,
         specificData: this.actionColumnInfo.dialogSpecificData,
       },
@@ -114,7 +113,7 @@ export class IdentiteTableComponent {
 
     dialogRef.afterClosed().subscribe(modification => {
       if (modification) {
-        this.matTable?.update();
+        this.matTable().update();
       }
     });
   }

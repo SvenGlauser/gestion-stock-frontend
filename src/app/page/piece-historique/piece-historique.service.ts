@@ -13,7 +13,8 @@ export class PieceHistoriqueService {
   private readonly URL: string = BASE_URL + 'piece/historique';
   private readonly URL_WITH_SLASH: string = this.URL + '/';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
   public get(id: number): Observable<PieceHistorique> {
     return this.http

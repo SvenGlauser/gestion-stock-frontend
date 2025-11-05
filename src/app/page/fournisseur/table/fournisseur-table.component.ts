@@ -14,6 +14,7 @@ import {FournisseurDialogComponent} from '../dialog/fournisseur-dialog.component
 import {LinkColumn} from '../../../common/table/column/link-column';
 import {Fournisseur} from '../fournisseur.model';
 import {Adresse} from '../../adresse/adresse';
+import {Identite} from '../../identite/identite.model';
 
 @Component({
   selector: 'app-categorie-table',
@@ -26,14 +27,14 @@ import {Adresse} from '../../adresse/adresse';
 export class FournisseurTableComponent {
   // Définition des colonnes
   protected readonly columns: Column[] = [
-    ClassicColumn
-      .of(Fournisseur.NOM_LABEL, Fournisseur.NOM, "25%")
+    MethodColumn
+      .of(Fournisseur.IDENTITE_LABEL, Fournisseur.IDENTITE, "25%", (identite: Identite) => identite.getDesignation())
       .sort(Order.ASC)
-      .inputFilterOnSameField(),
+      .inputFilter(Fournisseur.IDENTITE_DESIGNATION),
     ClassicColumn.of(Fournisseur.DESCRIPTION_LABEL, Fournisseur.DESCRIPTION, "25%"),
     LinkColumn.of(Fournisseur.URL_LABEL, Fournisseur.URL, "15%", (fournisseur: Fournisseur) => fournisseur.url ?? ""),
     MethodColumn
-      .of(Fournisseur.ADRESSE_LABEL, Fournisseur.ADRESSE, "25%", Adresse.adresseToString)
+      .of(Fournisseur.ADRESSE_LABEL, Fournisseur.IDENTITE_ADRESSE, "25%", Adresse.adresseToString)
       .setStylePreWrap(),
   ]
 
@@ -48,7 +49,8 @@ export class FournisseurTableComponent {
     read: true
   };
 
-  constructor(private readonly fournisseurService: FournisseurService) {}
+  constructor(private readonly fournisseurService: FournisseurService) {
+  }
 
   /**
    * Récupère la liste à afficher dans le tableau

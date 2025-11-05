@@ -19,12 +19,16 @@ mat-drawer-container {
   flex-grow: 1;
 
   mat-drawer {
-    padding: 10px 40px;
+    padding: 10px 0 10px 40px;
     border-right: 1px solid var(--mat-sys-outline-variant);
     background: var(--mat-sys-primary-container);
     color: var(--mat-sys-on-primary-container);
 
     --mat-sidenav-container-shape: var(--mat-sys-corner-small);
+
+    .menu-wrapper {
+      padding-right: 40px;
+    }
   }
 
   mat-drawer-content {

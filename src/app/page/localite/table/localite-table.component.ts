@@ -12,18 +12,19 @@ import {Model} from '../../../common/model';
 import {LocaliteDialogComponent} from '../dialog/localite-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {Localite} from '../localite.model';
+import {Column} from '../../../common/table/column/column';
 
 @Component({
   selector: 'app-localite',
-    imports: [
-        TableComponent
-    ],
+  imports: [
+    TableComponent
+  ],
   templateUrl: './localite-table.component.html',
   styleUrl: './localite-table.component.scss'
 })
 export class LocaliteTableComponent {
   // Définition des colonnes
-  protected columns = [
+  protected readonly columns: Column[] = [
     ClassicColumn
       .of(Localite.NOM_LABEL, Localite.NOM, "40%")
       .sort(Order.ASC)
@@ -54,7 +55,8 @@ export class LocaliteTableComponent {
   };
 
   constructor(private readonly localiteService: LocaliteService,
-              private readonly paysService: PaysService) {}
+              private readonly paysService: PaysService) {
+  }
 
   /**
    * Méthode de recherche pour le tableau

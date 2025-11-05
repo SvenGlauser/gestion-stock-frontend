@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, ViewChild} from '@angular/core';
+import {afterNextRender, Directive, inject, Signal, viewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DialogData, DialogType} from './dialog-data';
 import {Observable} from 'rxjs';
@@ -8,43 +8,41 @@ import {FormComponent} from '../form.component';
 import {getValueFromAttributeInCascade, setValueOfAttributeInCascade} from '../../utils/function.utils';
 import {ValidationException} from '../../utils/validation-exception';
 
-@Component({template: ''}) // Obligatoire, car implémente OnInit
-export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogComponent<T, E>, E extends Record<string, any>> implements OnInit {
+@Directive()
+export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogComponent<T, E>, E extends Record<string, any>> {
   // Données du dialog
   private readonly dialogRef: MatDialogRef<T> = inject(MatDialogRef<T>);
   protected readonly data: DialogData = inject<DialogData>(MAT_DIALOG_DATA);
-
-  // Constantes que le parent doit déclarer
-  protected readonly abstract ID_FIELD: string;
 
   // Constantes pour HTML
   protected readonly DialogType: typeof DialogType = DialogType;
 
   // Utilisé pour modifier les erreurs sur le formGroup
-  @ViewChild(FormComponent)
-  protected formComponent: FormComponent | null = null;
+  private readonly formComponent: Signal<FormComponent> = viewChild.required(FormComponent);
 
   // Force le parent à déclarer des champs de formulaire
-  protected abstract formsMap: Map<string, FormField[]>;
+  protected readonly abstract formsMap: Map<string, FormField[]>;
 
   // Ancien objet récupéré (sauf lors de la création)
-  protected oldObject: E | null = null;
+  private oldObject: E | null = null;
 
-  /**
-   * Initialise le dialog
-   */
-  public ngOnInit(): void {
-    // Désactive les champs nécessaires
-    this.disableFormIfNeeded();
+  // Affichage
+  protected readonly dialogTitle: string;
 
-    // Charge les anciennes données
-    this.loadOldData();
+  protected constructor() {
+    this.dialogTitle = this.getTitle();
+
+    // Important, car accéder à un champ abstrait est impossible dans le constructeur
+    afterNextRender((): void => {
+      this.disableFormIfNeeded();
+      this.loadOldData();
+    })
   }
 
   /**
    * Récupère le titre du dialog
    */
-  protected getTitle(): string {
+  private getTitle(): string {
     switch (this.data.type) {
       case DialogType.READ:
         return "Lecture seule";
@@ -61,13 +59,12 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
    * Si en mode suppression ou lecture, on désactive les formulaires
    */
   private disableFormIfNeeded(): void {
-    if (this.data.type === DialogType.READ ||
-      this.data.type === DialogType.DELETE) {
+    if ([DialogType.READ, DialogType.DELETE].includes(this.data.type)) {
 
       for (const forms of this.formsMap.values()) {
-        forms.forEach(form => {
+        for (const form of forms) {
           form.formControl.disable();
-        })
+        }
       }
     }
   }
@@ -77,12 +74,9 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
    */
   private loadOldData(): void {
     // Ne s'exécute pas à la création
-    if (this.data.type === DialogType.READ ||
-      this.data.type === DialogType.MODIFY ||
-      this.data.type === DialogType.DELETE) {
-
+    if ([DialogType.READ, DialogType.MODIFY, DialogType.DELETE].includes(this.data.type)) {
       // Récupère l'objet
-      this.getDataMethod(this.data.id!).subscribe(data => {
+      this.getDataMethod(this.data.id!).subscribe((data: E): void => {
         this.oldObject = data;
 
         if (!this.oldObject) {
@@ -91,13 +85,13 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
 
         // Rempli le formulaire avec les nouvelles données
         for (const forms of this.formsMap.values()) {
-          forms.forEach((form: FormField) => {
+          for (const form of forms) {
             let oldValue: any = getValueFromAttributeInCascade(form.field, this.oldObject);
 
             if (oldValue !== null) {
               form.formControl.setValue(oldValue);
             }
-          });
+          }
         }
       });
     }
@@ -107,21 +101,14 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
    * Crée un nouvel élément et ferme le dialog
    */
   protected create(): void {
-    let element: Record<string, any> = this.getNewData();
-
-    this.executeAndTraiterErreurAndClose(this.createDataMethod(<E>element));
+    this.executeAndTraiterErreurAndClose(this.createDataMethod(this.getNewData()));
   }
 
   /**
    * Modifie l'élément courant et ferme le dialog
    */
   protected modify(): void {
-    let element: Record<string, any> = this.getNewData();
-
-    // Réassignement manuel de l'id, car pas présent dans le formulaire
-    element[this.ID_FIELD] = this.data.id;
-
-    this.executeAndTraiterErreurAndClose(this.modifyDataMethod(<E>element));
+    this.executeAndTraiterErreurAndClose(this.modifyDataMethod(this.getNewData()));
   }
 
   /**
@@ -134,13 +121,13 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
   /**
    * Récupère un object avec les nouvelles données
    */
-  private getNewData(): Record<string, any> {
+  private getNewData(): E {
     let element: E = structuredClone(this.oldObject) ?? <E>{};
 
     for (const forms of this.formsMap.values()) {
-      forms.forEach((form: FormField) => {
+      for (const form of forms) {
         setValueOfAttributeInCascade(form.field, element, form.getValue());
-      });
+      }
     }
 
     return element;
@@ -170,7 +157,7 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
   private traiterErreur(errors: ValidationException[]): void {
     // Traiter les erreurs liées à un champ connu
     for (const forms of this.formsMap.values()) {
-      forms.forEach((form: FormField) => {
+      for (const form of forms) {
         // Récupération des erreurs
         let errorsAssignedToField = errors.filter(error => error.field == form.field)
 
@@ -186,18 +173,18 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
           // Suppression des erreurs dans la liste
           errors = errors.filter(error => !errorsAssignedToField.includes(error));
         }
-      });
+      }
     }
 
     // Gestion des erreurs inconnues
-    if (this.formComponent) {
+    if (this.formComponent()) {
       if (errors.length > 0) {
         // Création du message
         let errorsMessages: string = this.createErrorMessage(errors);
 
         // Assignement du message
-        this.formComponent.formGroup?.setErrors({"validation": errorsMessages});
-        this.formComponent.formGroup?.markAsTouched();
+        this.formComponent().formGroup.setErrors({"validation": errorsMessages});
+        this.formComponent().formGroup.markAsTouched();
       }
     }
   }

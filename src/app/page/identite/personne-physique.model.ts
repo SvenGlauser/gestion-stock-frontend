@@ -27,10 +27,11 @@ export class PersonnePhysique extends Identite {
       this.titre = personnePhysique.titre;
       this.nom = personnePhysique.nom;
       this.prenom = personnePhysique.prenom;
+      this.designation = this.getDesignation();
     }
   }
 
   public getDesignation(): string {
-    return this.prenom + " " +  this.nom;
+    return this.prenom + " " + this.nom;
   }
 }

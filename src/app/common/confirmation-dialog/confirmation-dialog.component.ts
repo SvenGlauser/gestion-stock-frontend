@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -21,6 +21,5 @@ import {MatButton} from '@angular/material/button';
   styleUrl: './confirmation-dialog.component.scss'
 })
 export class ConfirmationDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) protected readonly message: string) {
-  }
+  protected message: string = inject(MAT_DIALOG_DATA);
 }

@@ -15,7 +15,8 @@ export class FournisseurService {
   private readonly URL: string = BASE_URL + 'fournisseur';
   private readonly URL_WITH_SLASH: string = this.URL + '/';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
   public get(id: number): Observable<Fournisseur> {
     return this.http
@@ -55,7 +56,7 @@ export class FournisseurService {
       combinators: [{
         type: FilterCombinatorType.AND,
         filters: [{
-          field: Fournisseur.NOM,
+          field: Fournisseur.IDENTITE_DESIGNATION,
           value: value,
           type: FilterType.STRING_LIKE,
           order: Order.ASC
