@@ -1,80 +1,20 @@
 import {Injectable, signal, WritableSignal} from '@angular/core';
-import {Link} from './link';
-import {NavigationStart, Router} from '@angular/router';
+import {MenuLink, MenuLinkGroup} from './menu-link';
+import {NavigationStart, Route, Router} from '@angular/router';
 import {filter} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {AppRoute} from '../app.routes';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MenuService {
-  public readonly links: WritableSignal<Link[]> = signal([
-    {
-      name: "Accueil",
-      icon: "home",
-      url: "/",
-    }, {
-      name: "Pièces",
-      icon: "settings_suggest",
-      url: "/pieces",
-      onHomePage: true,
-      separatorBefore: "Actions principales",
-      children: [
-        {
-          name: "Statistiques des pièces",
-          icon: "bar_chart",
-          url: "/pieces/statistiques",
-        }
-      ]
-    }, {
-      name: "Machines",
-      icon: "agriculture",
-      disabled: true,
-      disabledLabel: "Pour accéder à cette page, utilisez la page des identités",
-      url: "/machines/",
-    }, {
-      name: "Identités",
-      icon: "person_apron",
-      onHomePage: true,
-      url: "/identites",
-    }, {
-      name: "Fournisseurs",
-      icon: "local_shipping",
-      onHomePage: true,
-      url: "/fournisseurs",
-    }, {
-      name: "Catégories",
-      icon: "category",
-      onHomePage: true,
-      url: "/categories",
-      separatorBefore: "Configuration",
-    }, {
-      name: "Localités",
-      icon: "location_city",
-      onHomePage: true,
-      url: "/localites",
-    }, {
-      name: "Pays",
-      icon: "flag",
-      onHomePage: true,
-      url: "/pays",
-    },
-    {
-      name: "Technique",
-      icon: "build",
-      url: "/technique",
-      separatorBefore: "Technique",
-      children: [
-        {
-          name: "Exceptions",
-          icon: "bug_report",
-          url: "/technique/exceptions",
-        }
-      ]
-    },
-  ]);
+  public readonly links: WritableSignal<MenuLink[]> = signal([]);
 
   constructor(private readonly router: Router) {
+    // Load all routes
+    this.links.set(this.loadRoutes(router.config));
+
     // Catch les changements de page
     this.router.events
       .pipe(
@@ -92,12 +32,12 @@ export class MenuService {
    * @param url Nouvelle URL
    */
   private updateActivated(url: string): void {
-    let bestItem: Link | null = null;
+    let bestItem: MenuLink | null = null;
     let lastLength: number = 0;
 
-    const links: Link[] = structuredClone(this.links());
+    const links: MenuLink[] = structuredClone(this.links());
 
-    for (const item of this.getLinksInCasacade(links)) {
+    for (const item of links) {
       if (url.startsWith(item.url)) {
         let length = item.url.length;
 
@@ -117,17 +57,47 @@ export class MenuService {
     this.links.set(links);
   }
 
-  private getLinksInCasacade(links: Link[]): Link[] {
-    if (links.length === 0) {
-      return [];
+  private loadRoutes(routes: Route[], parentUrl: string = ""): MenuLink[] {
+    let menuLinks: MenuLink[] = [];
+
+    for (const route of routes) {
+      const appRoute: AppRoute = <AppRoute>route;
+
+      let url: string = parentUrl;
+      let currentUrl: string = appRoute.path?.split(":")[0] ?? "";
+      if (currentUrl.endsWith("/")) {
+        currentUrl = currentUrl.substring(0, currentUrl.length - 2);
+      }
+
+      if (currentUrl != "") {
+        url += "/" + currentUrl;
+      }
+
+      if (appRoute.data?.menu) {
+        const menu = appRoute.data.menu;
+
+        const link: MenuLink = {
+          name: menu.name,
+          icon: menu.icon,
+          url: url,
+
+          onHomePage: menu.onHomePage,
+
+          group: menu.group,
+          order: menu.order,
+
+          disabled: menu.disabled,
+          disabledLabel: menu.disabledLabel,
+        };
+
+        menuLinks.push(link);
+      }
+
+      if (appRoute.children) {
+        menuLinks.push(...this.loadRoutes(appRoute.children, url));
+      }
     }
 
-    let linksWithChildren: Link[] = [...links];
-    for (const link of links) {
-      linksWithChildren.push(
-        link,
-        ...this.getLinksInCasacade(link.children ?? []));
-    }
-    return linksWithChildren;
+    return menuLinks;
   }
 }

@@ -3,6 +3,15 @@
     <mat-icon>menu</mat-icon>
   </button>
   <span>Gestion des stocks</span>
+  @if (this.isLoggedIn()) {
+    <button mat-flat-button (click)="this.logout()">
+      Logout
+    </button>
+  } @else {
+    <button mat-flat-button (click)="this.login()">
+      Login
+    </button>
+  }
 </mat-toolbar>
 
 <mat-drawer-container>
