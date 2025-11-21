@@ -17,7 +17,19 @@ export class NumberFormField extends FormField {
                         field: string,
                         value: number | null = null): NumberFormField {
 
-    let formField = this.ofFormControl(label, field, new FormControl(value));
+    return this.ofFormControl(label, field, new FormControl(value));
+  }
+
+  /**
+   * Récupère un champ de saisie à partir d'un FormControl
+   * @param label Label
+   * @param field Champ
+   * @param formControl FormControl
+   */
+  public static ofFormControl(label: string,
+                              field: string,
+                              formControl: FormControl): NumberFormField {
+    let formField: NumberFormField = new NumberFormField(label, field, formControl);
 
     formField.formControl.valueChanges
       .subscribe((initialValue: any) => {
@@ -47,18 +59,6 @@ export class NumberFormField extends FormField {
       });
 
     return formField;
-  }
-
-  /**
-   * Récupère un champ de saisie à partir d'un FormControl
-   * @param label Label
-   * @param field Champ
-   * @param formControl FormControl
-   */
-  public static ofFormControl(label: string,
-                              field: string,
-                              formControl: FormControl): NumberFormField {
-    return new NumberFormField(label, field, formControl);
   }
 
   /**
