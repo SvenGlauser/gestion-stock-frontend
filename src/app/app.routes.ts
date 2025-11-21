@@ -17,45 +17,55 @@ export const routes: Routes = [
     path: '',
     component: AccueilComponent,
     children: [],
+    title: 'Gestion des stocks'
   }, {
     path: 'pieces',
     children: [
       {
         path: '',
         component: PieceTableComponent,
+        title: 'Pièces'
       }, {
         path: 'statistiques',
         component: PieceStatistiqueComponent,
+        title: 'Statistiques'
       }, {
         path: 'historique/:id',
         component: PieceHistoriqueTableComponent,
         children: [],
+        title: 'Historique du stock'
       },
     ],
   }, {
     path: 'machines/:typeIdentite/:id',
     component: MachineTableComponent,
     children: [],
+    title: 'Machines'
   }, {
     path: 'identites',
     component: IdentiteTableComponent,
     children: [],
+    title: 'Identités'
   }, {
     path: 'fournisseurs',
     component: FournisseurTableComponent,
     children: [],
+    title: 'Fournisseurs'
   }, {
     path: 'categories',
     component: CategorieTableComponent,
     children: [],
+    title: 'Catégories'
   }, {
     path: 'localites',
     component: LocaliteTableComponent,
     children: [],
+    title: 'Localites'
   }, {
     path: 'pays',
     component: PaysTableComponent,
     children: [],
+    title: 'Pays'
   }, {
     path: 'technique',
     children: [
@@ -63,10 +73,12 @@ export const routes: Routes = [
         path: '',
         component: TechniqueComponent,
         children: [],
+        title: 'Technique'
       }, {
         path: 'exceptions',
         component: ExceptionTableComponent,
         children: [],
+        title: 'Exceptions'
       }
     ],
   },
