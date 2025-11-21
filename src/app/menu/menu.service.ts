@@ -76,6 +76,10 @@ export class MenuService {
       if (appRoute.data?.menu) {
         const menu = appRoute.data.menu;
 
+        if (url == "") {
+          url = "/";
+        }
+
         const link: MenuLink = {
           name: menu.name,
           icon: menu.icon,
