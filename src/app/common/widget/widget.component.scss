@@ -32,6 +32,15 @@ mat-card {
     gap: 20px;
     height: 100%;
   }
+
+  &[disabled] {
+    opacity: 0.38;
+    cursor: default;
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
 }
 
 mat-card:hover {

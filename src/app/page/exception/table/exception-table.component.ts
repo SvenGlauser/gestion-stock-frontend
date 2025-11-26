@@ -26,6 +26,7 @@ import {MatIconButton} from '@angular/material/button';
 import {DateColumn} from '../../../common/table/column/date-column';
 import {ThrownException} from '../exception.model';
 import {Model} from '../../../common/model';
+import {Roles} from '../../../security/roles';
 
 @Component({
   selector: 'app-exception-table',
@@ -135,4 +136,6 @@ export class ExceptionTableComponent {
   private viewException(element: ThrownException): Observable<boolean> {
     return this.exceptionService.changeStatus(element.id!, true).pipe(map(() => true));
   }
+
+  protected readonly Roles = Roles;
 }

@@ -9,6 +9,7 @@ import {PaysService} from '../pays.service';
 import {Observable} from 'rxjs';
 import {InputFormField} from "../../../common/form/field/input-form-field";
 import {Pays} from '../pays.model';
+import {Roles} from '../../../security/roles';
 
 @Component({
   selector: 'app-dialog',
@@ -59,5 +60,13 @@ export class PaysDialogComponent extends AbstractFormDialogComponent<PaysDialogC
 
   protected modifyDataMethod(pays: Pays): Observable<Pays> {
     return this.paysService.modify(pays);
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_PAYS_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_PAYS_EDITEUR;
   }
 }

@@ -1,6 +1,15 @@
-<mat-card [routerLink]="this.url()">
-  <mat-card-content>
-    <mat-icon>{{ this.icon() }}</mat-icon>
-    <span>{{ this.label() }}</span>
-  </mat-card-content>
-</mat-card>
+@if (this.disabled()) {
+  <mat-card disabled>
+    <mat-card-content>
+      <mat-icon>{{ this.icon() }}</mat-icon>
+      <span>{{ this.label() }}</span>
+    </mat-card-content>
+  </mat-card>
+} @else {
+  <mat-card [routerLink]="this.url()">
+    <mat-card-content>
+      <mat-icon>{{ this.icon() }}</mat-icon>
+      <span>{{ this.label() }}</span>
+    </mat-card-content>
+  </mat-card>
+}

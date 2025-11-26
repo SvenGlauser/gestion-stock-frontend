@@ -12,14 +12,16 @@ import {CategorieService} from '../../categorie/categorie.service';
 import {FournisseurService} from '../../fournisseur/fournisseur.service';
 import {Observable} from 'rxjs';
 import {PieceStatistique} from './piece-statistique';
+import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
+import {Roles} from '../../../security/roles';
 
 @Component({
-  selector: 'app-statistique',
+  selector: 'app-piece-statistique-page',
   imports: [NgxEchartsDirective, AutocompleteComponent],
-  templateUrl: './piece-statistique.component.html',
-  styleUrl: './piece-statistique.component.scss'
+  templateUrl: './piece-statistique-page.component.html',
+  styleUrl: './piece-statistique-page.component.scss'
 })
-export class PieceStatistiqueComponent {
+export class PieceStatistiquePageComponent extends AbstractProtectedComponent {
 
   protected readonly Categorie: typeof Categorie = Categorie;
   protected readonly Fournisseur: typeof Fournisseur = Fournisseur;
@@ -111,6 +113,8 @@ export class PieceStatistiqueComponent {
   constructor(private readonly pieceService: PieceService,
               private readonly categorieService: CategorieService,
               private readonly fournisseurService: FournisseurService) {
+    super();
+
     effect((): void => {
       const categorie: Categorie | null = this.categorie();
       const fournisseur: Fournisseur | null = this.fournisseur();
@@ -150,5 +154,13 @@ export class PieceStatistiqueComponent {
 
   protected autocompleteFournisseurs(value: string): Observable<Fournisseur[]> {
     return this.fournisseurService.autocomplete(value);
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_PIECE_STATISTIQUE_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_PIECE_STATISTIQUE_EDITEUR;
   }
 }

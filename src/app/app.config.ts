@@ -13,10 +13,7 @@ import * as echarts from 'echarts/core';
 import {BarChart, LineChart} from 'echarts/charts';
 import {DataZoomComponent, GridComponent, TitleComponent, ToolboxComponent, TooltipComponent} from 'echarts/components';
 import {CanvasRenderer} from 'echarts/renderers';
-import {
-  AutoRefreshTokenService,
-  includeBearerTokenInterceptor, provideKeycloak, UserActivityService, withAutoRefreshToken
-} from 'keycloak-angular';
+import {includeBearerTokenInterceptor} from 'keycloak-angular';
 import {provideKeycloakAndInterceptor} from './security/keycloak.initializer';
 
 echarts.use([

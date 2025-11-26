@@ -1,9 +1,10 @@
-import {Injectable, signal, WritableSignal} from '@angular/core';
-import {MenuLink, MenuLinkGroup} from './menu-link';
-import {NavigationStart, Route, Router} from '@angular/router';
+import {afterNextRender, Injectable, signal, WritableSignal} from '@angular/core';
+import {MenuLink} from './menu-link';
+import {NavigationEnd, Route, Router} from '@angular/router';
 import {filter} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {AppRoute} from '../app.routes';
+import {AuthentificationService} from '../security/authentification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +12,17 @@ import {AppRoute} from '../app.routes';
 export class MenuService {
   public readonly links: WritableSignal<MenuLink[]> = signal([]);
 
-  constructor(private readonly router: Router) {
+  constructor(private readonly router: Router,
+              private readonly autorisationService: AuthentificationService) {
     // Load all routes
-    this.links.set(this.loadRoutes(router.config));
+    afterNextRender(() => {
+      this.links.set(this.loadRoutes(router.config));
+    });
 
     // Catch les changements de page
     this.router.events
       .pipe(
-        filter(event => event instanceof NavigationStart),
+        filter(event => event instanceof NavigationEnd),
         takeUntilDestroyed())
       .subscribe(event => {
         this.updateActivated(event.url);
@@ -80,7 +84,7 @@ export class MenuService {
           url = "/";
         }
 
-        const link: MenuLink = {
+        let link: MenuLink = {
           name: menu.name,
           icon: menu.icon,
           url: url,
@@ -90,9 +94,15 @@ export class MenuService {
           group: menu.group,
           order: menu.order,
 
-          disabled: menu.disabled,
+          disabled: menu.disabled ?? false,
           disabledLabel: menu.disabledLabel,
         };
+
+        if (appRoute.data.security?.roles && !this.autorisationService.hasRoles(appRoute.data.security.roles)) {
+          console.log(appRoute.data, this.autorisationService.roles())
+          link.disabled = true;
+          link.disabledLabel = "Vous n'avez pas les autorisations."
+        }
 
         menuLinks.push(link);
       }

@@ -9,6 +9,7 @@ import {FormComponent} from '../../../common/form/form.component';
 import {MachineService} from '../machine.service';
 import {InputFormField} from '../../../common/form/field/input-form-field';
 import {Machine} from '../machine.model';
+import {Roles} from '../../../security/roles';
 
 @Component({
   selector: 'app-machine-dialog',
@@ -60,5 +61,13 @@ export class MachineDialogComponent extends AbstractFormDialogComponent<MachineD
 
   protected modifyDataMethod(machine: Machine): Observable<Machine> {
     return this.machineService.modify(machine);
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_MACHINE_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_MACHINE_EDITEUR;
   }
 }

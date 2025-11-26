@@ -1,15 +1,23 @@
-import {ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot} from '@angular/router';
-import {KeycloakService} from './keycloak.service';
+import {ActivatedRouteSnapshot, CanActivateChildFn, CanActivateFn, RouterStateSnapshot} from '@angular/router';
+import {AuthentificationService} from './authentification.service';
 import {inject} from '@angular/core';
+import {AppRoute} from '../app.routes';
+import {Roles} from './roles';
 
 export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-  const keycloakService: KeycloakService = inject(KeycloakService);
+  const authentificationService: AuthentificationService = inject(AuthentificationService);
 
-  if (keycloakService.isLoggedIn()) {
-    return true;
+  if (authentificationService.authenticated()) {
+    const requiredRole: Roles[] = [...(<AppRoute>route.routeConfig).data?.security?.roles ?? []]
+
+    return authentificationService.hasRoles(requiredRole);
   }
 
-  keycloakService.login();
+  authentificationService.login();
 
   return false;
+};
+
+export const adminChildGuard: CanActivateChildFn = (childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+  return authGuard(childRoute, state);
 };

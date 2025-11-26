@@ -12,6 +12,7 @@ import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete
 import {PieceHistorique} from '../piece-historique.model';
 import {PieceHistoriqueTypeEnumValuesForAutocomplete} from '../piece-historique-type.enum';
 import {PieceHistoriqueSourceEnumValuesForAutocomplete} from '../piece-historique-source.enum';
+import {Roles} from '../../../security/roles';
 
 @Component({
   selector: 'app-piece-historique-dialog',
@@ -64,5 +65,13 @@ export class PieceHistoriqueDialogComponent extends AbstractFormDialogComponent<
 
   protected modifyDataMethod(_pieceHistorique: PieceHistorique): Observable<PieceHistorique> {
     return of();
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_PIECE_HISTORIQUE_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_PIECE_HISTORIQUE_EDITEUR;
   }
 }

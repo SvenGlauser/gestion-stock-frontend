@@ -1,6 +1,8 @@
 import {
   AutoRefreshTokenService,
-  createInterceptorCondition, INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG, IncludeBearerTokenCondition,
+  createInterceptorCondition,
+  INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+  IncludeBearerTokenCondition,
   provideKeycloak,
   UserActivityService,
   withAutoRefreshToken

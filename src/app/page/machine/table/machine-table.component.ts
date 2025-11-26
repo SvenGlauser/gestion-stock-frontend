@@ -34,6 +34,7 @@ import {FilterCombinatorType} from '../../../common/search/filter-combinator';
 import {PersonnePhysiqueService} from '../../identite/personne-physique.service';
 import {PersonneMoraleService} from '../../identite/personne-morale.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {Roles} from '../../../security/roles';
 
 @Component({
   selector: 'app-machine-table',
@@ -210,4 +211,6 @@ export class MachineTableComponent {
         }),
         map(() => false));
   }
+
+  protected readonly Roles = Roles;
 }

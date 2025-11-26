@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.profil {
+  color: var(--mat-sys-primary);
+  background-color: var(--mat-sys-on-primary);
+  border-color: var(--mat-sys-primary);
+
+  font-size: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profil-name[disabled] {
+  opacity: 1;
+}

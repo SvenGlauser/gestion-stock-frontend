@@ -2,7 +2,7 @@
   <div class="header">
     <h2>{{ this.title() }}</h2>
 
-    @if (this.actionColumnInfo().created) {
+    @if (this.actionColumnInfo().created && this.haveEditAccessRole()) {
       <div class="header-actions">
         <button mat-flat-button (click)="openDialog(null, DialogType.CREATE)">Créer</button>
       </div>
@@ -85,9 +85,9 @@
       <td mat-cell
           *matCellDef="let element"
           [style.text-align]="'right'">
-        @if (this.actionColumnInfo().read
-        || this.actionColumnInfo().modify
-        || this.actionColumnInfo().delete
+        @if ((this.actionColumnInfo().read && this.haveReadAccessRole())
+        || (this.actionColumnInfo().modify && this.haveEditAccessRole())
+        || (this.actionColumnInfo().delete && this.haveEditAccessRole())
         || this.canViewOneAction(element)) {
           <button mat-icon-button
                   [matMenuTriggerFor]="menu"
@@ -96,10 +96,10 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            @if (this.actionColumnInfo().read) {
+            @if (this.actionColumnInfo() && this.haveEditAccessRole()) {
               <button mat-menu-item (click)="this.openDialog(element, DialogType.READ)">Afficher</button>
             }
-            @if (this.actionColumnInfo().modify) {
+            @if (this.actionColumnInfo().modify && this.haveEditAccessRole()) {
               <button mat-menu-item (click)="this.openDialog(element, DialogType.MODIFY)">Modifier</button>
             }
             @for (action of this.actionColumnInfo().actions ?? []; track action.name) {
@@ -109,7 +109,7 @@
                 </button>
               }
             }
-            @if (this.actionColumnInfo().delete) {
+            @if (this.actionColumnInfo().delete && this.haveEditAccessRole()) {
               <button mat-menu-item (click)="this.openDialog(element, DialogType.DELETE)">Supprimer</button>
             }
           </mat-menu>
@@ -176,7 +176,11 @@
     }
   </table>
   @if (this.tableLength() === 0) {
-    <div class="empty-table">Aucun élément dans la liste</div>
+    @if (this.haveReadAccessRole()) {
+      <div class="empty-table">Aucun élément dans la liste</div>
+    } @else {
+      <div class="empty-table">Vous n'avez pas le droit d'afficher la liste</div>
+    }
   }
   <mat-paginator [pageSizeOptions]="[10, 20, 50]"
                  (page)="changePage($event)"

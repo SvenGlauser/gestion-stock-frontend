@@ -30,7 +30,7 @@ import {SearchResult} from '../search/searchResult';
 import {Column} from './column/column';
 import {SearchRequest} from '../search/searchRequest';
 import {Filter, Order} from '../search/filter';
-import {debounceTime, mergeMap, Observable, Subject, tap} from 'rxjs';
+import {debounceTime, mergeMap, Observable, of, Subject, tap} from 'rxjs';
 import {MatSort, MatSortHeader, Sort, SortDirection} from '@angular/material/sort';
 import {MatFormField, MatInput} from '@angular/material/input';
 import {FormsModule} from '@angular/forms';
@@ -55,6 +55,9 @@ import {FilterCombinatorType} from '../search/filter-combinator';
 import {ComponentType} from '@angular/cdk/portal';
 import {AbstractFormDialogComponent} from '../form/dialog/abstract-form-dialog.component';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {AbstractProtectedComponent} from '../abstract/abstract-protected-component.directive';
+import {Roles} from '../../security/roles';
+import {AuthentificationService} from '../../security/authentification.service';
 
 @Component({
   selector: 'app-table',
@@ -107,6 +110,13 @@ export class TableComponent<T extends Record<string, any>> {
   public readonly updateMethod: InputSignal<((searchRequest: SearchRequest) => Observable<SearchResult<T>>)> = input.required();
   public readonly actionColumnInfo: InputSignal<ActionColumnInfo> = input.required();
 
+  // Access
+  public readonly readAccessRole: InputSignal<Roles> = input.required();
+  public readonly editAccessRole: InputSignal<Roles> = input.required();
+
+  public readonly haveReadAccessRole: Signal<boolean> = computed(() => this.authentificationService.hasRole(this.readAccessRole()));
+  public readonly haveEditAccessRole: Signal<boolean> = computed(() => this.authentificationService.hasRole(this.editAccessRole()));
+
   // Enfants
   private readonly paginator: Signal<MatPaginator | undefined> = viewChild(MatPaginator);
   private readonly table: Signal<MatTable<T> | undefined> = viewChild(MatTable);
@@ -147,14 +157,25 @@ export class TableComponent<T extends Record<string, any>> {
     }]
   };
 
-  constructor(private readonly matDialog: MatDialog) {
+  constructor(private readonly matDialog: MatDialog,
+              private readonly authentificationService: AuthentificationService) {
     // Initialise l'événement qui doit s'exécuter lors d'une recherche
     this.searchEvent
       .pipe(
         tap((): void => this.isLoading.set(true)),
         debounceTime(500),
         mergeMap(() => {
-          return this.updateMethod()(this.searchRequest);
+          if (this.haveReadAccessRole()) {
+            return this.updateMethod()(this.searchRequest);
+          } else {
+            return of(<SearchResult<T>>{
+              currentPage: 0,
+              elements: [],
+              pageSize: 0,
+              totalPages: 0,
+              totalElements: 0,
+            });
+          }
         }),
         takeUntilDestroyed())
       .subscribe((result) => {

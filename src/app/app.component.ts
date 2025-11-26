@@ -1,30 +1,25 @@
-import {Component} from '@angular/core';
+import {Component, computed, Signal} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {MatToolbar} from '@angular/material/toolbar';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {MatDrawer, MatDrawerContainer, MatSidenavModule} from '@angular/material/sidenav';
 import {MenuComponent} from './menu/menu.component';
-import {KeycloakService} from './security/keycloak.service';
+import {AuthentificationService} from './security/authentification.service';
+import {ProfilComponent} from './layout/profil/profil.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatToolbar, MatIconButton, MatIcon, MatSidenavModule, MatDrawerContainer, MatDrawer, MenuComponent, MatButton],
+  imports: [RouterOutlet, MatToolbar, MatIconButton, MatIcon, MatSidenavModule, MatDrawerContainer, MatDrawer, MenuComponent, MatButton, ProfilComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  constructor(private readonly keycloakService: KeycloakService) {}
+  protected isLoggedIn: Signal<boolean> = computed((): boolean => this.authentificationService.authenticated());
 
-  protected logout(): void {
-    this.keycloakService.logout();
-  }
+  constructor(private readonly authentificationService: AuthentificationService) {}
 
   protected login(): void {
-    this.keycloakService.login();
-  }
-
-  protected isLoggedIn(): boolean {
-    return this.keycloakService.isLoggedIn();
+    this.authentificationService.login();
   }
 }

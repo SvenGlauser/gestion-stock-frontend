@@ -13,6 +13,7 @@ import {Fournisseur} from '../fournisseur.model';
 import {Model} from '../../../common/model';
 import {IdentiteService} from '../../identite/identite.service';
 import {Identite, IdentiteLight} from '../../identite/identite.model';
+import {Roles} from '../../../security/roles';
 
 @Component({
   selector: 'app-fournisseur-dialog',
@@ -81,5 +82,13 @@ export class FournisseurDialogComponent extends AbstractFormDialogComponent<Four
    */
   private autocompleteIdentite(value: string): Observable<IdentiteLight[]> {
     return this.identiteService.autocomplete(value);
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_FOURNISSEUR_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_FOURNISSEUR_EDITEUR;
   }
 }

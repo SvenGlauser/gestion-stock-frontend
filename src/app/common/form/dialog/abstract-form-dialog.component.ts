@@ -7,9 +7,11 @@ import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
 import {FormComponent} from '../form.component';
 import {getValueFromAttributeInCascade, setValueOfAttributeInCascade} from '../../utils/function.utils';
 import {ValidationException} from '../../utils/validation-exception';
+import {AbstractProtectedComponent} from '../../abstract/abstract-protected-component.directive';
+import {Roles} from '../../../security/roles';
 
 @Directive()
-export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogComponent<T, E>, E extends Record<string, any>> {
+export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogComponent<T, E>, E extends Record<string, any>> extends AbstractProtectedComponent {
   // Données du dialog
   private readonly dialogRef: MatDialogRef<T> = inject(MatDialogRef<T>);
   protected readonly data: DialogData = inject<DialogData>(MAT_DIALOG_DATA);
@@ -30,6 +32,8 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
   protected readonly dialogTitle: string;
 
   protected constructor() {
+    super();
+
     this.dialogTitle = this.getTitle();
 
     // Important, car accéder à un champ abstrait est impossible dans le constructeur
@@ -220,4 +224,25 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
    * @param id Id de l'élément
    */
   protected abstract deleteDataMethod(id: number): Observable<void>;
+
+  protected override hasAccess(roles: string[]): boolean {
+    let role: Roles;
+
+    switch (this.data.type) {
+      case DialogType.READ:
+        role = this.readAccess();
+        break;
+      case DialogType.CREATE:
+      case DialogType.MODIFY:
+      case DialogType.DELETE:
+        role = this.editAccess();
+        break;
+    }
+
+    return roles.includes(role.toString());
+  }
+
+  protected override noAcessAction(): void {
+    this.dialogRef.close(true);
+  }
 }

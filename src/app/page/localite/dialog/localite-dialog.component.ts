@@ -13,6 +13,7 @@ import {AutocompleteFormField} from '../../../common/form/field/autocomplete-for
 import {Localite} from '../localite.model';
 import {Model} from '../../../common/model';
 import {Pays} from '../../pays/pays.model';
+import {Roles} from '../../../security/roles';
 
 @Component({
   selector: 'app-localite-dialog',
@@ -77,5 +78,13 @@ export class LocaliteDialogComponent extends AbstractFormDialogComponent<Localit
 
   protected modifyDataMethod(localite: Localite): Observable<Localite> {
     return this.localiteService.modify(localite);
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_LOCALITE_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_LOCALITE_EDITEUR;
   }
 }

@@ -1,7 +1,9 @@
 <app-table [title]="this.getTableTitle()"
            [columns]="this.columns"
            [updateMethod]="this.getUpdateMethod.bind(this)"
-           [actionColumnInfo]="actionColumnInfo">
+           [actionColumnInfo]="actionColumnInfo"
+           [readAccessRole]="Roles.R_MACHINE_LECTEUR"
+           [editAccessRole]="Roles.R_MACHINE_EDITEUR">
   <ng-container [matColumnDef]="'rowExtender'">
     <th mat-header-cell
         *matHeaderCellDef

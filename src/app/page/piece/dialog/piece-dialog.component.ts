@@ -16,6 +16,7 @@ import {FournisseurService} from '../../fournisseur/fournisseur.service';
 import {Piece} from '../piece.model';
 import {Model} from '../../../common/model';
 import {NumberFormField} from '../../../common/form/field/number-form-field';
+import {Roles} from '../../../security/roles';
 
 @Component({
   selector: 'app-piece-dialog',
@@ -114,5 +115,13 @@ export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialo
    */
   private autocompleteFournisseur(value: string): Observable<Fournisseur[]> {
     return this.fournisseurService.autocomplete(value);
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_PIECE_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_PIECE_EDITEUR;
   }
 }

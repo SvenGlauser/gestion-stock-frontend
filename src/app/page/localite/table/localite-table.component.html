@@ -1,4 +1,6 @@
 <app-table title="Liste des localités"
            [columns]="this.columns"
            [updateMethod]="this.getUpdateMethod.bind(this)"
-           [actionColumnInfo]="actionColumnInfo"/>
+           [actionColumnInfo]="actionColumnInfo"
+           [readAccessRole]="Roles.R_LOCALITE_LECTEUR"
+           [editAccessRole]="Roles.R_LOCALITE_EDITEUR"/>

@@ -3,15 +3,15 @@
     <mat-icon>menu</mat-icon>
   </button>
   <span>Gestion des stocks</span>
-  @if (this.isLoggedIn()) {
-    <button mat-flat-button (click)="this.logout()">
-      Logout
-    </button>
-  } @else {
-    <button mat-flat-button (click)="this.login()">
-      Login
-    </button>
-  }
+  <div class="profil-infos">
+    @if (this.isLoggedIn()) {
+      <app-profil></app-profil>
+    } @else {
+      <button class="logout-button" mat-stroked-button (click)="this.login()">
+        Se connecter
+      </button>
+    }
+  </div>
 </mat-toolbar>
 
 <mat-drawer-container>

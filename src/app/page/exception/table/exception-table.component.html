@@ -1,7 +1,9 @@
 <app-table title="Liste des exceptions"
            [columns]="this.columns"
            [updateMethod]="this.getUpdateMethod.bind(this)"
-           [actionColumnInfo]="actionColumnInfo">
+           [actionColumnInfo]="actionColumnInfo"
+           [readAccessRole]="Roles.R_EXCEPTION_LECTEUR"
+           [editAccessRole]="Roles.R_EXCEPTION_EDITEUR">
   <ng-container [matColumnDef]="'rowExtender'">
     <th mat-header-cell
         *matHeaderCellDef

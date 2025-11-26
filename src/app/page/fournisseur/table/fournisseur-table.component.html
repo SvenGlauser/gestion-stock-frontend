@@ -1,4 +1,6 @@
 <app-table title="Liste des fournisseurs"
            [columns]="this.columns"
            [updateMethod]="this.getUpdateMethod.bind(this)"
-           [actionColumnInfo]="actionColumnInfo"/>
+           [actionColumnInfo]="actionColumnInfo"
+           [readAccessRole]="Roles.R_FOURNISSEUR_LECTEUR"
+           [editAccessRole]="Roles.R_FOURNISSEUR_EDITEUR"/>

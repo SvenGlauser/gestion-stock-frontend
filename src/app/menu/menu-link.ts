@@ -10,7 +10,7 @@ export interface MenuLink {
   icon: string;
   url: string;
   activated?: boolean;
-  disabled?: boolean;
+  disabled: boolean;
   disabledLabel?: string;
   onHomePage?: boolean;
   group: MenuLinkGroup;

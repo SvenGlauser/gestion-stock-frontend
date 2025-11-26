@@ -15,9 +15,10 @@ import {LinkColumn} from '../../../common/table/column/link-column';
 import {Fournisseur} from '../fournisseur.model';
 import {Adresse} from '../../adresse/adresse';
 import {Identite} from '../../identite/identite.model';
+import {Roles} from '../../../security/roles';
 
 @Component({
-  selector: 'app-categorie-table',
+  selector: 'app-fournisseur-table',
   imports: [
     TableComponent
   ],
@@ -59,4 +60,6 @@ export class FournisseurTableComponent {
   protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<Fournisseur>> {
     return this.fournisseurService.search(searchRequest);
   }
+
+  protected readonly Roles = Roles;
 }
