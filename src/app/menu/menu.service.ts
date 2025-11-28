@@ -99,7 +99,6 @@ export class MenuService {
         };
 
         if (appRoute.data.security?.roles && !this.autorisationService.hasRoles(appRoute.data.security.roles)) {
-          console.log(appRoute.data, this.autorisationService.roles())
           link.disabled = true;
           link.disabledLabel = "Vous n'avez pas les autorisations."
         }
