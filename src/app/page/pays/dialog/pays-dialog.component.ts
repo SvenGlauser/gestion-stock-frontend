@@ -10,6 +10,7 @@ import {Observable} from 'rxjs';
 import {InputFormField} from "../../../common/form/field/input-form-field";
 import {Pays} from '../pays.model';
 import {Roles} from '../../../security/roles';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-dialog',
@@ -21,7 +22,8 @@ import {Roles} from '../../../security/roles';
     MatButton,
     MatDialogClose,
     ReactiveFormsModule,
-    FormComponent
+    FormComponent,
+    DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'

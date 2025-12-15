@@ -16,6 +16,7 @@ import {PersonneMorale} from '../personne-morale.model';
 import {PersonneMoraleService} from '../personne-morale.service';
 import {IdentiteType} from '../identite.model';
 import {Roles} from '../../../security/roles';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-personne-morale-dialog',
@@ -27,7 +28,8 @@ import {Roles} from '../../../security/roles';
     MatButton,
     MatDialogClose,
     ReactiveFormsModule,
-    FormComponent
+    FormComponent,
+    DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'

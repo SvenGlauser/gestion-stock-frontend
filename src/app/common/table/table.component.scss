@@ -52,9 +52,14 @@
 
   --mat-form-field-container-text-size: var(--mat-sys-body-medium-size);
 
+  &.mat-mdc-header-cell {
+    --mat-table-row-item-outline-width: unset;
+  }
+
   & > div {
     padding: 16px;
     display: inline-block;
+    vertical-align: top;
 
     & mat-form-field {
       width: 100%;
@@ -93,4 +98,8 @@ table {
   width: 100%;
   display: table;
   table-layout: fixed;
+}
+
+.mat-mdc-header-cell {
+  --mat-table-row-item-outline-width: 2px;
 }

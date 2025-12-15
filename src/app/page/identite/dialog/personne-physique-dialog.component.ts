@@ -18,6 +18,7 @@ import {PersonnePhysique} from '../personne-physique.model';
 import {PersonnePhysiqueService} from '../personne-physique.service';
 import {IdentiteType} from '../identite.model';
 import {Roles} from '../../../security/roles';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-personne-physique-dialog',
@@ -29,7 +30,8 @@ import {Roles} from '../../../security/roles';
     MatButton,
     MatDialogClose,
     ReactiveFormsModule,
-    FormComponent
+    FormComponent,
+    DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'

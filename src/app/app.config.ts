@@ -1,4 +1,4 @@
-import {ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
+import {ApplicationConfig, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
 import {provideRouter} from '@angular/router';
 
 import {routes} from './app.routes';
@@ -15,6 +15,7 @@ import {DataZoomComponent, GridComponent, TitleComponent, ToolboxComponent, Tool
 import {CanvasRenderer} from 'echarts/renderers';
 import {includeBearerTokenInterceptor} from 'keycloak-angular';
 import {provideKeycloakAndInterceptor} from './security/keycloak.initializer';
+import {catchHttpExceptionInterceptor} from './config/catch-http-exception.interceptor';
 
 echarts.use([
   BarChart,
@@ -31,7 +32,13 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
-    provideHttpClient(withFetch(), withInterceptors([includeBearerTokenInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([
+        includeBearerTokenInterceptor,
+        catchHttpExceptionInterceptor
+      ])
+    ),
     provideEchartsCore({echarts}),
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

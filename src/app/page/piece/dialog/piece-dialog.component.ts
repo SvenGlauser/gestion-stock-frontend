@@ -17,6 +17,7 @@ import {Piece} from '../piece.model';
 import {Model} from '../../../common/model';
 import {NumberFormField} from '../../../common/form/field/number-form-field';
 import {Roles} from '../../../security/roles';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-piece-dialog',
@@ -28,7 +29,8 @@ import {Roles} from '../../../security/roles';
     MatButton,
     MatDialogClose,
     ReactiveFormsModule,
-    FormComponent
+    FormComponent,
+    DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'

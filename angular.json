@@ -4,6 +4,9 @@
   "newProjectRoot": "projects",
   "projects": {
     "gestion-stock-frontend": {
+      "i18n": {
+        "sourceLocale": "fr-CH"
+      },
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {

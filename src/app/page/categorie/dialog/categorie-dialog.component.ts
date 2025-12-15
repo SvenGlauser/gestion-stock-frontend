@@ -11,6 +11,7 @@ import {CategorieService} from '../categorie.service';
 import {InputFormField} from '../../../common/form/field/input-form-field';
 import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete-enum-form-field';
 import {Roles} from '../../../security/roles';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-categorie-dialog',
@@ -22,7 +23,8 @@ import {Roles} from '../../../security/roles';
     MatButton,
     MatDialogClose,
     ReactiveFormsModule,
-    FormComponent
+    FormComponent,
+    DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'

@@ -2,6 +2,12 @@
 
 <mat-dialog-content>
   <app-form [formsMap]="this.formsMap"/>
+  @if (this.oldObject() != null) {
+    <div class="historique">
+      <span>Modifié le {{ this.oldObject()?.modificationDate | date:'medium' }} par {{ this.oldObject()?.modificationUser }}</span>
+      <span>Créé le {{ this.oldObject()?.creationDate | date:'medium' }} par {{ this.oldObject()?.creationUser }}</span>
+    </div>
+  }
 </mat-dialog-content>
 
 <mat-dialog-actions>
