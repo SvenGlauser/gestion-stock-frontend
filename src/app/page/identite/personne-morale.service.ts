@@ -1,38 +1,35 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
-import {BASE_URL} from '../../common/utils/http-client.configuration';
 import {PersonneMorale} from './personne-morale.model';
+import {GestionStockApiService} from '../../config/gestion-stock-api.service';
+import {PersonnePhysique} from './personne-physique.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PersonneMoraleService {
-  private readonly URL: string = BASE_URL + 'identite/morale';
-  private readonly URL_WITH_SLASH: string = this.URL + '/';
-
-  constructor(private readonly http: HttpClient) {
+export class PersonneMoraleService extends GestionStockApiService<PersonneMorale> {
+  constructor(http: HttpClient) {
+    super(http, PersonneMoraleService.separateWithSlash('identite', 'morale'));
   }
 
   public get(id: number): Observable<PersonneMorale> {
-    return this.http
-      .get<PersonneMorale>(this.URL_WITH_SLASH + id)
-      .pipe(map(personneMorale => new PersonneMorale(personneMorale)));
+    return this.internalGet('', id);
   }
 
   public delete(id: number): Observable<void> {
-    return this.http.delete<void>(this.URL_WITH_SLASH + id);
+    return this.internalDelete('', id);
   }
 
   public create(personneMorale: PersonneMorale): Observable<PersonneMorale> {
-    return this.http
-      .post<PersonneMorale>(this.URL, personneMorale)
-      .pipe(map(personneMorale => new PersonneMorale(personneMorale)));
+    return this.internalCreate('', personneMorale);
   }
 
   public modify(personneMorale: PersonneMorale): Observable<PersonneMorale> {
-    return this.http
-      .put<PersonneMorale>(this.URL, personneMorale)
-      .pipe(map(personneMorale => new PersonneMorale(personneMorale)));
+    return this.internalModify('', personneMorale);
+  }
+
+  protected override mapToClassMethod(): (object: PersonneMorale) => PersonneMorale {
+    return (personneMorale: PersonneMorale): PersonneMorale => new PersonneMorale(personneMorale);
   }
 }

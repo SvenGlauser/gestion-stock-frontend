@@ -7,22 +7,27 @@ import {
   UserActivityService,
   withAutoRefreshToken
 } from 'keycloak-angular';
+import {environment} from '../../environments/environment';
+import {buildUrl, buildUrlFromInterface} from '../common/utils/function.utils';
 
 export const provideKeycloakAndInterceptor = () => {
+  const url: string = buildUrlFromInterface(environment.api);
+
+  const escapedUrl: string = url.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+
   const urlConditions = [
     createInterceptorCondition<IncludeBearerTokenCondition>({
         // eslint-disable-next-line no-useless-escape
-        urlPattern: new RegExp(`^(http:\/\/localhost:8080)(\/.*)?$`, 'i'),
+        urlPattern: new RegExp(`^(${escapedUrl})(\/.*)?$`, 'i'),
         bearerPrefix: 'Bearer',
       },
     ),
-    // you can add more interceptors in this array...
   ];
 
   return [
     provideKeycloak({
       config: {
-        url: 'http://localhost:8081/',
+        url: buildUrlFromInterface(environment.auth),
         realm: 'gestion-stock',
         clientId: 'gestion-stock-frontend'
       },

@@ -67,6 +67,7 @@ export class AuthentificationService {
         this.authenticated.set(false);
         this.profil.set(undefined)
         this.roles.set([]);
+        this.router.navigate(['/']).then();
       }
     });
   }

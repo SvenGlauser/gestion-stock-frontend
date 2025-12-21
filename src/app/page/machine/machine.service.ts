@@ -4,49 +4,36 @@ import {SearchResult} from '../../common/search/searchResult';
 import {Machine} from './machine.model';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
-import {BASE_URL} from '../../common/utils/http-client.configuration';
 import {FilterType, Order} from '../../common/search/filter';
 import {FilterCombinatorType} from '../../common/search/filter-combinator';
+import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MachineService {
-  private readonly URL: string = BASE_URL + 'machine';
-  private readonly URL_WITH_SLASH: string = this.URL + '/';
-
-  constructor(private readonly http: HttpClient) {
+export class MachineService extends GestionStockApiService<Machine> {
+  constructor(http: HttpClient) {
+    super(http, 'machine');
   }
 
   public get(id: number): Observable<Machine> {
-    return this.http
-      .get<Machine>(this.URL_WITH_SLASH + id)
-      .pipe(map(machine => new Machine(machine)));
+    return this.internalGet('', id);
   }
 
   public delete(id: number): Observable<void> {
-    return this.http.delete<void>(this.URL_WITH_SLASH + id);
+    return this.internalDelete('', id);
   }
 
   public create(machine: Machine): Observable<Machine> {
-    return this.http
-      .post<Machine>(this.URL, machine)
-      .pipe(map(machine => new Machine(machine)));
+    return this.internalCreate('', machine);
   }
 
   public modify(machine: Machine): Observable<Machine> {
-    return this.http
-      .put<Machine>(this.URL, machine)
-      .pipe(map(machine => new Machine(machine)));
+    return this.internalModify('', machine);
   }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<Machine>> {
-    return this.http
-      .post<SearchResult<Machine>>(this.URL_WITH_SLASH + "search", searchRequest)
-      .pipe(map(result => {
-        result.elements = result.elements.map(machine => new Machine(machine));
-        return result;
-      }))
+    return this.internalSearch('search', searchRequest);
   }
 
   public autocomplete(value: string): Observable<Machine[]> {
@@ -63,5 +50,9 @@ export class MachineService {
         }]
       }]
     }).pipe(map((result: SearchResult<Machine>) => result.elements));
+  }
+
+  protected override mapToClassMethod(): (object: Machine) => Machine {
+    return (machine: Machine): Machine => new Machine(machine);
   }
 }
