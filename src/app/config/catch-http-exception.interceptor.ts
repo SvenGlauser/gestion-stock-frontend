@@ -2,9 +2,11 @@ import {HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpSt
 import {catchError, Observable, throwError} from 'rxjs';
 import {inject} from '@angular/core';
 import {SnackBarService} from './snack-bar.service';
+import {AuthentificationService} from '../security/authentification.service';
 
 export const catchHttpExceptionInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn): any => {
   const snackBarService: SnackBarService = inject(SnackBarService);
+  const authentificationService: AuthentificationService = inject(AuthentificationService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse): Observable<never> => {
@@ -15,6 +17,8 @@ export const catchHttpExceptionInterceptor: HttpInterceptorFn = (req: HttpReques
       let message = error.status + " - ";
       if (error.status == HttpStatusCode.Unauthorized) {
         message += "Authentification requise";
+        authentificationService.logout();
+        authentificationService.login();
       } else if (error.status == HttpStatusCode.Forbidden) {
         message += "Vous n'avez pas les droits d'accéder à cette ressource";
       } else {

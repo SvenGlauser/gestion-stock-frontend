@@ -28,8 +28,8 @@ import {Roles} from '../../../security/roles';
 export class FournisseurTableComponent {
   // Définition des colonnes
   protected readonly columns: Column[] = [
-    MethodColumn
-      .of(Fournisseur.IDENTITE_LABEL, Fournisseur.IDENTITE, "25%", (identite: Identite) => identite.getDesignation())
+    ClassicColumn
+      .of(Fournisseur.IDENTITE_LABEL, Fournisseur.IDENTITE_DESIGNATION, "25%")
       .sort(Order.ASC)
       .inputFilter(Fournisseur.IDENTITE_DESIGNATION),
     ClassicColumn.of(Fournisseur.DESCRIPTION_LABEL, Fournisseur.DESCRIPTION, "25%"),
