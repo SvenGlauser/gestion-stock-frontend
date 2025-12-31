@@ -13,6 +13,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {ConfirmationDialogComponent} from '../../../common/confirmation-dialog/confirmation-dialog.component';
 import {Piece} from '../piece.model';
 import {Model} from '../../../common/model';
+import {Roles} from '../../../security/roles';
 
 @Component({
   selector: 'app-piece-light-table',
@@ -112,4 +113,6 @@ export class PieceLightTableComponent {
             map(() => true));
       }));
   }
+
+  protected readonly Roles = Roles;
 }

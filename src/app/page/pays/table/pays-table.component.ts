@@ -11,9 +11,10 @@ import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {Model} from '../../../common/model';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {Pays} from '../pays.model';
+import {Roles} from '../../../security/roles';
 
 @Component({
-  selector: 'app-pays',
+  selector: 'app-pays-table',
   imports: [
     TableComponent
   ],
@@ -54,4 +55,6 @@ export class PaysTableComponent {
   protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<Pays>> {
     return this.paysService.search(searchRequest);
   }
+
+  protected readonly Roles = Roles;
 }

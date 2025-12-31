@@ -1,4 +1,4 @@
-import {Component, Signal, viewChild} from '@angular/core';
+import {Component, signal, Signal, viewChild, WritableSignal} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
@@ -21,9 +21,11 @@ import {Machine} from '../../machine/machine.model';
 import {MatDialog} from '@angular/material/dialog';
 import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-form-dialog.component';
 import {ComponentType} from '@angular/cdk/portal';
+import {Roles} from '../../../security/roles';
+import {AuthentificationService} from '../../../security/authentification.service';
 
 @Component({
-  selector: 'app-categorie-table',
+  selector: 'app-identite-table',
   imports: [
     TableComponent,
     MatButton
@@ -32,6 +34,8 @@ import {ComponentType} from '@angular/cdk/portal';
   styleUrl: './identite-table.component.scss'
 })
 export class IdentiteTableComponent {
+  protected readonly haveEditAccessRole: WritableSignal<boolean> = signal(false);
+
   // Définition des colonnes
   protected readonly columns: Column[] = [
     ClassicColumn
@@ -82,7 +86,9 @@ export class IdentiteTableComponent {
   private readonly matTable: Signal<TableComponent<Machine>> = viewChild.required<TableComponent<Machine>>(TableComponent);
 
   constructor(private readonly identiteService: IdentiteService,
-              private readonly matDialog: MatDialog) {
+              private readonly matDialog: MatDialog,
+              private readonly authentificationService: AuthentificationService) {
+    this.haveEditAccessRole.set(this.authentificationService.hasRole(Roles.R_IDENTITE_EDITEUR));
   }
 
   /**
@@ -117,4 +123,6 @@ export class IdentiteTableComponent {
       }
     });
   }
+
+  protected readonly Roles = Roles;
 }

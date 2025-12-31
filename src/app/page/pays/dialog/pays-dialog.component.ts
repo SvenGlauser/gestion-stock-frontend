@@ -9,6 +9,8 @@ import {PaysService} from '../pays.service';
 import {Observable} from 'rxjs';
 import {InputFormField} from "../../../common/form/field/input-form-field";
 import {Pays} from '../pays.model';
+import {Roles} from '../../../security/roles';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-dialog',
@@ -20,7 +22,8 @@ import {Pays} from '../pays.model';
     MatButton,
     MatDialogClose,
     ReactiveFormsModule,
-    FormComponent
+    FormComponent,
+    DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
@@ -59,5 +62,13 @@ export class PaysDialogComponent extends AbstractFormDialogComponent<PaysDialogC
 
   protected modifyDataMethod(pays: Pays): Observable<Pays> {
     return this.paysService.modify(pays);
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_PAYS_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_PAYS_EDITEUR;
   }
 }

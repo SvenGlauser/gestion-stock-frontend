@@ -4,34 +4,29 @@ import {SearchResult} from '../../common/search/searchResult';
 import {PieceHistorique} from './piece-historique.model';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
-import {BASE_URL} from '../../common/utils/http-client.configuration';
+import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PieceHistoriqueService {
-  private readonly URL: string = BASE_URL + 'piece/historique';
-  private readonly URL_WITH_SLASH: string = this.URL + '/';
-
-  constructor(private readonly http: HttpClient) {
+export class PieceHistoriqueService extends GestionStockApiService<PieceHistorique> {
+  constructor(http: HttpClient) {
+    super(http, PieceHistoriqueService.separateWithSlash('piece', 'historique'));
   }
 
   public get(id: number): Observable<PieceHistorique> {
-    return this.http
-      .get<PieceHistorique>(this.URL_WITH_SLASH + id)
-      .pipe(map(pieceHistorique => new PieceHistorique(pieceHistorique)));
+    return this.internalGet('', id);
   }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<PieceHistorique>> {
-    return this.http
-      .post<SearchResult<PieceHistorique>>(this.URL_WITH_SLASH + "search", searchRequest)
-      .pipe(map(result => {
-        result.elements = result.elements.map(pieceHistorique => new PieceHistorique(pieceHistorique));
-        return result;
-      }))
+    return this.internalSearch('search', searchRequest);
   }
 
   public delete(id: number): Observable<void> {
-    return this.http.delete<void>(this.URL_WITH_SLASH + id);
+    return this.internalDelete('', id);
+  }
+
+  protected override mapToClassMethod(): (object: PieceHistorique) => PieceHistorique {
+    return (pieceHistorique: PieceHistorique): PieceHistorique => new PieceHistorique(pieceHistorique);
   }
 }

@@ -20,9 +20,10 @@ import {Piece} from '../../piece/piece.model';
 import {PieceService} from '../../piece/piece.service';
 import {FilterCombinatorType} from '../../../common/search/filter-combinator';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {Roles} from '../../../security/roles';
 
 @Component({
-  selector: 'app-categorie-table',
+  selector: 'app-piece-historique-table',
   imports: [
     TableComponent
   ],
@@ -124,4 +125,6 @@ export class PieceHistoriqueTableComponent {
 
     return title;
   }
+
+  protected readonly Roles = Roles;
 }

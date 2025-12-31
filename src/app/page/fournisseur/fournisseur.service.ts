@@ -4,49 +4,36 @@ import {SearchResult} from '../../common/search/searchResult';
 import {Fournisseur} from './fournisseur.model';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
-import {BASE_URL} from '../../common/utils/http-client.configuration';
 import {FilterType, Order} from '../../common/search/filter';
 import {FilterCombinatorType} from '../../common/search/filter-combinator';
+import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FournisseurService {
-  private readonly URL: string = BASE_URL + 'fournisseur';
-  private readonly URL_WITH_SLASH: string = this.URL + '/';
-
-  constructor(private readonly http: HttpClient) {
+export class FournisseurService extends GestionStockApiService<Fournisseur>{
+  constructor(http: HttpClient) {
+    super(http, 'fournisseur');
   }
 
   public get(id: number): Observable<Fournisseur> {
-    return this.http
-      .get<Fournisseur>(this.URL_WITH_SLASH + id)
-      .pipe(map(fournisseur => new Fournisseur(fournisseur)));
+    return this.internalGet('', id);
   }
 
   public delete(id: number): Observable<void> {
-    return this.http.delete<void>(this.URL_WITH_SLASH + id);
+    return this.internalDelete('', id);
   }
 
   public create(fournisseur: Fournisseur): Observable<Fournisseur> {
-    return this.http
-      .post<Fournisseur>(this.URL, fournisseur)
-      .pipe(map(fournisseur => new Fournisseur(fournisseur)));
+    return this.internalCreate('', fournisseur);
   }
 
   public modify(fournisseur: Fournisseur): Observable<Fournisseur> {
-    return this.http
-      .put<Fournisseur>(this.URL, fournisseur)
-      .pipe(map(fournisseur => new Fournisseur(fournisseur)));
+    return this.internalModify('', fournisseur);
   }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<Fournisseur>> {
-    return this.http
-      .post<SearchResult<Fournisseur>>(this.URL_WITH_SLASH + "search", searchRequest)
-      .pipe(map(result => {
-        result.elements = result.elements.map(fournisseur => new Fournisseur(fournisseur));
-        return result;
-      }));
+    return this.internalSearch('search', searchRequest);
   }
 
   public autocomplete(value: string): Observable<Fournisseur[]> {
@@ -63,5 +50,9 @@ export class FournisseurService {
         }]
       }]
     }).pipe(map((result: SearchResult<Fournisseur>) => result.elements));
+  }
+
+  protected override mapToClassMethod(): (object: Fournisseur) => Fournisseur {
+    return (fournisseur: Fournisseur): Fournisseur => new Fournisseur(fournisseur);
   }
 }

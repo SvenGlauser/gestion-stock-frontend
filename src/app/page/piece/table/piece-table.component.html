@@ -1,4 +1,6 @@
 <app-table title="Inventaire"
            [columns]="this.columns"
            [updateMethod]="this.getUpdateMethod.bind(this)"
-           [actionColumnInfo]="actionColumnInfo"/>
+           [actionColumnInfo]="actionColumnInfo"
+           [readAccessRole]="Roles.R_PIECE_LECTEUR"
+           [editAccessRole]="Roles.R_PIECE_EDITEUR"/>

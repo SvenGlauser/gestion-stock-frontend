@@ -1,38 +1,34 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
-import {BASE_URL} from '../../common/utils/http-client.configuration';
 import {PersonnePhysique} from './personne-physique.model';
+import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PersonnePhysiqueService {
-  private readonly URL: string = BASE_URL + 'identite/physique';
-  private readonly URL_WITH_SLASH: string = this.URL + '/';
-
-  constructor(private readonly http: HttpClient) {
+export class PersonnePhysiqueService extends GestionStockApiService<PersonnePhysique> {
+  constructor(http: HttpClient) {
+    super(http, PersonnePhysiqueService.separateWithSlash('identite', 'physique'));
   }
 
   public get(id: number): Observable<PersonnePhysique> {
-    return this.http
-      .get<PersonnePhysique>(this.URL_WITH_SLASH + id)
-      .pipe(map(personnePhysique => new PersonnePhysique(personnePhysique)));
+    return this.internalGet('', id);
   }
 
   public delete(id: number): Observable<void> {
-    return this.http.delete<void>(this.URL_WITH_SLASH + id);
+    return this.internalDelete('', id);
   }
 
   public create(personnePhysique: PersonnePhysique): Observable<PersonnePhysique> {
-    return this.http
-      .post<PersonnePhysique>(this.URL, personnePhysique)
-      .pipe(map(personnePhysique => new PersonnePhysique(personnePhysique)));
+    return this.internalCreate('', personnePhysique);
   }
 
   public modify(personnePhysique: PersonnePhysique): Observable<PersonnePhysique> {
-    return this.http
-      .put<PersonnePhysique>(this.URL, personnePhysique)
-      .pipe(map(personnePhysique => new PersonnePhysique(personnePhysique)));
+    return this.internalModify('', personnePhysique);
+  }
+
+  protected override mapToClassMethod(): (object: PersonnePhysique) => PersonnePhysique {
+    return (personnePhysique: PersonnePhysique): PersonnePhysique => new PersonnePhysique(personnePhysique);
   }
 }

@@ -1,30 +1,23 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../../common/search/searchResult';
-import {IdentiteLight} from './identite.model';
+import {Identite, IdentiteLight} from './identite.model';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
-import {BASE_URL} from '../../common/utils/http-client.configuration';
 import {FilterCombinatorType} from '../../common/search/filter-combinator';
 import {FilterType, Order} from '../../common/search/filter';
+import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class IdentiteService {
-  private readonly URL: string = BASE_URL + 'identite';
-  private readonly URL_WITH_SLASH: string = this.URL + '/';
-
-  constructor(private readonly http: HttpClient) {
+export class IdentiteService extends GestionStockApiService<IdentiteLight> {
+  constructor(http: HttpClient) {
+    super(http, 'identite');
   }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<IdentiteLight>> {
-    return this.http
-      .post<SearchResult<IdentiteLight>>(this.URL_WITH_SLASH + "search", searchRequest)
-      .pipe(map(result => {
-        result.elements = result.elements.map(identiteLight => new IdentiteLight(identiteLight));
-        return result;
-      }));
+    return this.internalSearch('search', searchRequest);
   }
 
   public autocomplete(value: string): Observable<IdentiteLight[]> {
@@ -41,5 +34,9 @@ export class IdentiteService {
         }]
       }]
     }).pipe(map((result: SearchResult<IdentiteLight>) => result.elements));
+  }
+
+  protected override mapToClassMethod(): (object: IdentiteLight) => IdentiteLight {
+    return (identiteLight: IdentiteLight): IdentiteLight => new IdentiteLight(identiteLight);
   }
 }

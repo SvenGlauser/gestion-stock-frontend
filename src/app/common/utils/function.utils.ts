@@ -36,3 +36,11 @@ export function setValueOfAttributeInCascade(attribut: string, object: any, valu
     currentObject[parts[parts.length - 1]] = value;
   }
 }
+
+export function buildUrlFromInterface(url: { protocol: string, hostname: string, port: number }): string {
+  return buildUrl(url.protocol, url.hostname, url.port);
+}
+
+export function buildUrl(protocol: string, hostname: string, port: number): string {
+  return `${protocol}://${hostname}:${port}`;
+}

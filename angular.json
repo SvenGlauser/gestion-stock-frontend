@@ -4,6 +4,9 @@
   "newProjectRoot": "projects",
   "projects": {
     "gestion-stock-frontend": {
+      "i18n": {
+        "sourceLocale": "fr-CH"
+      },
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -73,12 +76,18 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "none"
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"

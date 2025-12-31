@@ -1,0 +1,20 @@
+<button
+  mat-icon-button
+  [matMenuTriggerFor]="profilMenu"
+  class="profil">
+  {{this.initiales()}}
+</button>
+<mat-menu #profilMenu="matMenu">
+  <div class="profil-name" mat-menu-item [disabled]="true">
+    {{this.nom()}} {{this.prenom()}}
+  </div>
+  <mat-divider />
+  <button mat-menu-item (click)="openAccountConfiguration()">
+    <mat-icon>settings_account_box</mat-icon>
+    <span>Modification du profil</span>
+  </button>
+  <button mat-menu-item (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    <span>Se déconnecter</span>
+  </button>
+</mat-menu>

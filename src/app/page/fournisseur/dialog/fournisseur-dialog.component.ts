@@ -13,6 +13,8 @@ import {Fournisseur} from '../fournisseur.model';
 import {Model} from '../../../common/model';
 import {IdentiteService} from '../../identite/identite.service';
 import {Identite, IdentiteLight} from '../../identite/identite.model';
+import {Roles} from '../../../security/roles';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-fournisseur-dialog',
@@ -24,7 +26,8 @@ import {Identite, IdentiteLight} from '../../identite/identite.model';
     MatButton,
     MatDialogClose,
     ReactiveFormsModule,
-    FormComponent
+    FormComponent,
+    DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
@@ -81,5 +84,13 @@ export class FournisseurDialogComponent extends AbstractFormDialogComponent<Four
    */
   private autocompleteIdentite(value: string): Observable<IdentiteLight[]> {
     return this.identiteService.autocomplete(value);
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_FOURNISSEUR_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_FOURNISSEUR_EDITEUR;
   }
 }

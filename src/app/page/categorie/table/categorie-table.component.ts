@@ -13,6 +13,7 @@ import {CategorieDialogComponent} from '../dialog/categorie-dialog.component';
 import {convertBooleanToString} from '../../../common/utils/lambda.utils';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
+import {Roles} from '../../../security/roles';
 
 @Component({
   selector: 'app-categorie-table',
@@ -54,4 +55,6 @@ export class CategorieTableComponent {
   protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<Categorie>> {
     return this.categorieService.search(searchRequest);
   }
+
+  protected readonly Roles = Roles;
 }

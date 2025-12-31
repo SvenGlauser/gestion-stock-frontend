@@ -4,51 +4,36 @@ import {SearchResult} from '../../common/search/searchResult';
 import {Categorie} from './categorie.model';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
-import {BASE_URL} from '../../common/utils/http-client.configuration';
 import {FilterType, Order} from '../../common/search/filter';
 import {FilterCombinatorType} from '../../common/search/filter-combinator';
+import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CategorieService {
-  private readonly URL: string = BASE_URL + 'categorie';
-  private readonly URL_WITH_SLASH: string = this.URL + '/';
-
-  constructor(private readonly http: HttpClient) {
+export class CategorieService extends GestionStockApiService<Categorie> {
+  constructor(http: HttpClient) {
+    super(http, 'categorie');
   }
 
   public get(id: number): Observable<Categorie> {
-    return this.http
-      .get<Categorie>(this.URL_WITH_SLASH + id)
-      .pipe(map(categorie => new Categorie(categorie)));
+    return this.internalGet('', id);
   }
 
   public delete(id: number): Observable<void> {
-    return this.http.delete<void>(this.URL_WITH_SLASH + id);
+    return this.internalDelete('', id);
   }
 
   public create(categorie: Categorie): Observable<Categorie> {
-    return this.http
-      .post<Categorie>(this.URL, categorie)
-      .pipe(map(categorie => new Categorie(categorie)));
+    return this.internalCreate('', categorie);
   }
 
   public modify(categorie: Categorie): Observable<Categorie> {
-    return this.http
-      .put<Categorie>(this.URL, categorie)
-      .pipe(map(categorie => new Categorie(categorie)));
+    return this.internalModify('', categorie);
   }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<Categorie>> {
-    return this.http
-      .post<SearchResult<Categorie>>(this.URL_WITH_SLASH + "search", searchRequest)
-      .pipe(
-        map(result => {
-          result.elements = result.elements.map(categorie => new Categorie(categorie))
-          return result;
-        })
-      );
+    return this.internalSearch('search', searchRequest);
   }
 
   public autocomplete(value: string): Observable<Categorie[]> {
@@ -65,5 +50,9 @@ export class CategorieService {
         }]
       }]
     }).pipe(map((result: SearchResult<Categorie>) => result.elements.map(categorie => new Categorie(categorie))));
+  }
+
+  protected override mapToClassMethod(): (object: Categorie) => Categorie {
+    return (categorie: Categorie): Categorie => new Categorie(categorie);
   }
 }

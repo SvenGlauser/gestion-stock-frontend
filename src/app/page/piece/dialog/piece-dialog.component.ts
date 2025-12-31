@@ -16,6 +16,8 @@ import {FournisseurService} from '../../fournisseur/fournisseur.service';
 import {Piece} from '../piece.model';
 import {Model} from '../../../common/model';
 import {NumberFormField} from '../../../common/form/field/number-form-field';
+import {Roles} from '../../../security/roles';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-piece-dialog',
@@ -27,7 +29,8 @@ import {NumberFormField} from '../../../common/form/field/number-form-field';
     MatButton,
     MatDialogClose,
     ReactiveFormsModule,
-    FormComponent
+    FormComponent,
+    DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
@@ -114,5 +117,13 @@ export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialo
    */
   private autocompleteFournisseur(value: string): Observable<Fournisseur[]> {
     return this.fournisseurService.autocomplete(value);
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_PIECE_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_PIECE_EDITEUR;
   }
 }

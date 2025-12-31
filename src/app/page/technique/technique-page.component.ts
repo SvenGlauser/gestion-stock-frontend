@@ -3,16 +3,18 @@ import {FileUploaderComponent} from '../../common/form/input/file-uploader/file-
 import {TechniqueService} from './technique.service';
 import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
 import {ValidationException} from '../../common/utils/validation-exception';
+import {AbstractProtectedComponent} from '../../common/abstract/abstract-protected-component.directive';
+import {Roles} from '../../security/roles';
 
 @Component({
-  selector: 'app-technique',
+  selector: 'app-technique-page',
   imports: [
     FileUploaderComponent
   ],
-  templateUrl: './technique.component.html',
-  styleUrl: './technique.component.scss'
+  templateUrl: './technique-page.component.html',
+  styleUrl: './technique-page.component.scss'
 })
-export class TechniqueComponent {
+export class TechniquePageComponent extends AbstractProtectedComponent {
 
   protected readonly file: WritableSignal<File | null> = signal(null);
   protected readonly infoImportationPiece: WritableSignal<string | null> = signal(null);
@@ -22,6 +24,7 @@ export class TechniqueComponent {
   protected readonly hasErrorImportationPiece: Signal<boolean> = computed((): boolean => this.errorImportationPiece() !== null);
 
   constructor(private readonly techniqueService: TechniqueService) {
+    super();
   }
 
   protected importPiece(): void {
@@ -59,5 +62,13 @@ export class TechniqueComponent {
     this.errorImportationPiece.set(errors
       .map(error => error.message)
       .join('\n'));
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_TECHNIQUE_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_TECHNIQUE_EDITEUR;
   }
 }

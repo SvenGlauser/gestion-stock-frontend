@@ -1,6 +1,6 @@
 import {Component, computed, Signal} from '@angular/core';
 import {WidgetComponent} from '../../common/widget/widget.component';
-import {Link} from '../../menu/link';
+import {MenuLink} from '../../menu/menu-link';
 import {MenuService} from '../../menu/menu.service';
 
 @Component({
@@ -12,7 +12,7 @@ import {MenuService} from '../../menu/menu.service';
   styleUrl: './accueil.component.scss'
 })
 export class AccueilComponent {
-  protected readonly links: Signal<Link[]> = computed((): Link[] => {
+  protected readonly links: Signal<MenuLink[]> = computed((): MenuLink[] => {
     return this.menuService
       .links()
       .filter(link => link.onHomePage)

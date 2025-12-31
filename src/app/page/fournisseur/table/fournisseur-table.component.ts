@@ -15,9 +15,10 @@ import {LinkColumn} from '../../../common/table/column/link-column';
 import {Fournisseur} from '../fournisseur.model';
 import {Adresse} from '../../adresse/adresse';
 import {Identite} from '../../identite/identite.model';
+import {Roles} from '../../../security/roles';
 
 @Component({
-  selector: 'app-categorie-table',
+  selector: 'app-fournisseur-table',
   imports: [
     TableComponent
   ],
@@ -27,8 +28,8 @@ import {Identite} from '../../identite/identite.model';
 export class FournisseurTableComponent {
   // Définition des colonnes
   protected readonly columns: Column[] = [
-    MethodColumn
-      .of(Fournisseur.IDENTITE_LABEL, Fournisseur.IDENTITE, "25%", (identite: Identite) => identite.getDesignation())
+    ClassicColumn
+      .of(Fournisseur.IDENTITE_LABEL, Fournisseur.IDENTITE_DESIGNATION, "25%")
       .sort(Order.ASC)
       .inputFilter(Fournisseur.IDENTITE_DESIGNATION),
     ClassicColumn.of(Fournisseur.DESCRIPTION_LABEL, Fournisseur.DESCRIPTION, "25%"),
@@ -59,4 +60,6 @@ export class FournisseurTableComponent {
   protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<Fournisseur>> {
     return this.fournisseurService.search(searchRequest);
   }
+
+  protected readonly Roles = Roles;
 }

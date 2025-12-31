@@ -3,50 +3,37 @@ import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../../common/search/searchResult';
 import {map, Observable} from 'rxjs';
 import {SearchRequest} from '../../common/search/searchRequest';
-import {BASE_URL} from '../../common/utils/http-client.configuration';
 import {Localite} from './localite.model';
 import {FilterType, Order} from '../../common/search/filter';
 import {FilterCombinatorType} from '../../common/search/filter-combinator';
+import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LocaliteService {
-  private readonly URL: string = BASE_URL + 'localite';
-  private readonly URL_WITH_SLASH: string = this.URL + '/';
-
-  constructor(private readonly http: HttpClient) {
+export class LocaliteService extends GestionStockApiService<Localite> {
+  constructor(http: HttpClient) {
+    super(http, 'localite');
   }
 
   public get(id: number): Observable<Localite> {
-    return this.http
-      .get<Localite>(this.URL_WITH_SLASH + id)
-      .pipe(map(localite => new Localite(localite)));
+    return this.internalGet('', id);
   }
 
   public delete(id: number): Observable<void> {
-    return this.http.delete<void>(this.URL_WITH_SLASH + id);
+    return this.internalDelete('', id);
   }
 
   public create(localite: Localite): Observable<Localite> {
-    return this.http
-      .post<Localite>(this.URL, localite)
-      .pipe(map(localite => new Localite(localite)));
+    return this.internalCreate('', localite);
   }
 
   public modify(localite: Localite): Observable<Localite> {
-    return this.http
-      .put<Localite>(this.URL, localite)
-      .pipe(map(localite => new Localite(localite)));
+    return this.internalModify('', localite);
   }
 
   public search(searchRequest: SearchRequest): Observable<SearchResult<Localite>> {
-    return this.http
-      .post<SearchResult<Localite>>(this.URL_WITH_SLASH + "search", searchRequest)
-      .pipe(map(result => {
-        result.elements = result.elements.map(localite => new Localite(localite));
-        return result;
-      }))
+    return this.internalSearch('search', searchRequest);
   }
 
   public autocomplete(value: string): Observable<Localite[]> {
@@ -63,5 +50,9 @@ export class LocaliteService {
         }]
       }]
     }).pipe(map((result: SearchResult<Localite>) => result.elements));
+  }
+
+  protected override mapToClassMethod(): (object: Localite) => Localite {
+    return (localite: Localite): Localite => new Localite(localite);
   }
 }

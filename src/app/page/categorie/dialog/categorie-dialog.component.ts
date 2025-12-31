@@ -10,6 +10,8 @@ import {Categorie} from '../categorie.model';
 import {CategorieService} from '../categorie.service';
 import {InputFormField} from '../../../common/form/field/input-form-field';
 import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete-enum-form-field';
+import {Roles} from '../../../security/roles';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-categorie-dialog',
@@ -21,7 +23,8 @@ import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete
     MatButton,
     MatDialogClose,
     ReactiveFormsModule,
-    FormComponent
+    FormComponent,
+    DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
@@ -62,5 +65,13 @@ export class CategorieDialogComponent extends AbstractFormDialogComponent<Catego
 
   protected modifyDataMethod(categorie: Categorie): Observable<Categorie> {
     return this.categorieService.modify(categorie);
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_CATEGORIE_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_CATEGORIE_EDITEUR;
   }
 }

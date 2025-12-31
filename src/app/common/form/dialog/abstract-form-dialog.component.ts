@@ -1,4 +1,4 @@
-import {afterNextRender, Directive, inject, Signal, viewChild} from '@angular/core';
+import {afterNextRender, Directive, inject, signal, Signal, viewChild, WritableSignal} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DialogData, DialogType} from './dialog-data';
 import {Observable} from 'rxjs';
@@ -7,9 +7,12 @@ import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
 import {FormComponent} from '../form.component';
 import {getValueFromAttributeInCascade, setValueOfAttributeInCascade} from '../../utils/function.utils';
 import {ValidationException} from '../../utils/validation-exception';
+import {AbstractProtectedComponent} from '../../abstract/abstract-protected-component.directive';
+import {Roles} from '../../../security/roles';
+import {Model} from '../../model';
 
 @Directive()
-export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogComponent<T, E>, E extends Record<string, any>> {
+export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogComponent<T, E>, E extends Model> extends AbstractProtectedComponent {
   // Données du dialog
   private readonly dialogRef: MatDialogRef<T> = inject(MatDialogRef<T>);
   protected readonly data: DialogData = inject<DialogData>(MAT_DIALOG_DATA);
@@ -24,12 +27,14 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
   protected readonly abstract formsMap: Map<string, FormField[]>;
 
   // Ancien objet récupéré (sauf lors de la création)
-  private oldObject: E | null = null;
+  protected oldObject: WritableSignal<E | null> = signal(null);
 
   // Affichage
   protected readonly dialogTitle: string;
 
   protected constructor() {
+    super();
+
     this.dialogTitle = this.getTitle();
 
     // Important, car accéder à un champ abstrait est impossible dans le constructeur
@@ -77,16 +82,16 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
     if ([DialogType.READ, DialogType.MODIFY, DialogType.DELETE].includes(this.data.type)) {
       // Récupère l'objet
       this.getDataMethod(this.data.id!).subscribe((data: E): void => {
-        this.oldObject = data;
+        this.oldObject.set(data);
 
-        if (!this.oldObject) {
+        if (!data) {
           return;
         }
 
         // Rempli le formulaire avec les nouvelles données
         for (const forms of this.formsMap.values()) {
           for (const form of forms) {
-            let oldValue: any = getValueFromAttributeInCascade(form.field, this.oldObject);
+            let oldValue: any = getValueFromAttributeInCascade(form.field, data);
 
             if (oldValue !== null) {
               form.formControl.setValue(oldValue);
@@ -122,7 +127,7 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
    * Récupère un object avec les nouvelles données
    */
   private getNewData(): E {
-    let element: E = structuredClone(this.oldObject) ?? <E>{};
+    let element: E = structuredClone(this.oldObject()) ?? <E>{};
 
     for (const forms of this.formsMap.values()) {
       for (const form of forms) {
@@ -220,4 +225,25 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
    * @param id Id de l'élément
    */
   protected abstract deleteDataMethod(id: number): Observable<void>;
+
+  protected override hasAccess(roles: string[]): boolean {
+    let role: Roles;
+
+    switch (this.data.type) {
+      case DialogType.READ:
+        role = this.readAccess();
+        break;
+      case DialogType.CREATE:
+      case DialogType.MODIFY:
+      case DialogType.DELETE:
+        role = this.editAccess();
+        break;
+    }
+
+    return roles.includes(role.toString());
+  }
+
+  protected override noAcessAction(): void {
+    this.dialogRef.close(true);
+  }
 }

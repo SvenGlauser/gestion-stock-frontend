@@ -15,6 +15,8 @@ import {AutocompleteFormField} from '../../../common/form/field/autocomplete-for
 import {PersonneMorale} from '../personne-morale.model';
 import {PersonneMoraleService} from '../personne-morale.service';
 import {IdentiteType} from '../identite.model';
+import {Roles} from '../../../security/roles';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-personne-morale-dialog',
@@ -26,7 +28,8 @@ import {IdentiteType} from '../identite.model';
     MatButton,
     MatDialogClose,
     ReactiveFormsModule,
-    FormComponent
+    FormComponent,
+    DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
@@ -100,5 +103,13 @@ export class PersonneMoraleDialogComponent extends AbstractFormDialogComponent<P
    */
   protected autocompleteLocalite(value: string): Observable<Localite[]> {
     return this.localiteService.autocomplete(value);
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_IDENTITE_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_IDENTITE_EDITEUR;
   }
 }

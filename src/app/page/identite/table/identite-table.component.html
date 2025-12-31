@@ -1,12 +1,16 @@
 <div class="header">
   <h2>Liste des identités</h2>
 
-  <div class="header-actions">
-    <button mat-flat-button (click)="createPersonneMorale()">Créer une personne morale</button>
-    <button mat-flat-button (click)="createPersonnePhysique()">Créer une personne physique</button>
-  </div>
+  @if (this.haveEditAccessRole()) {
+    <div class="header-actions">
+      <button mat-flat-button (click)="createPersonneMorale()">Créer une personne morale</button>
+      <button mat-flat-button (click)="createPersonnePhysique()">Créer une personne physique</button>
+    </div>
+  }
 </div>
 
 <app-table [columns]="this.columns"
            [updateMethod]="this.getUpdateMethod.bind(this)"
-           [actionColumnInfo]="actionColumnInfo"/>
+           [actionColumnInfo]="actionColumnInfo"
+           [readAccessRole]="Roles.R_IDENTITE_LECTEUR"
+           [editAccessRole]="Roles.R_IDENTITE_EDITEUR"/>

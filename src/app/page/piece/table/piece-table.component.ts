@@ -16,6 +16,7 @@ import {Piece} from '../piece.model';
 import {Model} from '../../../common/model';
 import {PieceHistorique} from '../../piece-historique/piece-historique.model';
 import {Router} from '@angular/router';
+import {Roles} from '../../../security/roles';
 
 @Component({
   selector: 'app-piece-table',
@@ -108,4 +109,6 @@ export class PieceTableComponent {
   private autocompleteCategorie(value: string): Observable<Categorie[]> {
     return this.categorieService.autocomplete(value);
   }
+
+  protected readonly Roles = Roles;
 }

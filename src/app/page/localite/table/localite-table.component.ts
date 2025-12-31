@@ -13,9 +13,10 @@ import {LocaliteDialogComponent} from '../dialog/localite-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {Localite} from '../localite.model';
 import {Column} from '../../../common/table/column/column';
+import {Roles} from '../../../security/roles';
 
 @Component({
-  selector: 'app-localite',
+  selector: 'app-localite-table',
   imports: [
     TableComponent
   ],
@@ -73,4 +74,6 @@ export class LocaliteTableComponent {
   protected autocompletePays(value: string): Observable<Pays[]> {
     return this.paysService.autocomplete(value);
   }
+
+  protected readonly Roles = Roles;
 }

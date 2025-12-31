@@ -1,5 +1,13 @@
 <mat-nav-list>
-  @for (link of this.links(); track link.name) {
-    <app-menu-item [value]="link"/>
+  @for (group of this.linksGrouped() | keyvalue; track group.key) {
+    @if (group.key) {
+      <div class="separator">
+        <div class="separator-title">{{ group.key }}</div>
+        <div class="separator-line"></div>
+      </div>
+    }
+    @for (link of group.value; track link.name) {
+      <app-menu-item [value]="link"/>
+    }
   }
 </mat-nav-list>

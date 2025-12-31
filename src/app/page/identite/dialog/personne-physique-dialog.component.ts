@@ -17,6 +17,8 @@ import {TitreEnumValuesForAutocomplete} from '../titre.enum';
 import {PersonnePhysique} from '../personne-physique.model';
 import {PersonnePhysiqueService} from '../personne-physique.service';
 import {IdentiteType} from '../identite.model';
+import {Roles} from '../../../security/roles';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-personne-physique-dialog',
@@ -28,7 +30,8 @@ import {IdentiteType} from '../identite.model';
     MatButton,
     MatDialogClose,
     ReactiveFormsModule,
-    FormComponent
+    FormComponent,
+    DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
@@ -105,5 +108,13 @@ export class PersonnePhysiqueDialogComponent extends AbstractFormDialogComponent
    */
   protected autocompleteLocalite(value: string): Observable<Localite[]> {
     return this.localiteService.autocomplete(value);
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_IDENTITE_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_IDENTITE_EDITEUR;
   }
 }

@@ -12,6 +12,8 @@ import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete
 import {PieceHistorique} from '../piece-historique.model';
 import {PieceHistoriqueTypeEnumValuesForAutocomplete} from '../piece-historique-type.enum';
 import {PieceHistoriqueSourceEnumValuesForAutocomplete} from '../piece-historique-source.enum';
+import {Roles} from '../../../security/roles';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-piece-historique-dialog',
@@ -23,7 +25,8 @@ import {PieceHistoriqueSourceEnumValuesForAutocomplete} from '../piece-historiqu
     MatButton,
     MatDialogClose,
     ReactiveFormsModule,
-    FormComponent
+    FormComponent,
+    DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
@@ -64,5 +67,13 @@ export class PieceHistoriqueDialogComponent extends AbstractFormDialogComponent<
 
   protected modifyDataMethod(_pieceHistorique: PieceHistorique): Observable<PieceHistorique> {
     return of();
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_PIECE_HISTORIQUE_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_PIECE_HISTORIQUE_EDITEUR;
   }
 }
