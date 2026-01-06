@@ -131,9 +131,7 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
 
     for (const forms of this.formsMap.values()) {
       for (const form of forms) {
-        if (form.field) {
-          setValueOfAttributeInCascade(form.field, element, form.getValue());
-        }
+        setValueOfAttributeInCascade(form.field, element, form.getValue());
       }
     }
 
