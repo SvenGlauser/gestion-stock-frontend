@@ -15,6 +15,7 @@ import {IdentiteService} from '../../identite/identite.service';
 import {Identite, IdentiteLight} from '../../identite/identite.model';
 import {Roles} from '../../../security/roles';
 import {DatePipe} from '@angular/common';
+import {TextAreaFormField} from '../../../common/form/field/textarea-form-field';
 
 @Component({
   selector: 'app-fournisseur-dialog',
@@ -47,9 +48,10 @@ export class FournisseurDialogComponent extends AbstractFormDialogComponent<Four
             Identite.DESIGNATION,
           )
           .setColspan(2),
-        InputFormField
+        TextAreaFormField
           .ofValue(Fournisseur.DESCRIPTION_LABEL, Fournisseur.DESCRIPTION)
-          .setColspan(2),
+          .setColspan(2)
+          .setNumberOfLines(2),
         InputFormField
           .ofValue(Fournisseur.URL_LABEL, Fournisseur.URL)
           .setColspan(2),

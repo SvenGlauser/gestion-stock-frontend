@@ -12,6 +12,7 @@ import {InputFormField} from '../../../common/form/field/input-form-field';
 import {AutocompleteEnumFormField} from '../../../common/form/field/autocomplete-enum-form-field';
 import {Roles} from '../../../security/roles';
 import {DatePipe} from '@angular/common';
+import {TextAreaFormField} from '../../../common/form/field/textarea-form-field';
 
 @Component({
   selector: 'app-categorie-dialog',
@@ -40,9 +41,10 @@ export class CategorieDialogComponent extends AbstractFormDialogComponent<Catego
           .ofValue(Categorie.ACTIF_LABEL, Categorie.ACTIF)
           .addValue(true, "Oui")
           .addValue(false, "Non"),
-        InputFormField
+        TextAreaFormField
           .ofValue(Categorie.DESCRIPTION_LABEL, Categorie.DESCRIPTION)
-          .setColspan(2),
+          .setColspan(2)
+          .setNumberOfLines(2),
       ]
     ]
   ]);

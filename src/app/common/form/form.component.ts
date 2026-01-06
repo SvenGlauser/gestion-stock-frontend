@@ -18,6 +18,7 @@ import {
 import {NumberFormField} from './field/number-form-field';
 import {AutocompleteMultipleFormField} from './field/autocomplete-multiple-form-field';
 import {AutocompleteMultipleComponent} from './input/autocomplete/autocomplete-multiple.component';
+import {TextAreaFormField} from './field/textarea-form-field';
 
 @Component({
   selector: 'app-form',
@@ -47,6 +48,7 @@ export class FormComponent {
   protected readonly AutocompleteEnumFormField: typeof AutocompleteEnumFormField = AutocompleteEnumFormField;
   protected readonly InputFormField: typeof InputFormField = InputFormField;
   protected readonly NumberFormField: typeof NumberFormField = NumberFormField;
+  protected readonly TextAreaFormField: typeof TextAreaFormField = TextAreaFormField;
 
   public formsMap: InputSignal<Map<string, FormField[]>> = input.required();
 
