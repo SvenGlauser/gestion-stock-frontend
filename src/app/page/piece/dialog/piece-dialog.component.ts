@@ -54,8 +54,7 @@ export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialo
           ),
         TextAreaFormField
           .ofValue(Piece.DESCRIPTION_LABEL, Piece.DESCRIPTION)
-          .setColspan(2)
-          .setNumberOfLines(2),
+          .setColspan(2),
       ],
     ], [
       Piece.PANEL_INFORMATIONS_FOURNISSEUR,

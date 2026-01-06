@@ -40,8 +40,7 @@ export class MachineDialogComponent extends AbstractFormDialogComponent<MachineD
           .setColspan(2),
         TextAreaFormField
           .ofValue(Machine.DESCRIPTION_LABEL, Machine.DESCRIPTION)
-          .setColspan(2)
-          .setNumberOfLines(2),
+          .setColspan(2),
       ]
     ]
   ]);

@@ -43,8 +43,7 @@ export class CategorieDialogComponent extends AbstractFormDialogComponent<Catego
           .addValue(false, "Non"),
         TextAreaFormField
           .ofValue(Categorie.DESCRIPTION_LABEL, Categorie.DESCRIPTION)
-          .setColspan(2)
-          .setNumberOfLines(2),
+          .setColspan(2),
       ]
     ]
   ]);

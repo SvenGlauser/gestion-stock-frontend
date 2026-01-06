@@ -5,7 +5,7 @@ import {FormField} from "./form-field";
  * Classe pour les champs de saisie sur plusieurs lignes
  */
 export class TextAreaFormField extends FormField {
-  public numberOfLines: number = 1;
+  public numberOfLines: number = 3;
 
   /**
    * Récupère un champ de saisie à partir d'une valeur par défaut

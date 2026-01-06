@@ -50,8 +50,7 @@ export class FournisseurDialogComponent extends AbstractFormDialogComponent<Four
           .setColspan(2),
         TextAreaFormField
           .ofValue(Fournisseur.DESCRIPTION_LABEL, Fournisseur.DESCRIPTION)
-          .setColspan(2)
-          .setNumberOfLines(2),
+          .setColspan(2),
         InputFormField
           .ofValue(Fournisseur.URL_LABEL, Fournisseur.URL)
           .setColspan(2),
