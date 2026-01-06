@@ -88,6 +88,12 @@ export class AutocompleteEnumFormField extends FormField {
   }
 
   public override getValue(): any {
-    return this.formControl.value;
+    let value: any = this.formControl.value;
+
+    if (value === null || (typeof value === "string" && !this.mapOfElements.has(value))) {
+      return null;
+    }
+
+    return value;
   }
 }
