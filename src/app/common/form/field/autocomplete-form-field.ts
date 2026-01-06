@@ -93,6 +93,12 @@ export class AutocompleteFormField<T extends Record<string, any>> extends FormFi
   }
 
   public override getValue(): any {
-    return this.formControl.value;
+    let value: any = this.formControl.value;
+
+    if (value === null || typeof value === "string") {
+      return null;
+    }
+
+    return value;
   }
 }

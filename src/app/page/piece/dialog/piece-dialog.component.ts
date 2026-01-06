@@ -18,6 +18,7 @@ import {Model} from '../../../common/model';
 import {NumberFormField} from '../../../common/form/field/number-form-field';
 import {Roles} from '../../../security/roles';
 import {DatePipe} from '@angular/common';
+import {TextAreaFormField} from '../../../common/form/field/textarea-form-field';
 
 @Component({
   selector: 'app-piece-dialog',
@@ -51,7 +52,7 @@ export class PieceDialogComponent extends AbstractFormDialogComponent<PieceDialo
             Model.ID,
             Categorie.NOM,
           ),
-        InputFormField
+        TextAreaFormField
           .ofValue(Piece.DESCRIPTION_LABEL, Piece.DESCRIPTION)
           .setColspan(2),
       ],

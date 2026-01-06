@@ -102,6 +102,12 @@ export class AutocompleteMultipleFormField<T extends Record<string, any>> extend
   }
 
   public override getValue(): any {
-    return this.formControl.value;
+    let value: any = this.formControl.value;
+
+    if (value === null || typeof value === "string") {
+      return null;
+    }
+
+    return value;
   }
 }

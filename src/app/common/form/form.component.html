@@ -34,6 +34,19 @@
                   </mat-error>
                 }
               </mat-form-field>
+            } @else if (TextAreaFormField.isInstanceOf(formField)) {
+              <mat-form-field [ngClass]="{'colspan-1': formField.colspan === 1, 'colspan-2': formField.colspan === 2}">
+                <mat-label>{{ formField.label }}</mat-label>
+                <textarea matInput
+                          [rows]="TextAreaFormField.cast(formField)!.numberOfLines"
+                          [formControl]="formField.formControl">
+                </textarea>
+                @if (formField.formControl.hasError("validation")) {
+                  <mat-error class="error">
+                    {{ formField.formControl.getError("validation") }}
+                  </mat-error>
+                }
+              </mat-form-field>
             } @else if (AutocompleteFormField.isInstanceOf(formField)) {
               <app-autocomplete [ngClass]="{'colspan-1': formField.colspan === 1, 'colspan-2': formField.colspan === 2}"
                                 [label]="formField.label"

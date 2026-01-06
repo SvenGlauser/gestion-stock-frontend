@@ -11,6 +11,7 @@ import {InputFormField} from '../../../common/form/field/input-form-field';
 import {Machine} from '../machine.model';
 import {Roles} from '../../../security/roles';
 import {DatePipe} from '@angular/common';
+import {TextAreaFormField} from '../../../common/form/field/textarea-form-field';
 
 @Component({
   selector: 'app-machine-dialog',
@@ -37,7 +38,7 @@ export class MachineDialogComponent extends AbstractFormDialogComponent<MachineD
         InputFormField
           .ofValue(Machine.NOM_LABEL, Machine.NOM)
           .setColspan(2),
-        InputFormField
+        TextAreaFormField
           .ofValue(Machine.DESCRIPTION_LABEL, Machine.DESCRIPTION)
           .setColspan(2),
       ]
