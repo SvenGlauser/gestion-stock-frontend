@@ -1,5 +1,6 @@
 <app-table [title]="this.getTableTitle()"
            [columns]="this.columns"
+           [initSearchQueryMethod]="this.getSearchQueryMethod.bind(this)"
            [updateMethod]="this.getUpdateMethod.bind(this)"
            [actionColumnInfo]="actionColumnInfo"
            [readAccessRole]="Roles.R_MACHINE_LECTEUR"

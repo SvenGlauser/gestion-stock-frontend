@@ -1,9 +1,10 @@
 import {HttpClient} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
-import {SearchRequest} from '../common/search/searchRequest';
+import {AutomaticSearchQuery} from '../common/search/automatic/automatic-search-query';
 import {SearchResult} from '../common/search/searchResult';
 import {environment} from '../../environments/environment';
 import {buildUrl, buildUrlFromInterface} from '../common/utils/function.utils';
+import {SearchQuery} from '../common/search/custom/search-query';
 
 export abstract class GestionStockApiService<T extends Record<string, any>> {
   protected readonly URL: string;
@@ -34,9 +35,9 @@ export abstract class GestionStockApiService<T extends Record<string, any>> {
     return this.http.delete<void>(GestionStockApiService.separateWithSlash(this.URL, url, id));
   }
 
-  public internalSearch(url: string, searchRequest: SearchRequest): Observable<SearchResult<T>> {
+  public internalSearch(url: string, searchQuery: SearchQuery): Observable<SearchResult<T>> {
     return this.http
-      .post<SearchResult<T>>(GestionStockApiService.separateWithSlash(this.URL, url), searchRequest)
+      .post<SearchResult<T>>(GestionStockApiService.separateWithSlash(this.URL, url), searchQuery)
       .pipe(map(result => {
         result.elements = result.elements.map((object: T): T => this.mapToClass(object));
         return result;

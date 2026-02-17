@@ -5,8 +5,7 @@ import {PieceService} from '../piece.service';
 import {AutocompleteComponent} from '../../../common/form/input/autocomplete/autocomplete.component';
 import {Categorie} from '../../categorie/categorie.model';
 import {Fournisseur} from '../../fournisseur/fournisseur.model';
-import {FilterCombinatorType} from '../../../common/search/filter-combinator';
-import {FilterType} from '../../../common/search/filter';
+import {FilterCombinatorType} from '../../../common/search/automatic/automatic-search-field-combinaison';
 import {Piece} from '../piece.model';
 import {CategorieService} from '../../categorie/categorie.service';
 import {FournisseurService} from '../../fournisseur/fournisseur.service';
@@ -14,6 +13,7 @@ import {Observable} from 'rxjs';
 import {PieceStatistique} from './piece-statistique';
 import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
 import {Roles} from '../../../security/roles';
+import {FilterType} from '../../../common/search/automatic/automatic-search-field';
 
 @Component({
   selector: 'app-piece-statistique-page',
@@ -127,13 +127,15 @@ export class PieceStatistiquePageComponent extends AbstractProtectedComponent {
     this.loading.set(true);
 
     this.pieceService.statistiques([{
-      filters: [{
+      fields: [{
         field: Piece.CATEGORIE_ID,
-        value: categorie?.id,
+        order: null,
+        value: categorie?.id ?? null,
         type: FilterType.EQUAL
       }, {
         field: Piece.FOURNISSEUR_ID,
-        value: fournisseur?.id,
+        order: null,
+        value: fournisseur?.id ?? null,
         type: FilterType.EQUAL
       }],
       type: FilterCombinatorType.AND

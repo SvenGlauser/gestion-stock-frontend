@@ -1,11 +1,10 @@
 import {Component} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {Categorie} from '../categorie.model';
-import {Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {Model} from '../../../common/model';
 import {CategorieService} from '../categorie.service';
-import {SearchRequest} from '../../../common/search/searchRequest';
+import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {Observable} from 'rxjs';
 import {SearchResult} from '../../../common/search/searchResult';
 import {TableComponent} from '../../../common/table/table.component';
@@ -14,6 +13,7 @@ import {convertBooleanToString} from '../../../common/utils/lambda.utils';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
 import {Roles} from '../../../security/roles';
+import {AutomaticSearchField, FilterType} from '../../../common/search/automatic/automatic-search-field';
 
 @Component({
   selector: 'app-categorie-table',
@@ -25,13 +25,15 @@ import {Roles} from '../../../security/roles';
 })
 export class CategorieTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column[] = [
+  protected readonly columns: Column<AutomaticSearchQuery>[] = [
     ClassicColumn
-      .of(Categorie.NOM_LABEL, Categorie.NOM, "25%")
-      .sort(Order.ASC)
-      .inputFilterOnSameField(),
-    ClassicColumn.of(Categorie.DESCRIPTION_LABEL, Categorie.DESCRIPTION, "55%"),
-    MethodColumn.of(Categorie.ACTIF_LABEL, Categorie.ACTIF, "10%", convertBooleanToString),
+      .of<AutomaticSearchQuery>(Categorie.NOM_LABEL, Categorie.NOM, "25%")
+      .sort(searchQuery => searchQuery.getFilter(Categorie.NOM))
+      .inputFilter(searchQuery => searchQuery.getFilter(Categorie.NOM)),
+    ClassicColumn
+      .of<AutomaticSearchQuery>(Categorie.DESCRIPTION_LABEL, Categorie.DESCRIPTION, "55%"),
+    MethodColumn
+      .of<AutomaticSearchQuery>(Categorie.ACTIF_LABEL, Categorie.ACTIF, "10%", convertBooleanToString),
   ]
 
   // Définition des actions possibles
@@ -49,10 +51,21 @@ export class CategorieTableComponent {
   }
 
   /**
+   * Récupère une nouvelle AutomaticSearchQuery
+   */
+  protected getSearchQueryMethod(): AutomaticSearchQuery {
+    const fieldNom = new AutomaticSearchField(Categorie.NOM, FilterType.EQUAL);
+
+    return new AutomaticSearchQuery([
+      fieldNom,
+    ]);
+  }
+
+  /**
    * Récupère la liste à afficher dans le tableau
    * @param searchRequest SearchRequest
    */
-  protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<Categorie>> {
+  protected getUpdateMethod(searchRequest: AutomaticSearchQuery): Observable<SearchResult<Categorie>> {
     return this.categorieService.search(searchRequest);
   }
 

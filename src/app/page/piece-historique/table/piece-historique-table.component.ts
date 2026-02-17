@@ -1,9 +1,8 @@
 import {Component} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
-import {Filter, FilterType, Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {PieceHistoriqueService} from '../piece-historique.service';
-import {SearchRequest} from '../../../common/search/searchRequest';
+import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {Observable, of} from 'rxjs';
 import {SearchResult} from '../../../common/search/searchResult';
 import {TableComponent} from '../../../common/table/table.component';
@@ -18,9 +17,11 @@ import {DateColumn} from '../../../common/table/column/date-column';
 import {PieceHistoriqueSource, PieceHistoriqueSourceEnumValuesForAutocomplete} from '../piece-historique-source.enum';
 import {Piece} from '../../piece/piece.model';
 import {PieceService} from '../../piece/piece.service';
-import {FilterCombinatorType} from '../../../common/search/filter-combinator';
+import {FilterCombinatorType} from '../../../common/search/automatic/automatic-search-field-combinaison';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Roles} from '../../../security/roles';
+import {Direction} from '../../../common/search/api/search-field';
+import {AutomaticSearchField, FilterType} from '../../../common/search/automatic/automatic-search-field';
 
 @Component({
   selector: 'app-piece-historique-table',
@@ -32,25 +33,29 @@ import {Roles} from '../../../security/roles';
 })
 export class PieceHistoriqueTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column[] = [
+  protected readonly columns: Column<AutomaticSearchQuery>[] = [
     DateColumn
-      .of(PieceHistorique.HEURE_LABEL, PieceHistorique.HEURE, "20%")
-      .sort(Order.ASC),
+      .of<AutomaticSearchQuery>(PieceHistorique.HEURE_LABEL, PieceHistorique.HEURE, "20%")
+      .sort(searchQuery => searchQuery.getFilter(PieceHistorique.HEURE)),
     MethodColumn
-      .of(
+      .of<AutomaticSearchQuery>(
         PieceHistorique.TYPE_LABEL,
         PieceHistorique.TYPE,
         "25%",
         (type: PieceHistoriqueType) => PieceHistoriqueTypeEnumValuesForAutocomplete.get(type) ?? "")
-      .autocompleteEnumFilter(PieceHistorique.TYPE, PieceHistoriqueTypeEnumValuesForAutocomplete),
+      .autocompleteEnumFilter(
+        searchQuery => searchQuery.getFilter(PieceHistorique.TYPE),
+        PieceHistoriqueTypeEnumValuesForAutocomplete),
     ClassicColumn.of(PieceHistorique.DIFFERENCE_LABEL, PieceHistorique.DIFFERENCE, "20%"),
     MethodColumn
-      .of(
+      .of<AutomaticSearchQuery>(
         PieceHistorique.SOURCE_LABEL,
         PieceHistorique.SOURCE,
         "25%",
         (source: PieceHistoriqueSource) => PieceHistoriqueSourceEnumValuesForAutocomplete.get(source) ?? "")
-      .autocompleteEnumFilter(PieceHistorique.SOURCE, PieceHistoriqueSourceEnumValuesForAutocomplete),
+      .autocompleteEnumFilter(
+        searchQuery => searchQuery.getFilter(PieceHistorique.SOURCE),
+        PieceHistoriqueSourceEnumValuesForAutocomplete),
   ]
 
   // Définition des actions possibles
@@ -83,10 +88,27 @@ export class PieceHistoriqueTableComponent {
   }
 
   /**
+   * Récupère une nouvelle AutomaticSearchQuery
+   */
+  protected getSearchQueryMethod(): AutomaticSearchQuery {
+    const fieldType = new AutomaticSearchField(PieceHistorique.TYPE, FilterType.EQUAL);
+    const fieldSource = new AutomaticSearchField(PieceHistorique.SOURCE, FilterType.EQUAL);
+    const fieldHeure = new AutomaticSearchField(PieceHistorique.HEURE, FilterType.EQUAL);
+
+    fieldHeure.order = Direction.DESC;
+
+    return new AutomaticSearchQuery([
+      fieldType,
+      fieldSource,
+      fieldHeure,
+    ]);
+  }
+
+  /**
    * Récupère la liste à afficher dans le tableau
    * @param searchRequest SearchRequest
    */
-  protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<PieceHistorique>> {
+  protected getUpdateMethod(searchRequest: AutomaticSearchQuery): Observable<SearchResult<PieceHistorique>> {
     if (!this.piece) {
       return of(<SearchResult<PieceHistorique>>{
         currentPage: 0,
@@ -97,16 +119,15 @@ export class PieceHistoriqueTableComponent {
       });
     }
 
-    let searchRequestModified: SearchRequest = structuredClone(searchRequest);
+    let searchRequestModified: AutomaticSearchQuery = structuredClone(searchRequest);
+    let pieceIdField = new AutomaticSearchField(PieceHistorique.PIECE_ID, FilterType.EQUAL);
+    pieceIdField.value = this.piece.id;
+
     searchRequestModified.combinators.push({
       type: FilterCombinatorType.AND,
-      filters: [<Filter>{
-        field: PieceHistorique.PIECE_ID,
-        value: this.piece.id,
-        type: FilterType.EQUAL,
-        order: undefined,
-      }]
+      fields: [pieceIdField]
     })
+
     return this.pieceHistoriqueService.search(searchRequestModified);
   }
 

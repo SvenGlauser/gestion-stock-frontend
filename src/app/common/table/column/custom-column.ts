@@ -1,16 +1,17 @@
 import {Column} from './column';
+import {SearchQuery} from '../../search/custom/search-query';
 
 /**
  * Colonne custom pour gérer de A-Z l'affichage
  */
-export class CustomColumn extends Column {
+export class CustomColumn<R extends SearchQuery> extends Column<R> {
   /**
    * Initialise une colonne
    * @param label Label
    * @param field Nom du champ
    * @param width Largeur de la colonne
    */
-  public static of(label: string, field: string, width: string): Column {
+  public static of<R extends SearchQuery>(label: string, field: string, width: string): Column<R> {
     return new CustomColumn(label, field, width)
   }
 
@@ -18,7 +19,7 @@ export class CustomColumn extends Column {
    * Indique si l'instance est une instance de CustomColumn
    * @param instance Instance à vérifier
    */
-  public static isInstanceOf(instance: Column): boolean {
+  public static isInstanceOf<R extends SearchQuery>(instance: Column<R>): boolean {
     return instance instanceof CustomColumn;
   }
 

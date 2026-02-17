@@ -2,11 +2,11 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../../common/search/searchResult';
 import {map, Observable} from 'rxjs';
-import {SearchRequest} from '../../common/search/searchRequest';
+import {AutomaticSearchQuery} from '../../common/search/automatic/automatic-search-query';
 import {Localite} from './localite.model';
-import {FilterType, Order} from '../../common/search/filter';
-import {FilterCombinatorType} from '../../common/search/filter-combinator';
 import {GestionStockApiService} from '../../config/gestion-stock-api.service';
+import {AutomaticSearchField, FilterType} from '../../common/search/automatic/automatic-search-field';
+import {Direction} from '../../common/search/api/search-field';
 
 @Injectable({
   providedIn: 'root'
@@ -32,24 +32,22 @@ export class LocaliteService extends GestionStockApiService<Localite> {
     return this.internalModify('', localite);
   }
 
-  public search(searchRequest: SearchRequest): Observable<SearchResult<Localite>> {
+  public search(searchRequest: AutomaticSearchQuery): Observable<SearchResult<Localite>> {
     return this.internalSearch('search', searchRequest);
   }
 
   public autocomplete(value: string): Observable<Localite[]> {
-    return this.search({
-      page: 0,
-      pageSize: 25,
-      combinators: [{
-        type: FilterCombinatorType.AND,
-        filters: [{
-          field: Localite.NOM,
-          value: value,
-          type: FilterType.STRING_LIKE,
-          order: Order.ASC
-        }]
-      }]
-    }).pipe(map((result: SearchResult<Localite>) => result.elements));
+    const fieldNom = new AutomaticSearchField(Localite.NOM, FilterType.STRING_LIKE);
+    fieldNom.value = value;
+    fieldNom.order = Direction.ASC
+
+    const searchQuery = new AutomaticSearchQuery([fieldNom]);
+    searchQuery.page = 0;
+    searchQuery.pageSize = 25;
+
+    return this
+      .search(searchQuery)
+      .pipe(map((result: SearchResult<Localite>) => result.elements));
   }
 
   protected override mapToClassMethod(): (object: Localite) => Localite {

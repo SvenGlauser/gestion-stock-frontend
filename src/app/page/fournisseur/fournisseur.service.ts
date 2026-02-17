@@ -3,10 +3,10 @@ import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../../common/search/searchResult';
 import {Fournisseur} from './fournisseur.model';
 import {map, Observable} from 'rxjs';
-import {SearchRequest} from '../../common/search/searchRequest';
-import {FilterType, Order} from '../../common/search/filter';
-import {FilterCombinatorType} from '../../common/search/filter-combinator';
+import {AutomaticSearchQuery} from '../../common/search/automatic/automatic-search-query';
 import {GestionStockApiService} from '../../config/gestion-stock-api.service';
+import {AutomaticSearchField, FilterType} from '../../common/search/automatic/automatic-search-field';
+import {Direction} from '../../common/search/api/search-field';
 
 @Injectable({
   providedIn: 'root'
@@ -32,24 +32,22 @@ export class FournisseurService extends GestionStockApiService<Fournisseur>{
     return this.internalModify('', fournisseur);
   }
 
-  public search(searchRequest: SearchRequest): Observable<SearchResult<Fournisseur>> {
+  public search(searchRequest: AutomaticSearchQuery): Observable<SearchResult<Fournisseur>> {
     return this.internalSearch('search', searchRequest);
   }
 
   public autocomplete(value: string): Observable<Fournisseur[]> {
-    return this.search({
-      page: 0,
-      pageSize: 25,
-      combinators: [{
-        type: FilterCombinatorType.AND,
-        filters: [{
-          field: Fournisseur.IDENTITE_DESIGNATION,
-          value: value,
-          type: FilterType.STRING_LIKE,
-          order: Order.ASC
-        }]
-      }]
-    }).pipe(map((result: SearchResult<Fournisseur>) => result.elements));
+    const fieldNom = new AutomaticSearchField(Fournisseur.IDENTITE_DESIGNATION, FilterType.STRING_LIKE);
+    fieldNom.value = value;
+    fieldNom.order = Direction.ASC
+
+    const searchQuery = new AutomaticSearchQuery([fieldNom]);
+    searchQuery.page = 0;
+    searchQuery.pageSize = 25;
+
+    return this
+      .search(searchQuery)
+      .pipe(map((result: SearchResult<Fournisseur>) => result.elements));
   }
 
   protected override mapToClassMethod(): (object: Fournisseur) => Fournisseur {

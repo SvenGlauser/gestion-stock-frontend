@@ -28,8 +28,6 @@ import {
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {SearchResult} from '../search/searchResult';
 import {Column} from './column/column';
-import {SearchRequest} from '../search/searchRequest';
-import {Filter, Order} from '../search/filter';
 import {debounceTime, mergeMap, Observable, of, Subject, tap} from 'rxjs';
 import {MatSort, MatSortHeader, Sort, SortDirection} from '@angular/material/sort';
 import {MatFormField, MatInput} from '@angular/material/input';
@@ -43,7 +41,6 @@ import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {DialogData, DialogType} from '../form/dialog/dialog-data';
 import {MatDialog} from '@angular/material/dialog';
 import {ActionColumnInfo} from './action-column.info';
-import {ColumnFilter} from './column/filter/column-filter';
 import {InputFilter} from './column/filter/input-column-filter';
 import {AutocompleteFilter} from './column/filter/autocomplete-column-filter';
 import {LinkColumn} from './column/link-column';
@@ -51,13 +48,13 @@ import {RouterLink} from '@angular/router';
 import {CustomColumn} from './column/custom-column';
 import {AutocompleteEnumFilter} from './column/filter/autocomplete-enunm-column-filter';
 import {AutocompleteEnumComponent} from '../form/input/autocomplete/autocomplete-enum.component';
-import {FilterCombinatorType} from '../search/filter-combinator';
 import {ComponentType} from '@angular/cdk/portal';
 import {AbstractFormDialogComponent} from '../form/dialog/abstract-form-dialog.component';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {AbstractProtectedComponent} from '../abstract/abstract-protected-component.directive';
 import {Roles} from '../../security/roles';
 import {AuthentificationService} from '../../security/authentification.service';
+import {SearchQuery} from '../search/custom/search-query';
+import {Direction, SearchField} from '../search/api/search-field';
 
 @Component({
   selector: 'app-table',
@@ -93,7 +90,7 @@ import {AuthentificationService} from '../../security/authentification.service';
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
 })
-export class TableComponent<T extends Record<string, any>> {
+export class TableComponent<T extends Record<string, any>, R extends SearchQuery> {
   // Constantes
   protected readonly DialogType = DialogType;
   protected readonly InputFilter = InputFilter;
@@ -106,8 +103,9 @@ export class TableComponent<T extends Record<string, any>> {
 
   // Input
   public readonly title: InputSignal<string> = input("");
-  public readonly columns: InputSignal<Column[]> = input.required();
-  public readonly updateMethod: InputSignal<((searchRequest: SearchRequest) => Observable<SearchResult<T>>)> = input.required();
+  public readonly columns: InputSignal<Column<R>[]> = input.required();
+  public readonly initSearchQueryMethod: InputSignal<() => R> = input.required();
+  public readonly updateMethod: InputSignal<(searchQuery: R) => Observable<SearchResult<T>>> = input.required();
   public readonly actionColumnInfo: InputSignal<ActionColumnInfo> = input.required();
 
   // Access
@@ -132,10 +130,10 @@ export class TableComponent<T extends Record<string, any>> {
 
   // Configuration table
   protected readonly displayedColumns: Signal<string[]> = computed((): string[] => this.getColumnsToDisplay());
-  protected readonly columnsToGenerateAutomatically: Signal<Column[]> = computed((): Column[] => this.getColumnsToGenerateList())
+  protected readonly columnsToGenerateAutomatically: Signal<Column<R>[]> = computed((): Column<R>[] => this.getColumnsToGenerateList())
 
   // Configuration tri par défaut
-  private readonly firstSortabeColumn: Signal<Column | null> = computed((): Column | null => this.getFirstSortableColum())
+  private readonly firstSortableColumn: WritableSignal<Column<R> | null> = signal(null)
   protected readonly defaultSortDirection: Signal<SortDirection> = computed((): SortDirection => this.getDefaultSortDirection())
   protected readonly defaultSortColumn: Signal<string> = computed((): string => this.getDefaultSortColumn());
 
@@ -148,14 +146,7 @@ export class TableComponent<T extends Record<string, any>> {
   private readonly searchEvent: Subject<void> = new Subject();
 
   // Champ dans lequel sont stockés les filtres pour la prochaine requête
-  private readonly searchRequest: SearchRequest = {
-    page: 0,
-    pageSize: null,
-    combinators: [{
-      filters: [],
-      type: FilterCombinatorType.AND,
-    }]
-  };
+  private readonly searchQuery: WritableSignal<R | null> = signal(null);
 
   constructor(private readonly matDialog: MatDialog,
               private readonly authentificationService: AuthentificationService) {
@@ -165,8 +156,9 @@ export class TableComponent<T extends Record<string, any>> {
         tap((): void => this.isLoading.set(true)),
         debounceTime(500),
         mergeMap(() => {
-          if (this.haveReadAccessRole()) {
-            return this.updateMethod()(this.searchRequest);
+          const searchQuery: R | null = this.searchQuery();
+          if (searchQuery !== null && this.haveReadAccessRole()) {
+            return this.updateMethod()(searchQuery);
           } else {
             return of(<SearchResult<T>>{
               currentPage: 0,
@@ -194,12 +186,29 @@ export class TableComponent<T extends Record<string, any>> {
     }, {debugName: "Manual columns/rows update"});
 
     effect((): void => {
-      const columns: Column[] = this.columns();
+      const columns: Column<R>[] = this.columns();
 
       untracked(() => this.updateSearchRequestFilter(columns));
     }, {debugName: "SearchRequest filters initialize"})
 
-    afterNextRender((): void => this.update());
+    afterNextRender((): void => {
+      untracked((): void => {
+        const columns: Column<R>[] = this.columns();
+        const searchQuery: R = this.initSearchQueryMethod()();
+
+        for (const column of columns) {
+          column.initSortFromSearchQuery(searchQuery);
+          for (const filter of column.filters) {
+            filter.initValueFromSearchQuery(searchQuery);
+          }
+        }
+
+        this.searchQuery.set(searchQuery);
+        this.firstSortableColumn.set(this.getFirstSortableColum());
+
+        this.update();
+      })
+    });
   }
 
   /**
@@ -221,8 +230,13 @@ export class TableComponent<T extends Record<string, any>> {
    * @param page Nouvelle page
    */
   protected changePage(page: PageEvent): void {
-    this.searchRequest.page = page.pageIndex;
-    this.searchRequest.pageSize = page.pageSize;
+    const searchQuery: R | null = this.searchQuery();
+    if (!searchQuery) {
+      return;
+    }
+
+    searchQuery.page = page.pageIndex;
+    searchQuery.pageSize = page.pageSize;
 
     this.update();
   }
@@ -232,24 +246,31 @@ export class TableComponent<T extends Record<string, any>> {
    * @param sort Nouveau trie
    */
   protected sort(sort: Sort): void {
-    this.searchRequest.page = 0;
+    const searchQuery: R | null = this.searchQuery();
+    if (!searchQuery) {
+      return;
+    }
 
-    for (const filter of this.searchRequest.combinators[0].filters) {
-      if (filter.field === sort.active) {
+    searchQuery.page = 0;
+
+    for (const column of this.columns()) {
+      if (column.field == sort.active) {
         switch (sort.direction) {
           case "asc":
-            filter.order = Order.ASC;
+            column.sortOrder = Direction.ASC;
             break;
           case "desc":
-            filter.order = Order.DESC;
+            column.sortOrder = Direction.DESC;
             break;
           case "":
-            filter.order = undefined;
+            column.sortOrder = null;
             break;
         }
       } else {
-        filter.order = undefined;
+        column.sortOrder = null;
       }
+
+      column.pushSortToSearchQuery(searchQuery);
     }
 
     this.update();
@@ -259,19 +280,15 @@ export class TableComponent<T extends Record<string, any>> {
    * Filtre la table
    */
   protected filter(): void {
-    this.searchRequest.page = 0;
+    const searchQuery: R | null = this.searchQuery();
+    if (!searchQuery) {
+      return;
+    }
 
-    for (const filter of this.searchRequest.combinators[0].filters) {
-      let columnFilter: ColumnFilter | undefined = this.columns().flatMap(column => column.filters).find(columnFilter => columnFilter.filterField === filter.field);
+    searchQuery.page = 0;
 
-      if (columnFilter !== undefined) {
-        let value = columnFilter.getValue();
-        if (value === '') {
-          value = null;
-        }
-
-        filter.value = value;
-      }
+    for (const filter of this.columns().flatMap(column => column.filters)) {
+      filter.pushValueToSearchQuery(searchQuery);
     }
 
     this.update();
@@ -332,9 +349,16 @@ export class TableComponent<T extends Record<string, any>> {
    * Efface les filtres
    */
   protected clearAllFilters(): void {
+    const searchQuery: R | null = this.searchQuery();
+    if (!searchQuery) {
+      return;
+    }
+
     for (const filter of this.columns().flatMap(column => column.filters)) {
-        filter.filterValue = null;
-      }
+      filter.clear(searchQuery);
+    }
+
+    console.log(this.columns());
 
     this.filter();
   }
@@ -342,8 +366,8 @@ export class TableComponent<T extends Record<string, any>> {
   /**
    * Retourne la liste des colonnes à créer
    */
-  private getColumnsToGenerateList(): Column[] {
-    return this.columns().filter(column => !(column instanceof CustomColumn));
+  private getColumnsToGenerateList(): Column<R>[] {
+    return this.columns().filter(column => !(CustomColumn.isInstanceOf(column)));
   }
 
   /**
@@ -377,7 +401,7 @@ export class TableComponent<T extends Record<string, any>> {
    * Récupère le premier tri
    */
   private getDefaultSortColumn(): string {
-    let column: Column | null = this.firstSortabeColumn();
+    let column: Column<R> | null = this.firstSortableColumn();
 
     if (column) {
       return column.field;
@@ -390,13 +414,13 @@ export class TableComponent<T extends Record<string, any>> {
    * Récupère le premier ordre de tri
    */
   private getDefaultSortDirection(): SortDirection {
-    let column: Column | null = this.firstSortabeColumn();
+    let column: Column<R> | null = this.firstSortableColumn();
 
     if (column) {
-      switch (column.sortDefaultValue) {
-        case Order.ASC:
+      switch (column.sortOrder) {
+        case Direction.ASC:
           return "asc";
-        case Order.DESC:
+        case Direction.DESC:
           return "desc";
         default:
           return "";
@@ -409,11 +433,12 @@ export class TableComponent<T extends Record<string, any>> {
   /**
    * Récupère la première colonne à ordrer
    */
-  private getFirstSortableColum(): Column | null {
-    let columns: Column[] = this.columns().filter(column => column.sortable && column.sortDefaultValue);
+  private getFirstSortableColum(): Column<R> | null {
+    let columns: Column<R>[] = this.columns()
+      .filter(column => column.isSortable() && column.sortOrder);
 
     if (columns.length == 0) {
-      columns = this.columns().filter(column => column.sortable);
+      columns = this.columns().filter(column => column.isSortable());
     }
 
     if (columns.length > 0) {
@@ -445,61 +470,30 @@ export class TableComponent<T extends Record<string, any>> {
    * Mets à jour la liste des filtres de la SearchRequest
    * @param columns Nouvelles colonnes
    */
-  private updateSearchRequestFilter(columns: Column[]): void {
-    if (this.searchRequest.combinators.length === 0) {
+  private updateSearchRequestFilter(columns: Column<R>[]): void {
+    const searchQuery: R | null = this.searchQuery();
+    if (!searchQuery) {
       return;
     }
 
-    const filtersToGenerate: Filter[] = [];
-
     for (let column of columns) {
-      const filtersToGenerateForThisColumn: Filter[] = [];
-
       for (const filter of column.filters) {
-        filtersToGenerateForThisColumn.push({
-          field: filter.filterField,
-          value: filter.filterValue ?? null,
-          type: filter.filterType
-        });
+        filter.pushValueToSearchQuery(searchQuery);
       }
 
-      if (column.sortable) {
-        const order: Order | undefined = column.sortDefaultValue ?? undefined;
-
-        let needToGenerateOne: boolean = true;
-
-        for (const filter of filtersToGenerateForThisColumn) {
-          if (filter.field == column.field) {
-            filter.order = order;
-            needToGenerateOne = false;
-          }
+      if (column.isSortable()) {
+        let field: SearchField<any> | null;
+        if (column.sortableFieldGetter) {
+          field = column.sortableFieldGetter(searchQuery);
+        } else {
+          field = null;
         }
 
-        if (needToGenerateOne) {
-          filtersToGenerateForThisColumn.push({
-            field: column.field,
-            order: order,
-          });
+        if (field !== null) {
+          field.order = column.sortOrder;
         }
       }
-
-      filtersToGenerate.push(...filtersToGenerateForThisColumn);
     }
-
-    const filtersToKeep: Filter[] = [];
-
-    for (const filterToGenerate of filtersToGenerate) {
-      const currentFilter: Filter | undefined = this.searchRequest.combinators[0].filters
-        .find(filter => filter.field === filterToGenerate.field);
-
-      if (currentFilter === undefined) {
-        filtersToKeep.push(filterToGenerate);
-      } else {
-        filtersToKeep.push(currentFilter);
-      }
-    }
-
-    this.searchRequest.combinators[0].filters = filtersToKeep;
   }
 
   /**

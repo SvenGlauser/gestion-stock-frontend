@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../../common/search/searchResult';
 import {ThrownException} from './exception.model';
 import {Observable} from 'rxjs';
-import {SearchRequest} from '../../common/search/searchRequest';
+import {AutomaticSearchQuery} from '../../common/search/automatic/automatic-search-query';
 import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class ExceptionService extends GestionStockApiService<ThrownException> {
     return this.http.put<void>(ExceptionService.separateWithSlash(this.URL, id, actif), null);
   }
 
-  public search(searchRequest: SearchRequest): Observable<SearchResult<ThrownException>> {
+  public search(searchRequest: AutomaticSearchQuery): Observable<SearchResult<ThrownException>> {
     return this.internalSearch('search', searchRequest);
   }
 

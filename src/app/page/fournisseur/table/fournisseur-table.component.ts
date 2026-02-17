@@ -1,10 +1,9 @@
 import {Component} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
-import {Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {Model} from '../../../common/model';
 import {FournisseurService} from '../fournisseur.service';
-import {SearchRequest} from '../../../common/search/searchRequest';
+import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {Observable} from 'rxjs';
 import {SearchResult} from '../../../common/search/searchResult';
 import {TableComponent} from '../../../common/table/table.component';
@@ -14,8 +13,9 @@ import {FournisseurDialogComponent} from '../dialog/fournisseur-dialog.component
 import {LinkColumn} from '../../../common/table/column/link-column';
 import {Fournisseur} from '../fournisseur.model';
 import {Adresse} from '../../adresse/adresse';
-import {Identite} from '../../identite/identite.model';
 import {Roles} from '../../../security/roles';
+import {AutomaticSearchField, FilterType} from '../../../common/search/automatic/automatic-search-field';
+import {Direction} from '../../../common/search/api/search-field';
 
 @Component({
   selector: 'app-fournisseur-table',
@@ -27,15 +27,17 @@ import {Roles} from '../../../security/roles';
 })
 export class FournisseurTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column[] = [
+  protected readonly columns: Column<AutomaticSearchQuery>[] = [
     ClassicColumn
-      .of(Fournisseur.IDENTITE_LABEL, Fournisseur.IDENTITE_DESIGNATION, "25%")
-      .sort(Order.ASC)
-      .inputFilter(Fournisseur.IDENTITE_DESIGNATION),
-    ClassicColumn.of(Fournisseur.DESCRIPTION_LABEL, Fournisseur.DESCRIPTION, "25%"),
-    LinkColumn.of(Fournisseur.URL_LABEL, Fournisseur.URL, "15%", (fournisseur: Fournisseur) => fournisseur.url ?? ""),
+      .of<AutomaticSearchQuery>(Fournisseur.IDENTITE_LABEL, Fournisseur.IDENTITE_DESIGNATION, "25%")
+      .sort(searchQuery => searchQuery.getFilter(Fournisseur.IDENTITE_DESIGNATION))
+      .inputFilter(searchQuery => searchQuery.getFilter(Fournisseur.IDENTITE_DESIGNATION)),
+    ClassicColumn
+      .of<AutomaticSearchQuery>(Fournisseur.DESCRIPTION_LABEL, Fournisseur.DESCRIPTION, "25%"),
+    LinkColumn
+      .of<AutomaticSearchQuery>(Fournisseur.URL_LABEL, Fournisseur.URL, "15%", (fournisseur: Fournisseur) => fournisseur.url ?? ""),
     MethodColumn
-      .of(Fournisseur.ADRESSE_LABEL, Fournisseur.IDENTITE_ADRESSE, "25%", Adresse.adresseToString)
+      .of<AutomaticSearchQuery>(Fournisseur.ADRESSE_LABEL, Fournisseur.IDENTITE_ADRESSE, "25%", Adresse.adresseToString)
       .setStylePreWrap(),
   ]
 
@@ -54,10 +56,23 @@ export class FournisseurTableComponent {
   }
 
   /**
+   * Récupère une nouvelle AutomaticSearchQuery
+   */
+  protected getSearchQueryMethod(): AutomaticSearchQuery {
+    const fieldIdentiteDesignation = new AutomaticSearchField(Fournisseur.IDENTITE_DESIGNATION, FilterType.EQUAL);
+
+    fieldIdentiteDesignation.order = Direction.ASC;
+
+    return new AutomaticSearchQuery([
+      fieldIdentiteDesignation,
+    ]);
+  }
+
+  /**
    * Récupère la liste à afficher dans le tableau
    * @param searchRequest SearchRequest
    */
-  protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<Fournisseur>> {
+  protected getUpdateMethod(searchRequest: AutomaticSearchQuery): Observable<SearchResult<Fournisseur>> {
     return this.fournisseurService.search(searchRequest);
   }
 

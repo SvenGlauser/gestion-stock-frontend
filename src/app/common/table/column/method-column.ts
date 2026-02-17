@@ -1,7 +1,8 @@
 import {Column} from './column';
 import {getValueFromAttributeInCascade} from '../../utils/function.utils';
+import {SearchQuery} from '../../search/custom/search-query';
 
-export class MethodColumn extends Column {
+export class MethodColumn<R extends SearchQuery> extends Column<R> {
   public method: ((...value: any) => string);
   public methodFields: string[];
 
@@ -23,11 +24,11 @@ export class MethodColumn extends Column {
    * @param method Méthode pour le calcul
    * @param methodFields Champs passés en paramètres
    */
-  public static of(label: string,
-                   field: string,
-                   width: string,
-                   method: (...value: any) => string,
-                   ...methodFields: string[]): MethodColumn {
+  public static of<R extends SearchQuery>(label: string,
+                                          field: string,
+                                          width: string,
+                                          method: (...value: any) => string,
+                                          ...methodFields: string[]): MethodColumn<R> {
     return new MethodColumn(label, field, width, method, methodFields);
   }
 

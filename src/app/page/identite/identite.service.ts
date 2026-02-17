@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../../common/search/searchResult';
-import {Identite, IdentiteLight} from './identite.model';
+import {IdentiteLight} from './identite.model';
 import {map, Observable} from 'rxjs';
-import {SearchRequest} from '../../common/search/searchRequest';
-import {FilterCombinatorType} from '../../common/search/filter-combinator';
-import {FilterType, Order} from '../../common/search/filter';
+import {AutomaticSearchQuery} from '../../common/search/automatic/automatic-search-query';
 import {GestionStockApiService} from '../../config/gestion-stock-api.service';
+import {AutomaticSearchField, FilterType} from '../../common/search/automatic/automatic-search-field';
+import {Direction} from '../../common/search/api/search-field';
 
 @Injectable({
   providedIn: 'root'
@@ -16,24 +16,22 @@ export class IdentiteService extends GestionStockApiService<IdentiteLight> {
     super(http, 'identite');
   }
 
-  public search(searchRequest: SearchRequest): Observable<SearchResult<IdentiteLight>> {
+  public search(searchRequest: AutomaticSearchQuery): Observable<SearchResult<IdentiteLight>> {
     return this.internalSearch('search', searchRequest);
   }
 
   public autocomplete(value: string): Observable<IdentiteLight[]> {
-    return this.search({
-      page: 0,
-      pageSize: 25,
-      combinators: [{
-        type: FilterCombinatorType.AND,
-        filters: [{
-          field: IdentiteLight.DESIGNATION,
-          value: value,
-          type: FilterType.STRING_LIKE,
-          order: Order.ASC
-        }]
-      }]
-    }).pipe(map((result: SearchResult<IdentiteLight>) => result.elements));
+    const fieldNom = new AutomaticSearchField(IdentiteLight.DESIGNATION, FilterType.STRING_LIKE);
+    fieldNom.value = value;
+    fieldNom.order = Direction.ASC
+
+    const searchQuery = new AutomaticSearchQuery([fieldNom]);
+    searchQuery.page = 0;
+    searchQuery.pageSize = 25;
+
+    return this
+      .search(searchQuery)
+      .pipe(map((result: SearchResult<IdentiteLight>) => result.elements));
   }
 
   protected override mapToClassMethod(): (object: IdentiteLight) => IdentiteLight {

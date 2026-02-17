@@ -1,9 +1,8 @@
 import {Component, signal, Signal, viewChild, WritableSignal} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
-import {Order} from '../../../common/search/filter';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {IdentiteService} from '../identite.service';
-import {SearchRequest} from '../../../common/search/searchRequest';
+import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {Observable} from 'rxjs';
 import {SearchResult} from '../../../common/search/searchResult';
 import {TableComponent} from '../../../common/table/table.component';
@@ -23,6 +22,7 @@ import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-
 import {ComponentType} from '@angular/cdk/portal';
 import {Roles} from '../../../security/roles';
 import {AuthentificationService} from '../../../security/authentification.service';
+import {AutomaticSearchField, FilterType} from '../../../common/search/automatic/automatic-search-field';
 
 @Component({
   selector: 'app-identite-table',
@@ -37,19 +37,20 @@ export class IdentiteTableComponent {
   protected readonly haveEditAccessRole: WritableSignal<boolean> = signal(false);
 
   // Définition des colonnes
-  protected readonly columns: Column[] = [
+  protected readonly columns: Column<AutomaticSearchQuery>[] = [
     ClassicColumn
-      .of(IdentiteLight.DESIGNATION_LABEL, IdentiteLight.DESIGNATION, "40%")
-      .sort(Order.ASC)
-      .inputFilterOnSameField(),
+      .of<AutomaticSearchQuery>(IdentiteLight.DESIGNATION_LABEL, IdentiteLight.DESIGNATION, "40%")
+      .sort(searchQuery => searchQuery.getFilter(IdentiteLight.DESIGNATION))
+      .inputFilter(searchQuery => searchQuery.getFilter(IdentiteLight.DESIGNATION)),
     ClassicColumn
-      .of(IdentiteLight.TELEPHONE_LABEL, IdentiteLight.TELEPHONE, "20%")
-      .inputFilterOnSameField(),
+      .of<AutomaticSearchQuery>(IdentiteLight.TELEPHONE_LABEL, IdentiteLight.TELEPHONE, "20%")
+      .sort(searchQuery => searchQuery.getFilter(IdentiteLight.TELEPHONE))
+      .inputFilter(searchQuery => searchQuery.getFilter(IdentiteLight.TELEPHONE)),
     MethodColumn
-      .of(IdentiteLight.ADRESSE_LABEL, IdentiteLight.ADRESSE, "20%", Adresse.adresseToString)
+      .of<AutomaticSearchQuery>(IdentiteLight.ADRESSE_LABEL, IdentiteLight.ADRESSE, "20%", Adresse.adresseToString)
       .setStylePreWrap(),
     LinkColumn
-      .of(IdentiteLight.MACHINES_LABEL, IdentiteLight.MACHINES, "10%", (identite: IdentiteLight) => {
+      .of<AutomaticSearchQuery>(IdentiteLight.MACHINES_LABEL, IdentiteLight.MACHINES, "10%", (identite: IdentiteLight) => {
         let url = "/machines/";
         if (identite.identiteType == IdentiteType.PERSONNE_MORALE) {
           url += "morale/";
@@ -83,7 +84,7 @@ export class IdentiteTableComponent {
     read: true
   };
 
-  private readonly matTable: Signal<TableComponent<Machine>> = viewChild.required<TableComponent<Machine>>(TableComponent);
+  private readonly matTable: Signal<TableComponent<Machine, AutomaticSearchQuery>> = viewChild.required<TableComponent<Machine, AutomaticSearchQuery>>(TableComponent);
 
   constructor(private readonly identiteService: IdentiteService,
               private readonly matDialog: MatDialog,
@@ -92,10 +93,23 @@ export class IdentiteTableComponent {
   }
 
   /**
+   * Récupère une nouvelle AutomaticSearchQuery
+   */
+  protected getSearchQueryMethod(): AutomaticSearchQuery {
+    const fieldDesignation = new AutomaticSearchField(IdentiteLight.DESIGNATION, FilterType.EQUAL);
+    const fieldTelephone = new AutomaticSearchField(IdentiteLight.TELEPHONE, FilterType.EQUAL);
+
+    return new AutomaticSearchQuery([
+      fieldDesignation,
+      fieldTelephone
+    ]);
+  }
+
+  /**
    * Récupère la liste à afficher dans le tableau
    * @param searchRequest SearchRequest
    */
-  protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<IdentiteLight>> {
+  protected getUpdateMethod(searchRequest: AutomaticSearchQuery): Observable<SearchResult<IdentiteLight>> {
     return this.identiteService.search(searchRequest);
   }
 

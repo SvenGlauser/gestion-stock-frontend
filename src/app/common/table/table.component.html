@@ -4,7 +4,7 @@
 
     @if (this.actionColumnInfo().created && this.haveEditAccessRole()) {
       <div class="header-actions">
-        <button mat-flat-button (click)="openDialog(null, DialogType.CREATE)">Créer</button>
+        <button mat-flat-button (click)="this.openDialog(null, DialogType.CREATE)">Créer</button>
       </div>
     }
   </div>
@@ -30,7 +30,7 @@
         <th mat-header-cell
             *matHeaderCellDef
             [mat-sort-header]="column.field"
-            [disabled]="!column.sortable"
+            [disabled]="!column.isSortable()"
             [style.width]="column.width">
           {{ column.label }}
         </th>
@@ -125,11 +125,11 @@
 
         @for (column of columns(); track column.field) {
           <div [style.width]="column.width">
-            @for (columnFilter of column.filters; track columnFilter.filterField) {
+            @for (columnFilter of column.filters; track columnFilter) {
               @if (InputFilter.isInstanceOf(columnFilter)) {
                 <mat-form-field>
                   <input matInput
-                         [(ngModel)]="columnFilter.filterValue"
+                         [(ngModel)]="columnFilter.value"
                          (input)="filter()">
                 </mat-form-field>
               } @else if (AutocompleteFilter.isInstanceOf(columnFilter)) {
@@ -137,12 +137,12 @@
                   [autocompleteMethod]="AutocompleteFilter.cast(columnFilter)!.autocompleteMethod"
                   [autocompleteIdField]="AutocompleteFilter.cast(columnFilter)!.autocompleteIdField"
                   [autocompleteNameField]="AutocompleteFilter.cast(columnFilter)!.autocompleteNameField"
-                  [(value)]="columnFilter.filterValue"
+                  [(value)]="columnFilter.value"
                   (valueChange)="filter()"/>
               } @else if (AutocompleteEnumFilter.isInstanceOf(columnFilter)) {
                 <app-autocomplete-enum
                   [mapOfElements]="AutocompleteEnumFilter.cast(columnFilter)!.mapOfElements"
-                  [(value)]="columnFilter.filterValue"
+                  [(value)]="columnFilter.value"
                   (valueChange)="filter()"/>
               }
             }
