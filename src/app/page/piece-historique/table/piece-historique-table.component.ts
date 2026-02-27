@@ -4,7 +4,7 @@ import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {PieceHistoriqueService} from '../piece-historique.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {Observable, of} from 'rxjs';
-import {SearchResult} from '../../../common/search/searchResult';
+import {SearchResult} from '../../../common/search/search-result';
 import {TableComponent} from '../../../common/table/table.component';
 import {PieceHistoriqueDialogComponent} from '../dialog/piece-historique-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
@@ -33,25 +33,25 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
 })
 export class PieceHistoriqueTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column<AutomaticSearchQuery>[] = [
+  protected columns: Column<AutomaticSearchQuery>[] = [
     DateColumn
-      .of<AutomaticSearchQuery>(PieceHistorique.HEURE_LABEL, PieceHistorique.HEURE, "20%")
+      .of<AutomaticSearchQuery>(PieceHistorique.HEURE_LABEL, PieceHistorique.HEURE, 20)
       .sort(searchQuery => searchQuery.getFilter(PieceHistorique.HEURE)),
     MethodColumn
       .of<AutomaticSearchQuery>(
         PieceHistorique.TYPE_LABEL,
         PieceHistorique.TYPE,
-        "25%",
+        25,
         (type: PieceHistoriqueType) => PieceHistoriqueTypeEnumValuesForAutocomplete.get(type) ?? "")
       .autocompleteEnumFilter(
         searchQuery => searchQuery.getFilter(PieceHistorique.TYPE),
         PieceHistoriqueTypeEnumValuesForAutocomplete),
-    ClassicColumn.of(PieceHistorique.DIFFERENCE_LABEL, PieceHistorique.DIFFERENCE, "20%"),
+    ClassicColumn.of(PieceHistorique.DIFFERENCE_LABEL, PieceHistorique.DIFFERENCE, 20),
     MethodColumn
       .of<AutomaticSearchQuery>(
         PieceHistorique.SOURCE_LABEL,
         PieceHistorique.SOURCE,
-        "25%",
+        25,
         (source: PieceHistoriqueSource) => PieceHistoriqueSourceEnumValuesForAutocomplete.get(source) ?? "")
       .autocompleteEnumFilter(
         searchQuery => searchQuery.getFilter(PieceHistorique.SOURCE),

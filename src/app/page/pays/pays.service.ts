@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {SearchResult} from '../../common/search/searchResult';
+import {SearchResult} from '../../common/search/search-result';
 import {Pays} from './pays.model';
 import {map, Observable} from 'rxjs';
 import {AutomaticSearchQuery} from '../../common/search/automatic/automatic-search-query';

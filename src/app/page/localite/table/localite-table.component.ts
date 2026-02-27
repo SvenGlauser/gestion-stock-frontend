@@ -3,7 +3,7 @@ import {TableComponent} from "../../../common/table/table.component";
 import {PaysService} from '../../pays/pays.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {Observable} from 'rxjs';
-import {SearchResult} from '../../../common/search/searchResult';
+import {SearchResult} from '../../../common/search/search-result';
 import {Pays} from '../../pays/pays.model';
 import {LocaliteService} from '../localite.service';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
@@ -26,17 +26,17 @@ import {Machine} from '../../machine/machine.model';
 })
 export class LocaliteTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column<AutomaticSearchQuery>[] = [
+  protected columns: Column<AutomaticSearchQuery>[] = [
     ClassicColumn
-      .of<AutomaticSearchQuery>(Localite.NOM_LABEL, Localite.NOM, "40%")
+      .of<AutomaticSearchQuery>(Localite.NOM_LABEL, Localite.NOM, 40)
       .sort(searchQuery => searchQuery.getFilter(Localite.NOM))
       .inputFilter(searchQuery => searchQuery.getFilter(Localite.NOM)),
     ClassicColumn
-      .of<AutomaticSearchQuery>(Localite.NPA_LABEL, Localite.NPA, "25%")
+      .of<AutomaticSearchQuery>(Localite.NPA_LABEL, Localite.NPA, 25)
       .sort(searchQuery => searchQuery.getFilter(Localite.NPA))
       .inputFilter(searchQuery => searchQuery.getFilter(Localite.NPA)),
     ClassicColumn
-      .of<AutomaticSearchQuery>(Localite.PAYS_LABEL, Localite.PAYS_NOM, "25%")
+      .of<AutomaticSearchQuery>(Localite.PAYS_LABEL, Localite.PAYS_NOM, 25)
       .sort(searchQuery => searchQuery.getFilter(Localite.PAYS_NOM))
       .autocompleteFilter(
         searchQuery => searchQuery.getFilter(Localite.PAYS_ID),

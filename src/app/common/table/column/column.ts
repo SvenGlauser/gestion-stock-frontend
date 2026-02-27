@@ -15,10 +15,11 @@ export abstract class Column<R extends SearchQuery> {
   public filters: ColumnFilter<any, R>[] = [];
   public sortableFieldGetter: ((searchQuery: R) => SearchField<any> | null) | null = null;
   public sortOrder: Direction | null = null;
-  public width: string;
+  public view: boolean = true;
+  public width: number;
   public style: string;
 
-  protected constructor(label: string, field: string, width: string) {
+  protected constructor(label: string, field: string, width: number) {
     this.label = label;
     this.field = field;
     this.width = width;
@@ -74,6 +75,11 @@ export abstract class Column<R extends SearchQuery> {
    */
   public inputFilter(fieldGetter: (searchQuery: R) => (SearchField<any> | null)): this {
     this.addFilter(InputFilter.of(fieldGetter))
+    return this;
+  }
+
+  public hide(): this {
+    this.view = false;
     return this;
   }
 

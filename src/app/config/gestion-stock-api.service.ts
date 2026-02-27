@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
 import {AutomaticSearchQuery} from '../common/search/automatic/automatic-search-query';
-import {SearchResult} from '../common/search/searchResult';
+import {SearchResult} from '../common/search/search-result';
 import {environment} from '../../environments/environment';
 import {buildUrl, buildUrlFromInterface} from '../common/utils/function.utils';
 import {SearchQuery} from '../common/search/custom/search-query';

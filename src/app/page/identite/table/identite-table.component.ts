@@ -4,7 +4,7 @@ import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {IdentiteService} from '../identite.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {Observable} from 'rxjs';
-import {SearchResult} from '../../../common/search/searchResult';
+import {SearchResult} from '../../../common/search/search-result';
 import {TableComponent} from '../../../common/table/table.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
@@ -39,18 +39,18 @@ export class IdentiteTableComponent {
   // Définition des colonnes
   protected readonly columns: Column<AutomaticSearchQuery>[] = [
     ClassicColumn
-      .of<AutomaticSearchQuery>(IdentiteLight.DESIGNATION_LABEL, IdentiteLight.DESIGNATION, "40%")
+      .of<AutomaticSearchQuery>(IdentiteLight.DESIGNATION_LABEL, IdentiteLight.DESIGNATION, 40)
       .sort(searchQuery => searchQuery.getFilter(IdentiteLight.DESIGNATION))
       .inputFilter(searchQuery => searchQuery.getFilter(IdentiteLight.DESIGNATION)),
     ClassicColumn
-      .of<AutomaticSearchQuery>(IdentiteLight.TELEPHONE_LABEL, IdentiteLight.TELEPHONE, "20%")
+      .of<AutomaticSearchQuery>(IdentiteLight.TELEPHONE_LABEL, IdentiteLight.TELEPHONE, 20)
       .sort(searchQuery => searchQuery.getFilter(IdentiteLight.TELEPHONE))
       .inputFilter(searchQuery => searchQuery.getFilter(IdentiteLight.TELEPHONE)),
     MethodColumn
-      .of<AutomaticSearchQuery>(IdentiteLight.ADRESSE_LABEL, IdentiteLight.ADRESSE, "20%", Adresse.adresseToString)
+      .of<AutomaticSearchQuery>(IdentiteLight.ADRESSE_LABEL, IdentiteLight.ADRESSE, 20, Adresse.adresseToString)
       .setStylePreWrap(),
     LinkColumn
-      .of<AutomaticSearchQuery>(IdentiteLight.MACHINES_LABEL, IdentiteLight.MACHINES, "10%", (identite: IdentiteLight) => {
+      .of<AutomaticSearchQuery>(IdentiteLight.MACHINES_LABEL, IdentiteLight.MACHINES, 10, (identite: IdentiteLight) => {
         let url = "/machines/";
         if (identite.identiteType == IdentiteType.PERSONNE_MORALE) {
           url += "morale/";

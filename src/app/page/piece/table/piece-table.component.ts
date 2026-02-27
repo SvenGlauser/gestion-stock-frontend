@@ -3,20 +3,20 @@ import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {PieceService} from '../piece.service';
 import {Observable, of} from 'rxjs';
-import {SearchResult} from '../../../common/search/searchResult';
+import {SearchResult} from '../../../common/search/search-result';
 import {TableComponent} from '../../../common/table/table.component';
 import {PieceDialogComponent} from '../dialog/piece-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
 import {CategorieService} from '../../categorie/categorie.service';
 import {Categorie} from '../../categorie/categorie.model';
-import {Piece} from '../piece.model';
 import {Model} from '../../../common/model';
 import {PieceHistorique} from '../../piece-historique/piece-historique.model';
 import {Router} from '@angular/router';
 import {Roles} from '../../../security/roles';
-import {PieceSearchQuery} from '../piece.searchquery';
+import {PieceWithHistoriqueSearchQuery} from '../piece-with-historique.searchquery';
 import {Direction} from '../../../common/search/api/search-field';
+import {PieceWithHistorique} from '../piece-with-historique.model';
 
 @Component({
   selector: 'app-piece-table',
@@ -28,19 +28,19 @@ import {Direction} from '../../../common/search/api/search-field';
 })
 export class PieceTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column<PieceSearchQuery>[] = [
+  protected columns: Column<PieceWithHistoriqueSearchQuery>[] = [
     ClassicColumn
-      .of<PieceSearchQuery>(Piece.NUMERO_INVENTAIRE_LABEL, Piece.NUMERO_INVENTAIRE, "15%")
+      .of<PieceWithHistoriqueSearchQuery>(PieceWithHistorique.NUMERO_INVENTAIRE_LABEL, PieceWithHistorique.NUMERO_INVENTAIRE, 15)
       .sort(searchQuery => searchQuery.numeroInventaire)
       .inputFilter(searchQuery => searchQuery.numeroInventaire),
     ClassicColumn
-      .of<PieceSearchQuery>(Piece.NOM_LABEL, Piece.NOM, "15%")
+      .of<PieceWithHistoriqueSearchQuery>(PieceWithHistorique.NOM_LABEL, PieceWithHistorique.NOM, 15)
       .sort(searchQuery => searchQuery.nom)
       .inputFilter(searchQuery => searchQuery.nom),
     ClassicColumn
-      .of(Piece.DESCRIPTION_LABEL, Piece.DESCRIPTION, "15%"),
+      .of(PieceWithHistorique.DESCRIPTION_LABEL, PieceWithHistorique.DESCRIPTION, 15),
     ClassicColumn
-      .of<PieceSearchQuery>(Piece.CATEGORIE_LABEL, Piece.CATEGORIE_NOM, "15%")
+      .of<PieceWithHistoriqueSearchQuery>(PieceWithHistorique.CATEGORIE_LABEL, PieceWithHistorique.CATEGORIE_NOM, 15)
       .sort(searchQuery => searchQuery.categorieNom)
       .autocompleteFilter(
         searchQuery => searchQuery.categorieId,
@@ -49,21 +49,29 @@ export class PieceTableComponent {
         Categorie.NOM
       ),
     MethodColumn
-      .of<PieceSearchQuery>(Piece.PRIX_LABEL, Piece.PRIX, "10%", (piece) => piece + " CHF", Piece.PRIX)
+      .of<PieceWithHistoriqueSearchQuery>(PieceWithHistorique.PRIX_LABEL, PieceWithHistorique.PRIX, 10, (piece) => piece + " CHF", PieceWithHistorique.PRIX)
       .sort(searchQuery => searchQuery.prix)
       .addStyle("text-align: right;"),
     ClassicColumn
-      .of<PieceSearchQuery>(Piece.QUANTITE_LABEL, Piece.QUANTITE, "10%")
+      .of<PieceWithHistoriqueSearchQuery>(PieceWithHistorique.QUANTITE_LABEL, PieceWithHistorique.QUANTITE, 10)
       .sort(searchQuery => searchQuery.quantite),
+    ClassicColumn
+      .of<PieceWithHistoriqueSearchQuery>(PieceWithHistorique.QUANTITE_ENTREE_LABEL, PieceWithHistorique.QUANTITE_ENTREE, 10)
+      .sort(searchQuery => searchQuery.quantiteEntree)
+      .hide(),
+    ClassicColumn
+      .of<PieceWithHistoriqueSearchQuery>(PieceWithHistorique.QUANTITE_SORTIE_LABEL, PieceWithHistorique.QUANTITE_SORTIE, 10)
+      .sort(searchQuery => searchQuery.quantiteSortie)
+      .hide(),
     MethodColumn
-      .of<PieceSearchQuery>(Piece.TOTAL_LABEL, Piece.TOTAL, "10%", this.calculateTotal.bind(this), Piece.QUANTITE, Piece.PRIX)
+      .of<PieceWithHistoriqueSearchQuery>(PieceWithHistorique.TOTAL_LABEL, PieceWithHistorique.TOTAL, 10, this.calculateTotal.bind(this), PieceWithHistorique.QUANTITE, PieceWithHistorique.PRIX)
       .addStyle("text-align: right;"),
   ]
 
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: PieceDialogComponent,
-    idField: Model.ID,
+    idField: PieceWithHistorique.ID,
     clicOnLine: true,
     created: true,
     delete: true,
@@ -86,20 +94,20 @@ export class PieceTableComponent {
   }
 
   /**
-   * Récupère une nouvelle PieceSearchQuery
+   * Récupère une nouvelle PieceWithHistoriqueSearchQuery
    */
-  protected getSearchQueryMethod(): PieceSearchQuery {
-    const pieceSearchQuery = new PieceSearchQuery();
-    pieceSearchQuery.nom.order = Direction.ASC;
-    return pieceSearchQuery;
+  protected getSearchQueryMethod(): PieceWithHistoriqueSearchQuery {
+    const pieceWithHistoriqueSearchQuery = new PieceWithHistoriqueSearchQuery();
+    pieceWithHistoriqueSearchQuery.nom.order = Direction.ASC;
+    return pieceWithHistoriqueSearchQuery;
   }
 
   /**
    * Récupère la liste à afficher dans le tableau
    * @param searchQuery SearchRequest
    */
-  protected getUpdateMethod(searchQuery: PieceSearchQuery): Observable<SearchResult<Piece>> {
-    return this.pieceService.search(searchQuery);
+  protected getUpdateMethod(searchQuery: PieceWithHistoriqueSearchQuery): Observable<SearchResult<PieceWithHistorique>> {
+    return this.pieceService.searchWithHistorique(searchQuery);
   }
 
   /**

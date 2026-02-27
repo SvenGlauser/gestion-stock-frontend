@@ -4,7 +4,7 @@ import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {MachineService} from '../machine.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {map, Observable, of, tap} from 'rxjs';
-import {SearchResult} from '../../../common/search/searchResult';
+import {SearchResult} from '../../../common/search/search-result';
 import {TableComponent} from '../../../common/table/table.component';
 import {MachineDialogComponent} from '../dialog/machine-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
@@ -59,14 +59,14 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
 })
 export class MachineTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column<AutomaticSearchQuery>[] = [
-    CustomColumn.of("", Machine.ROW_EXTENDER, "10%"),
+  protected columns: Column<AutomaticSearchQuery>[] = [
+    CustomColumn.of("", Machine.ROW_EXTENDER, 10),
     ClassicColumn
-      .of<AutomaticSearchQuery>(Machine.NOM_LABEL, Machine.NOM, "20%")
+      .of<AutomaticSearchQuery>(Machine.NOM_LABEL, Machine.NOM, 20)
       .sort(searchQuery => searchQuery.getFilter(Machine.NOM))
       .inputFilter(searchQuery => searchQuery.getFilter(Machine.NOM)),
-    ClassicColumn.of(Machine.DESCRIPTION_LABEL, Machine.DESCRIPTION, "40%"),
-    MethodColumn.of(Machine.PROPRIETAIRE_LABEL, Machine.PROPRIETAIRE, "20%", (identite: Identite) => identite.getDesignation()),
+    ClassicColumn.of(Machine.DESCRIPTION_LABEL, Machine.DESCRIPTION, 45),
+    MethodColumn.of(Machine.PROPRIETAIRE_LABEL, Machine.PROPRIETAIRE, 20, (identite: Identite) => identite.getDesignation()),
   ]
 
   private readonly matTable: Signal<TableComponent<Machine, AutomaticSearchQuery>> = viewChild.required<TableComponent<Machine, AutomaticSearchQuery>>(TableComponent);

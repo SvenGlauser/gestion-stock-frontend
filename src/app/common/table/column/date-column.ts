@@ -11,7 +11,7 @@ export class DateColumn<R extends SearchQuery> extends Column<R> {
    * @param field Nom du champ
    * @param width Largeur de la colonne
    */
-  public static of<R extends SearchQuery>(label: string, field: string, width: string): DateColumn<R> {
+  public static of<R extends SearchQuery>(label: string, field: string, width: number): DateColumn<R> {
     return new DateColumn(label, field, width)
   }
 

@@ -5,7 +5,7 @@ import {Model} from '../../../common/model';
 import {FournisseurService} from '../fournisseur.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {Observable} from 'rxjs';
-import {SearchResult} from '../../../common/search/searchResult';
+import {SearchResult} from '../../../common/search/search-result';
 import {TableComponent} from '../../../common/table/table.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
@@ -27,17 +27,17 @@ import {Direction} from '../../../common/search/api/search-field';
 })
 export class FournisseurTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column<AutomaticSearchQuery>[] = [
+  protected columns: Column<AutomaticSearchQuery>[] = [
     ClassicColumn
-      .of<AutomaticSearchQuery>(Fournisseur.IDENTITE_LABEL, Fournisseur.IDENTITE_DESIGNATION, "25%")
+      .of<AutomaticSearchQuery>(Fournisseur.IDENTITE_LABEL, Fournisseur.IDENTITE_DESIGNATION, 25)
       .sort(searchQuery => searchQuery.getFilter(Fournisseur.IDENTITE_DESIGNATION))
       .inputFilter(searchQuery => searchQuery.getFilter(Fournisseur.IDENTITE_DESIGNATION)),
     ClassicColumn
-      .of<AutomaticSearchQuery>(Fournisseur.DESCRIPTION_LABEL, Fournisseur.DESCRIPTION, "25%"),
+      .of<AutomaticSearchQuery>(Fournisseur.DESCRIPTION_LABEL, Fournisseur.DESCRIPTION, 25),
     LinkColumn
-      .of<AutomaticSearchQuery>(Fournisseur.URL_LABEL, Fournisseur.URL, "15%", (fournisseur: Fournisseur) => fournisseur.url ?? ""),
+      .of<AutomaticSearchQuery>(Fournisseur.URL_LABEL, Fournisseur.URL, 15, (fournisseur: Fournisseur) => fournisseur.url ?? ""),
     MethodColumn
-      .of<AutomaticSearchQuery>(Fournisseur.ADRESSE_LABEL, Fournisseur.IDENTITE_ADRESSE, "25%", Adresse.adresseToString)
+      .of<AutomaticSearchQuery>(Fournisseur.ADRESSE_LABEL, Fournisseur.IDENTITE_ADRESSE, 25, Adresse.adresseToString)
       .setStylePreWrap(),
   ]
 

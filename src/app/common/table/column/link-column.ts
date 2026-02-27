@@ -7,7 +7,7 @@ export class LinkColumn<R extends SearchQuery> extends Column<R> {
 
   protected constructor(label: string,
                         field: string,
-                        width: string,
+                        width: number,
                         link: (object: any) => string) {
     super(label, field, width);
     this.link = link;
@@ -23,7 +23,7 @@ export class LinkColumn<R extends SearchQuery> extends Column<R> {
    */
   public static of<R extends SearchQuery>(label: string,
                                           field: string,
-                                          width: string,
+                                          width: number,
                                           link: (object: any) => string): LinkColumn<R> {
     return new LinkColumn(label, field, width, link);
   }

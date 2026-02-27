@@ -8,7 +8,7 @@ export class MethodColumn<R extends SearchQuery> extends Column<R> {
 
   protected constructor(label: string,
                         field: string,
-                        width: string,
+                        width: number,
                         method: (...value: any) => string,
                         methodFields: string[]) {
     super(label, field, width);
@@ -26,7 +26,7 @@ export class MethodColumn<R extends SearchQuery> extends Column<R> {
    */
   public static of<R extends SearchQuery>(label: string,
                                           field: string,
-                                          width: string,
+                                          width: number,
                                           method: (...value: any) => string,
                                           ...methodFields: string[]): MethodColumn<R> {
     return new MethodColumn(label, field, width, method, methodFields);

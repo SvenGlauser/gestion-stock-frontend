@@ -6,7 +6,7 @@ import {Model} from '../../../common/model';
 import {CategorieService} from '../categorie.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {Observable} from 'rxjs';
-import {SearchResult} from '../../../common/search/searchResult';
+import {SearchResult} from '../../../common/search/search-result';
 import {TableComponent} from '../../../common/table/table.component';
 import {CategorieDialogComponent} from '../dialog/categorie-dialog.component';
 import {convertBooleanToString} from '../../../common/utils/lambda.utils';
@@ -25,15 +25,15 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
 })
 export class CategorieTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column<AutomaticSearchQuery>[] = [
+  protected columns: Column<AutomaticSearchQuery>[] = [
     ClassicColumn
-      .of<AutomaticSearchQuery>(Categorie.NOM_LABEL, Categorie.NOM, "25%")
+      .of<AutomaticSearchQuery>(Categorie.NOM_LABEL, Categorie.NOM, 25)
       .sort(searchQuery => searchQuery.getFilter(Categorie.NOM))
       .inputFilter(searchQuery => searchQuery.getFilter(Categorie.NOM)),
     ClassicColumn
-      .of<AutomaticSearchQuery>(Categorie.DESCRIPTION_LABEL, Categorie.DESCRIPTION, "55%"),
+      .of<AutomaticSearchQuery>(Categorie.DESCRIPTION_LABEL, Categorie.DESCRIPTION, 55),
     MethodColumn
-      .of<AutomaticSearchQuery>(Categorie.ACTIF_LABEL, Categorie.ACTIF, "10%", convertBooleanToString),
+      .of<AutomaticSearchQuery>(Categorie.ACTIF_LABEL, Categorie.ACTIF, 10, convertBooleanToString),
   ]
 
   // Définition des actions possibles

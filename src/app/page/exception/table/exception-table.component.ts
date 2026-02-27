@@ -4,7 +4,7 @@ import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-s
 import {TableComponent} from '../../../common/table/table.component';
 import {map, Observable} from 'rxjs';
 import {Column} from '../../../common/table/column/column';
-import {SearchResult} from '../../../common/search/searchResult';
+import {SearchResult} from '../../../common/search/search-result';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
@@ -48,23 +48,23 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
 })
 export class ExceptionTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column<AutomaticSearchQuery>[] = [
+  protected columns: Column<AutomaticSearchQuery>[] = [
     CustomColumn
-      .of<AutomaticSearchQuery>("", ThrownException.ROW_EXTENDER, "5%"),
+      .of<AutomaticSearchQuery>("", ThrownException.ROW_EXTENDER, 5),
     ClassicColumn
-      .of<AutomaticSearchQuery>(ThrownException.CLASS_NAME_LABEL, ThrownException.CLASS_NAME, "35%")
+      .of<AutomaticSearchQuery>(ThrownException.CLASS_NAME_LABEL, ThrownException.CLASS_NAME, 35)
       .inputFilter(searchQuery => searchQuery.getFilter(ThrownException.CLASS_NAME))
       .sort(searchQuery => searchQuery.getFilter(ThrownException.CLASS_NAME)),
     ClassicColumn
-      .of<AutomaticSearchQuery>(ThrownException.MESSAGE_LABEL, ThrownException.MESSAGE, "25%")
+      .of<AutomaticSearchQuery>(ThrownException.MESSAGE_LABEL, ThrownException.MESSAGE, 25)
       .inputFilter(searchQuery => searchQuery.getFilter(ThrownException.MESSAGE))
       .sort(searchQuery => searchQuery.getFilter(ThrownException.MESSAGE)),
     DateColumn
-      .of<AutomaticSearchQuery>(ThrownException.TIMESTAMP_LABEL, ThrownException.TIMESTAMP, "15%")
+      .of<AutomaticSearchQuery>(ThrownException.TIMESTAMP_LABEL, ThrownException.TIMESTAMP, 15)
       .withTime()
       .sort(searchQuery => searchQuery.getFilter(ThrownException.TIMESTAMP)),
     MethodColumn
-      .of<AutomaticSearchQuery>(ThrownException.ACTIF_LABEL, ThrownException.ACTIF, "10%", convertBooleanToString)
+      .of<AutomaticSearchQuery>(ThrownException.ACTIF_LABEL, ThrownException.ACTIF, 10, convertBooleanToString)
       .autocompleteEnumFilter(
         searchQuery => searchQuery.getFilter(ThrownException.ACTIF),
         new Map([

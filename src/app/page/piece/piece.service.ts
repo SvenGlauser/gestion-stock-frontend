@@ -1,13 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {SearchResult} from '../../common/search/searchResult';
+import {SearchResult} from '../../common/search/search-result';
 import {Piece} from './piece.model';
 import {map, Observable} from 'rxjs';
-import {AutomaticSearchQuery} from '../../common/search/automatic/automatic-search-query';
 import {PieceStatistique} from './statistique/piece-statistique';
 import {AutomaticSearchFieldCombinaison} from '../../common/search/automatic/automatic-search-field-combinaison';
 import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 import {PieceSearchQuery} from './piece.searchquery';
+import {PieceWithHistoriqueSearchQuery} from './piece-with-historique.searchquery';
+import {PieceWithHistorique} from './piece-with-historique.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,16 @@ export class PieceService extends GestionStockApiService<Piece> {
   }
 
   public search(searchQuery: PieceSearchQuery): Observable<SearchResult<Piece>> {
-    return this.internalSearch('search/historique', searchQuery);
+    return this.internalSearch('search', searchQuery);
+  }
+
+  public searchWithHistorique(searchQuery: PieceWithHistoriqueSearchQuery): Observable<SearchResult<PieceWithHistorique>> {
+    return this.http
+      .post<SearchResult<PieceWithHistorique>>(GestionStockApiService.separateWithSlash(this.URL, 'search/historique'), searchQuery)
+      .pipe(map(result => {
+        result.elements = result.elements.map((object: PieceWithHistorique): PieceWithHistorique => new PieceWithHistorique(object));
+        return result;
+      }))
   }
 
   public statistiques(filters: AutomaticSearchFieldCombinaison[]): Observable<PieceStatistique[]> {

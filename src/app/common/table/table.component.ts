@@ -7,6 +7,8 @@ import {
   input,
   InputSignal,
   linkedSignal,
+  model,
+  ModelSignal,
   signal,
   Signal,
   untracked,
@@ -26,7 +28,7 @@ import {
   MatTable
 } from "@angular/material/table";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
-import {SearchResult} from '../search/searchResult';
+import {SearchResult} from '../search/search-result';
 import {Column} from './column/column';
 import {debounceTime, mergeMap, Observable, of, Subject, tap} from 'rxjs';
 import {MatSort, MatSortHeader, Sort, SortDirection} from '@angular/material/sort';
@@ -55,6 +57,7 @@ import {Roles} from '../../security/roles';
 import {AuthentificationService} from '../../security/authentification.service';
 import {SearchQuery} from '../search/custom/search-query';
 import {Direction, SearchField} from '../search/api/search-field';
+import {ColumnChooserComponent} from './column-chooser/column-chooser.component';
 
 @Component({
   selector: 'app-table',
@@ -85,7 +88,8 @@ import {Direction, SearchField} from '../search/api/search-field';
     MatMenuItem,
     MatButton,
     RouterLink,
-    AutocompleteEnumComponent
+    AutocompleteEnumComponent,
+    ColumnChooserComponent
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
@@ -103,7 +107,7 @@ export class TableComponent<T extends Record<string, any>, R extends SearchQuery
 
   // Input
   public readonly title: InputSignal<string> = input("");
-  public readonly columns: InputSignal<Column<R>[]> = input.required();
+  public readonly columns: ModelSignal<Column<R>[]> = model.required();
   public readonly initSearchQueryMethod: InputSignal<() => R> = input.required();
   public readonly updateMethod: InputSignal<(searchQuery: R) => Observable<SearchResult<T>>> = input.required();
   public readonly actionColumnInfo: InputSignal<ActionColumnInfo> = input.required();
@@ -129,12 +133,15 @@ export class TableComponent<T extends Record<string, any>, R extends SearchQuery
   protected readonly tableElements: Signal<T[]> = computed((): T[] => this.data()?.elements ?? []);
 
   // Configuration table
-  protected readonly displayedColumns: Signal<string[]> = computed((): string[] => this.getColumnsToDisplay());
-  protected readonly columnsToGenerateAutomatically: Signal<Column<R>[]> = computed((): Column<R>[] => this.getColumnsToGenerateList())
+  protected readonly allColumnsToDisplayAsString: Signal<string[]> = computed((): string[] => this.getAllColumnsToDisplay());
+  protected readonly columnsToDisplay: Signal<Column<R>[]> = computed((): Column<R>[] => this.getColumnsToDisplay());
+  protected readonly columnsToGenerateAutomatically: Signal<Column<R>[]> = computed((): Column<R>[] => this.getColumnsToGenerateList());
+  protected readonly columnsWidth: Signal<number> = computed((): number => this.getColumnsWidth());
+  protected readonly actionsColumnWidth: Signal<number> = signal(10);
 
   // Configuration tri par défaut
-  private readonly firstSortableColumn: WritableSignal<Column<R> | null> = signal(null)
-  protected readonly defaultSortDirection: Signal<SortDirection> = computed((): SortDirection => this.getDefaultSortDirection())
+  private readonly firstSortableColumn: WritableSignal<Column<R> | null> = signal(null);
+  protected readonly defaultSortDirection: Signal<SortDirection> = computed((): SortDirection => this.getDefaultSortDirection());
   protected readonly defaultSortColumn: Signal<string> = computed((): string => this.getDefaultSortColumn());
 
   // Configuration de l'affichage
@@ -358,8 +365,6 @@ export class TableComponent<T extends Record<string, any>, R extends SearchQuery
       filter.clear(searchQuery);
     }
 
-    console.log(this.columns());
-
     this.filter();
   }
 
@@ -368,6 +373,20 @@ export class TableComponent<T extends Record<string, any>, R extends SearchQuery
    */
   private getColumnsToGenerateList(): Column<R>[] {
     return this.columns().filter(column => !(CustomColumn.isInstanceOf(column)));
+  }
+
+  /**
+   * Retourne la largeur totale des colonnes affichées
+   */
+  private getColumnsWidth(): number {
+    let sum: number = 0;
+
+    for (const column of this.columnsToDisplay()) {
+      sum += column.width;
+    }
+
+    sum += this.actionsColumnWidth();
+    return sum;
   }
 
   /**
@@ -499,8 +518,15 @@ export class TableComponent<T extends Record<string, any>, R extends SearchQuery
   /**
    * Récupère la liste des colonnes à afficher
    */
-  private getColumnsToDisplay(): string[] {
-    return this.columns()
+  private getColumnsToDisplay(): Column<R>[] {
+    return this.columns().filter(column => column.view);
+  }
+
+  /**
+   * Récupère la liste des colonnes à afficher en string
+   */
+  private getAllColumnsToDisplay(): string[] {
+    return this.columnsToDisplay()
       .map(column => column.field)
       .concat(this.alwaysDisplayedColumns);
   }

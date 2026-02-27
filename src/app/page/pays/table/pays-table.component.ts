@@ -4,7 +4,7 @@ import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-s
 import {TableComponent} from '../../../common/table/table.component';
 import {Observable} from 'rxjs';
 import {Column} from '../../../common/table/column/column';
-import {SearchResult} from '../../../common/search/searchResult';
+import {SearchResult} from '../../../common/search/search-result';
 import {PaysDialogComponent} from '../dialog/pays-dialog.component';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {Model} from '../../../common/model';
@@ -24,13 +24,13 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
 })
 export class PaysTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column<AutomaticSearchQuery>[] = [
+  protected columns: Column<AutomaticSearchQuery>[] = [
     ClassicColumn
-      .of<AutomaticSearchQuery>(Pays.NOM_LABEL, Pays.NOM, "45%")
+      .of<AutomaticSearchQuery>(Pays.NOM_LABEL, Pays.NOM, 45)
       .sort(searchQuery => searchQuery.getFilter(Pays.NOM))
       .inputFilter(searchQuery => searchQuery.getFilter(Pays.NOM)),
     ClassicColumn
-      .of<AutomaticSearchQuery>(Pays.ABREVIATION_LABEL, Pays.ABREVIATION, "45%")
+      .of<AutomaticSearchQuery>(Pays.ABREVIATION_LABEL, Pays.ABREVIATION, 45)
       .sort(searchQuery => searchQuery.getFilter(Pays.ABREVIATION))
       .inputFilter(searchQuery => searchQuery.getFilter(Pays.ABREVIATION)),
   ]

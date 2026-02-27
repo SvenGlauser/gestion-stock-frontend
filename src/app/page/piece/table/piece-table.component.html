@@ -1,5 +1,5 @@
 <app-table title="Inventaire"
-           [columns]="this.columns"
+           [(columns)]="this.columns"
            [initSearchQueryMethod]="this.getSearchQueryMethod.bind(this)"
            [updateMethod]="this.getUpdateMethod.bind(this)"
            [actionColumnInfo]="actionColumnInfo"
