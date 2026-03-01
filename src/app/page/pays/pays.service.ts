@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {SearchResult} from '../../common/search/searchResult';
+import {SearchResult} from '../../common/search/search-result';
 import {Pays} from './pays.model';
 import {map, Observable} from 'rxjs';
-import {SearchRequest} from '../../common/search/searchRequest';
-import {FilterType, Order} from '../../common/search/filter';
-import {FilterCombinatorType} from '../../common/search/filter-combinator';
+import {AutomaticSearchQuery} from '../../common/search/automatic/automatic-search-query';
+import {FilterCombinatorType} from '../../common/search/automatic/automatic-search-field-combinaison';
 import {GestionStockApiService} from '../../config/gestion-stock-api.service';
-import {PieceHistorique} from '../piece-historique/piece-historique.model';
+import {AutomaticSearchField, FilterType} from '../../common/search/automatic/automatic-search-field';
+import {Direction} from '../../common/search/api/search-field';
 
 @Injectable({
   providedIn: 'root'
@@ -33,24 +33,22 @@ export class PaysService extends GestionStockApiService<Pays> {
     return this.internalModify('', pays);
   }
 
-  public search(searchRequest: SearchRequest): Observable<SearchResult<Pays>> {
+  public search(searchRequest: AutomaticSearchQuery): Observable<SearchResult<Pays>> {
     return this.internalSearch('search', searchRequest);
   }
 
   public autocomplete(value: string): Observable<Pays[]> {
-    return this.search({
-      page: 0,
-      pageSize: 25,
-      combinators: [{
-        type: FilterCombinatorType.AND,
-        filters: [{
-          field: Pays.NOM,
-          value: value,
-          type: FilterType.STRING_LIKE,
-          order: Order.ASC
-        }]
-      }]
-    }).pipe(map((result: SearchResult<Pays>) => result.elements));
+    const fieldNom = new AutomaticSearchField(Pays.NOM, FilterType.STRING_LIKE);
+    fieldNom.value = value;
+    fieldNom.order = Direction.ASC
+
+    const searchQuery = new AutomaticSearchQuery([fieldNom]);
+    searchQuery.page = 0;
+    searchQuery.pageSize = 25;
+
+    return this
+      .search(searchQuery)
+      .pipe(map((result: SearchResult<Pays>) => result.elements));
   }
 
   protected override mapToClassMethod(): (object: Pays) => Pays {

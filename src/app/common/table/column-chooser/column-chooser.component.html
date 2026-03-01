@@ -1,0 +1,24 @@
+<button mat-icon-button
+        [matMenuTriggerFor]="menu"
+        (menuOpened)="this.menuOpened()"
+        (menuClosed)="this.menuClosed()">
+  <mat-icon>
+    @if (this.isMenuOpen()) {
+      close
+    } @else {
+      settings
+    }
+  </mat-icon>
+</button>
+
+<mat-menu #menu="matMenu">
+  @for (column of this.columns(); track column.field) {
+    <mat-checkbox class="checkbox"
+                  [(ngModel)]="column.view"
+                  (change)="this.changed()"
+                  (click)="$event.stopPropagation()"
+                  (keydown)="$event.stopPropagation()">
+      {{ column.label }}
+    </mat-checkbox>
+  }
+</mat-menu>

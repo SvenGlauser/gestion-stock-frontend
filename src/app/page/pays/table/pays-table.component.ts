@@ -1,17 +1,18 @@
 import {Component} from '@angular/core';
 import {PaysService} from '../pays.service';
-import {SearchRequest} from '../../../common/search/searchRequest';
+import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {TableComponent} from '../../../common/table/table.component';
 import {Observable} from 'rxjs';
 import {Column} from '../../../common/table/column/column';
-import {SearchResult} from '../../../common/search/searchResult';
-import {Order} from '../../../common/search/filter';
+import {SearchResult} from '../../../common/search/search-result';
 import {PaysDialogComponent} from '../dialog/pays-dialog.component';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {Model} from '../../../common/model';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {Pays} from '../pays.model';
 import {Roles} from '../../../security/roles';
+import {Direction} from '../../../common/search/api/search-field';
+import {AutomaticSearchField, FilterType} from '../../../common/search/automatic/automatic-search-field';
 
 @Component({
   selector: 'app-pays-table',
@@ -23,15 +24,15 @@ import {Roles} from '../../../security/roles';
 })
 export class PaysTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column[] = [
+  protected columns: Column<AutomaticSearchQuery>[] = [
     ClassicColumn
-      .of(Pays.NOM_LABEL, Pays.NOM, "45%")
-      .sort(Order.ASC)
-      .inputFilterOnSameField(),
+      .of<AutomaticSearchQuery>(Pays.NOM_LABEL, Pays.NOM, 45)
+      .sort(searchQuery => searchQuery.getFilter(Pays.NOM))
+      .inputFilter(searchQuery => searchQuery.getFilter(Pays.NOM)),
     ClassicColumn
-      .of(Pays.ABREVIATION_LABEL, Pays.ABREVIATION, "45%")
-      .sort()
-      .inputFilterOnSameField(),
+      .of<AutomaticSearchQuery>(Pays.ABREVIATION_LABEL, Pays.ABREVIATION, 45)
+      .sort(searchQuery => searchQuery.getFilter(Pays.ABREVIATION))
+      .inputFilter(searchQuery => searchQuery.getFilter(Pays.ABREVIATION)),
   ]
 
   // Définition des actions possibles
@@ -49,10 +50,25 @@ export class PaysTableComponent {
   }
 
   /**
+   * Récupère une nouvelle AutomaticSearchQuery
+   */
+  protected getSearchQueryMethod(): AutomaticSearchQuery {
+    const fieldNom = new AutomaticSearchField(Pays.NOM, FilterType.STRING_LIKE);
+    const fieldAbreviation = new AutomaticSearchField(Pays.ABREVIATION, FilterType.STRING_LIKE);
+
+    fieldNom.order = Direction.ASC;
+
+    return new AutomaticSearchQuery([
+      fieldNom,
+      fieldAbreviation,
+    ]);
+  }
+
+  /**
    * Récupère la liste à afficher dans le tableau
    * @param searchRequest SearchRequest
    */
-  protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<Pays>> {
+  protected getUpdateMethod(searchRequest: AutomaticSearchQuery): Observable<SearchResult<Pays>> {
     return this.paysService.search(searchRequest);
   }
 

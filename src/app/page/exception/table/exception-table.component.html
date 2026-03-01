@@ -1,6 +1,7 @@
 <app-table title="Liste des exceptions"
-           [columns]="this.columns"
+           [(columns)]="this.columns"
            [updateMethod]="this.getUpdateMethod.bind(this)"
+           [initSearchQueryMethod]="this.getSearchQueryMethod.bind(this)"
            [actionColumnInfo]="actionColumnInfo"
            [readAccessRole]="Roles.R_EXCEPTION_LECTEUR"
            [editAccessRole]="Roles.R_EXCEPTION_EDITEUR">

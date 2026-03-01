@@ -1,12 +1,13 @@
 import {Column} from './column';
+import {SearchQuery} from '../../search/custom/search-query';
 
-export class LinkColumn extends Column {
+export class LinkColumn<R extends SearchQuery> extends Column<R> {
   public link: (object: any) => string;
   public icon: string;
 
   protected constructor(label: string,
                         field: string,
-                        width: string,
+                        width: number,
                         link: (object: any) => string) {
     super(label, field, width);
     this.link = link;
@@ -20,10 +21,10 @@ export class LinkColumn extends Column {
    * @param width Largeur de la colonne
    * @param link Méthode de génération du lien
    */
-  public static of(label: string,
-                   field: string,
-                   width: string,
-                   link: (object: any) => string): LinkColumn {
+  public static of<R extends SearchQuery>(label: string,
+                                          field: string,
+                                          width: number,
+                                          link: (object: any) => string): LinkColumn<R> {
     return new LinkColumn(label, field, width, link);
   }
 
@@ -31,7 +32,7 @@ export class LinkColumn extends Column {
    * Indique si l'instance est une instance de LinkColumn
    * @param instance Instance à vérifier
    */
-  public static isInstanceOf(instance: Column): boolean {
+  public static isInstanceOf<R extends SearchQuery>(instance: Column<R>): boolean {
     return instance instanceof LinkColumn;
   }
 
@@ -39,7 +40,7 @@ export class LinkColumn extends Column {
    * Cast l'instance en LinkColumn
    * @param instance Instance à vérifier
    */
-  public static cast(instance: Column): LinkColumn | null {
+  public static cast<R extends SearchQuery>(instance: Column<R>): LinkColumn<R> | null {
     if (instance instanceof LinkColumn) {
       return instance;
     }

@@ -1,9 +1,9 @@
 import {Component, input, InputSignal, Signal, viewChild} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
-import {SearchRequest} from '../../../common/search/searchRequest';
+import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {map, mergeMap, Observable, of, tap} from 'rxjs';
-import {SearchResult} from '../../../common/search/searchResult';
+import {SearchResult} from '../../../common/search/search-result';
 import {TableComponent} from '../../../common/table/table.component';
 import {PieceDialogComponent} from '../dialog/piece-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
@@ -14,6 +14,7 @@ import {ConfirmationDialogComponent} from '../../../common/confirmation-dialog/c
 import {Piece} from '../piece.model';
 import {Model} from '../../../common/model';
 import {Roles} from '../../../security/roles';
+import {PieceSearchQuery} from '../piece.searchquery';
 
 @Component({
   selector: 'app-piece-light-table',
@@ -25,15 +26,15 @@ import {Roles} from '../../../security/roles';
 })
 export class PieceLightTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column[] = [
+  protected columns: Column<PieceSearchQuery>[] = [
     ClassicColumn
-      .of(Piece.NUMERO_INVENTAIRE_LABEL, Piece.NUMERO_INVENTAIRE, "10%"),
+      .of(Piece.NUMERO_INVENTAIRE_LABEL, Piece.NUMERO_INVENTAIRE, 10),
     ClassicColumn
-      .of(Piece.NOM_LABEL, Piece.NOM, "25%"),
+      .of(Piece.NOM_LABEL, Piece.NOM, 25),
     ClassicColumn
-      .of(Piece.DESCRIPTION_LABEL, Piece.DESCRIPTION, "30%"),
+      .of(Piece.DESCRIPTION_LABEL, Piece.DESCRIPTION, 30),
     ClassicColumn
-      .of(Piece.CATEGORIE_LABEL, Piece.CATEGORIE_NOM, "25%"),
+      .of(Piece.CATEGORIE_LABEL, Piece.CATEGORIE_NOM, 25),
   ]
 
   // Définition des actions possibles
@@ -51,19 +52,26 @@ export class PieceLightTableComponent {
   };
 
   public readonly machine: InputSignal<Machine> = input.required();
-  public readonly table: Signal<TableComponent<Piece>> = viewChild.required<TableComponent<Piece>>(TableComponent);
+  public readonly table: Signal<TableComponent<Piece, PieceSearchQuery>> = viewChild.required<TableComponent<Piece, PieceSearchQuery>>(TableComponent);
 
   constructor(private readonly machineService: MachineService,
               private readonly matDialog: MatDialog) {
   }
 
   /**
-   * Récupère la liste à afficher dans le tableau
-   * @param searchRequest SearchRequest
+   * Récupère une nouvelle PieceSearchQuery
    */
-  protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<Piece>> {
-    const page: number = searchRequest.page ?? 0;
-    const pageSize: number = searchRequest.pageSize ?? 10;
+  protected getSearchQueryMethod(): PieceSearchQuery {
+    return new PieceSearchQuery();
+  }
+
+  /**
+   * Récupère la liste à afficher dans le tableau
+   * @param searchQuery PieceSearchQuery
+   */
+  protected getUpdateMethod(searchQuery: PieceSearchQuery): Observable<SearchResult<Piece>> {
+    const page: number = searchQuery.page ?? 0;
+    const pageSize: number = searchQuery.pageSize ?? 10;
     const orignalPiecesList: Piece[] = this.machine().pieces ?? [];
 
     let pieces: Piece[] = [...(this.machine().pieces ?? [])].sort((a, b) => a.numeroInventaire!.localeCompare(b.numeroInventaire!));

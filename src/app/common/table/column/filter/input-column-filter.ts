@@ -1,29 +1,29 @@
 import {ColumnFilter} from "./column-filter";
-import {FilterType} from "../../../search/filter";
+import {SearchQuery} from '../../../search/custom/search-query';
+import {SearchField} from '../../../search/api/search-field';
 
 /**
  * Filtre avec un simple input
  */
-export class InputFilter extends ColumnFilter {
+export class InputFilter<T, R extends SearchQuery> extends ColumnFilter<T, R> {
 
-  constructor(filterField: any, filterValue: any) {
-    super(filterField, filterValue, FilterType.STRING_LIKE);
+  constructor(fieldGetter: (searchQuery: R) => (SearchField<any> | null)) {
+    super(fieldGetter);
   }
 
   /**
    * Instancie un filtre avec input
-   * @param filterField Champ de filtre
-   * @param filterValue Valeur initiale [initial = null]
+   * @param fieldGetter Getter pour récupérer le champ de recherche dans la SearchQuery
    */
-  public static of(filterField: any, filterValue: any = null): InputFilter {
-    return new InputFilter(filterField, filterValue);
+  public static of<T, R extends SearchQuery>(fieldGetter: (searchQuery: R) => (SearchField<any> | null)): InputFilter<T, R> {
+    return new InputFilter(fieldGetter);
   }
 
   /**
    * Vérifie si l'objet passé en paramètre est de la class InputFilter
    * @param columnFilter ColumnFilter
    */
-  public static isInstanceOf(columnFilter: ColumnFilter): boolean {
+  public static isInstanceOf(columnFilter: ColumnFilter<any, any>): boolean {
     return columnFilter instanceof InputFilter;
   }
 
@@ -32,7 +32,7 @@ export class InputFilter extends ColumnFilter {
    * @param columnFilter ColumnFilter
    * @return L'objet dans la bonne instance de class
    */
-  public static cast(columnFilter: ColumnFilter): InputFilter | null {
+  public static cast(columnFilter: ColumnFilter<any, any>): InputFilter<any, any> | null {
     if (columnFilter instanceof InputFilter) {
       return columnFilter;
     }
@@ -41,6 +41,6 @@ export class InputFilter extends ColumnFilter {
   }
 
   public override getValue(): any {
-    return this.filterValue;
+    return this.value;
   }
 }

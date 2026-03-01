@@ -1,31 +1,25 @@
-import {FilterType} from '../../../search/filter';
 import {ColumnFilter} from './column-filter';
+import {SearchQuery} from '../../../search/custom/search-query';
+import {SearchField} from '../../../search/api/search-field';
 
 /**
  * Filtre avec autocompletion
  */
-export class AutocompleteEnumFilter extends ColumnFilter {
+export class AutocompleteEnumFilter<T, R extends SearchQuery> extends ColumnFilter<T, R> {
   public mapOfElements: Map<any, string>;
 
-  private constructor(filterField: string,
-                      filterValue: any) {
-
-    super(filterField, filterValue, FilterType.EQUAL);
+  constructor(fieldGetter: (searchQuery: R) => (SearchField<any> | null)) {
+    super(fieldGetter);
 
     this.mapOfElements = new Map<any, string>();
   }
 
   /**
    * Instancie un filtre avec l'autocomplétion pour une énumération
-   * @param filterField Champ
-   * @param filterValue Valeur initiale [initial = null]
+   * @param fieldGetter Getter pour récupérer le champ de recherche
    */
-  public static of(filterField: string,
-                   filterValue: any = null): AutocompleteEnumFilter {
-    return new AutocompleteEnumFilter(
-      filterField,
-      filterValue,
-    );
+  public static of<T, R extends SearchQuery>(fieldGetter: (searchQuery: R) => (SearchField<any> | null)): AutocompleteEnumFilter<T, R> {
+    return new AutocompleteEnumFilter(fieldGetter);
   }
 
   /**
@@ -43,7 +37,7 @@ export class AutocompleteEnumFilter extends ColumnFilter {
    * Vérifie si l'objet passé en paramètre est de la class AutocompleteFilter
    * @param columnFilter ColumnFilter
    */
-  public static isInstanceOf(columnFilter: ColumnFilter): boolean {
+  public static isInstanceOf(columnFilter: ColumnFilter<any, any>): boolean {
     return columnFilter instanceof AutocompleteEnumFilter;
   }
 
@@ -52,7 +46,7 @@ export class AutocompleteEnumFilter extends ColumnFilter {
    * @param columnFilter ColumnFilter
    * @return L'objet dans la bonne instance de class
    */
-  public static cast(columnFilter: ColumnFilter): AutocompleteEnumFilter | null {
+  public static cast(columnFilter: ColumnFilter<any, any>): AutocompleteEnumFilter<any, any> | null {
     if (columnFilter instanceof AutocompleteEnumFilter) {
       return columnFilter;
     }
@@ -61,6 +55,6 @@ export class AutocompleteEnumFilter extends ColumnFilter {
   }
 
   public override getValue(): any {
-    return this.filterValue;
+    return this.value;
   }
 }

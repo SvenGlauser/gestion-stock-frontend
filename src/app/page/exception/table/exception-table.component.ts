@@ -1,15 +1,14 @@
 import {Component, Signal, viewChild} from '@angular/core';
 import {ExceptionService} from '../exception.service';
-import {SearchRequest} from '../../../common/search/searchRequest';
+import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {TableComponent} from '../../../common/table/table.component';
 import {map, Observable} from 'rxjs';
 import {Column} from '../../../common/table/column/column';
-import {SearchResult} from '../../../common/search/searchResult';
+import {SearchResult} from '../../../common/search/search-result';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
 import {convertBooleanToString} from '../../../common/utils/lambda.utils';
-import {Order} from '../../../common/search/filter';
 import {CustomColumn} from '../../../common/table/column/custom-column';
 import {Machine} from '../../machine/machine.model';
 import {
@@ -27,6 +26,8 @@ import {DateColumn} from '../../../common/table/column/date-column';
 import {ThrownException} from '../exception.model';
 import {Model} from '../../../common/model';
 import {Roles} from '../../../security/roles';
+import {Direction} from '../../../common/search/api/search-field';
+import {AutomaticSearchField, FilterType} from '../../../common/search/automatic/automatic-search-field';
 
 @Component({
   selector: 'app-exception-table',
@@ -47,26 +48,29 @@ import {Roles} from '../../../security/roles';
 })
 export class ExceptionTableComponent {
   // Définition des colonnes
-  protected readonly columns: Column[] = [
+  protected columns: Column<AutomaticSearchQuery>[] = [
     CustomColumn
-      .of("", ThrownException.ROW_EXTENDER, "5%"),
+      .of<AutomaticSearchQuery>("", ThrownException.ROW_EXTENDER, 5),
     ClassicColumn
-      .of(ThrownException.CLASS_NAME_LABEL, ThrownException.CLASS_NAME, "35%")
-      .inputFilterOnSameField()
-      .sort(),
+      .of<AutomaticSearchQuery>(ThrownException.CLASS_NAME_LABEL, ThrownException.CLASS_NAME, 35)
+      .inputFilter(searchQuery => searchQuery.getFilter(ThrownException.CLASS_NAME))
+      .sort(searchQuery => searchQuery.getFilter(ThrownException.CLASS_NAME)),
     ClassicColumn
-      .of(ThrownException.MESSAGE_LABEL, ThrownException.MESSAGE, "25%")
-      .inputFilterOnSameField(),
+      .of<AutomaticSearchQuery>(ThrownException.MESSAGE_LABEL, ThrownException.MESSAGE, 25)
+      .inputFilter(searchQuery => searchQuery.getFilter(ThrownException.MESSAGE))
+      .sort(searchQuery => searchQuery.getFilter(ThrownException.MESSAGE)),
     DateColumn
-      .of(ThrownException.TIMESTAMP_LABEL, ThrownException.TIMESTAMP, "15%")
+      .of<AutomaticSearchQuery>(ThrownException.TIMESTAMP_LABEL, ThrownException.TIMESTAMP, 15)
       .withTime()
-      .sort(Order.DESC),
+      .sort(searchQuery => searchQuery.getFilter(ThrownException.TIMESTAMP)),
     MethodColumn
-      .of(ThrownException.ACTIF_LABEL, ThrownException.ACTIF, "10%", convertBooleanToString)
-      .autocompleteEnumFilter(ThrownException.ACTIF, new Map([
-        [true, "Oui"],
-        [false, "Non"],
-      ]), true)
+      .of<AutomaticSearchQuery>(ThrownException.ACTIF_LABEL, ThrownException.ACTIF, 10, convertBooleanToString)
+      .autocompleteEnumFilter(
+        searchQuery => searchQuery.getFilter(ThrownException.ACTIF),
+        new Map([
+          [true, "Oui"],
+          [false, "Non"],
+        ]))
   ]
 
   // Définition des actions possibles
@@ -92,7 +96,7 @@ export class ExceptionTableComponent {
   };
 
   // Utilisé pour udpate la dataTable
-  private readonly matTable: Signal<TableComponent<Machine>> = viewChild.required<TableComponent<Machine>>(TableComponent);
+  private readonly matTable: Signal<TableComponent<Machine, AutomaticSearchQuery>> = viewChild.required<TableComponent<Machine, AutomaticSearchQuery>>(TableComponent);
 
   protected extendedRowId: number | null = null;
 
@@ -122,10 +126,30 @@ export class ExceptionTableComponent {
   }
 
   /**
+   * Récupère une nouvelle AutomaticSearchQuery
+   */
+  protected getSearchQueryMethod(): AutomaticSearchQuery {
+    const fieldClassName = new AutomaticSearchField(ThrownException.CLASS_NAME, FilterType.STRING_LIKE);
+    const fieldMessage = new AutomaticSearchField(ThrownException.MESSAGE, FilterType.STRING_LIKE);
+    const fieldTimestamp = new AutomaticSearchField(ThrownException.TIMESTAMP, FilterType.EQUAL);
+    const fieldActif = new AutomaticSearchField(ThrownException.ACTIF, FilterType.EQUAL);
+
+    fieldActif.value = true;
+    fieldTimestamp.order = Direction.DESC;
+
+    return new AutomaticSearchQuery([
+      fieldClassName,
+      fieldMessage,
+      fieldTimestamp,
+      fieldActif,
+    ]);
+  }
+
+  /**
    * Récupère la liste à afficher dans le tableau
    * @param searchRequest SearchRequest
    */
-  protected getUpdateMethod(searchRequest: SearchRequest): Observable<SearchResult<ThrownException>> {
+  protected getUpdateMethod(searchRequest: AutomaticSearchQuery): Observable<SearchResult<ThrownException>> {
     return this.exceptionService.search(searchRequest);
   }
 

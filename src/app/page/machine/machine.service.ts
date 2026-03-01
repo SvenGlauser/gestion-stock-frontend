@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {SearchResult} from '../../common/search/searchResult';
+import {SearchResult} from '../../common/search/search-result';
 import {Machine} from './machine.model';
 import {map, Observable} from 'rxjs';
-import {SearchRequest} from '../../common/search/searchRequest';
-import {FilterType, Order} from '../../common/search/filter';
-import {FilterCombinatorType} from '../../common/search/filter-combinator';
+import {AutomaticSearchQuery} from '../../common/search/automatic/automatic-search-query';
 import {GestionStockApiService} from '../../config/gestion-stock-api.service';
+import {AutomaticSearchField, FilterType} from '../../common/search/automatic/automatic-search-field';
+import {Direction} from '../../common/search/api/search-field';
 
 @Injectable({
   providedIn: 'root'
@@ -32,24 +32,22 @@ export class MachineService extends GestionStockApiService<Machine> {
     return this.internalModify('', machine);
   }
 
-  public search(searchRequest: SearchRequest): Observable<SearchResult<Machine>> {
+  public search(searchRequest: AutomaticSearchQuery): Observable<SearchResult<Machine>> {
     return this.internalSearch('search', searchRequest);
   }
 
   public autocomplete(value: string): Observable<Machine[]> {
-    return this.search({
-      page: 0,
-      pageSize: 25,
-      combinators: [{
-        type: FilterCombinatorType.AND,
-        filters: [{
-          field: Machine.NOM,
-          value: value,
-          type: FilterType.STRING_LIKE,
-          order: Order.ASC
-        }]
-      }]
-    }).pipe(map((result: SearchResult<Machine>) => result.elements));
+    const fieldNom = new AutomaticSearchField(Machine.NOM, FilterType.STRING_LIKE);
+    fieldNom.value = value;
+    fieldNom.order = Direction.ASC
+
+    const searchQuery = new AutomaticSearchQuery([fieldNom]);
+    searchQuery.page = 0;
+    searchQuery.pageSize = 25;
+
+    return this
+      .search(searchQuery)
+      .pipe(map((result: SearchResult<Machine>) => result.elements));
   }
 
   protected override mapToClassMethod(): (object: Machine) => Machine {

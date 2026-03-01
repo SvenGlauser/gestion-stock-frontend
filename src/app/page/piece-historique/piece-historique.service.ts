@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {SearchResult} from '../../common/search/searchResult';
+import {SearchResult} from '../../common/search/search-result';
 import {PieceHistorique} from './piece-historique.model';
 import {map, Observable} from 'rxjs';
-import {SearchRequest} from '../../common/search/searchRequest';
+import {AutomaticSearchQuery} from '../../common/search/automatic/automatic-search-query';
 import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class PieceHistoriqueService extends GestionStockApiService<PieceHistoriq
     return this.internalGet('', id);
   }
 
-  public search(searchRequest: SearchRequest): Observable<SearchResult<PieceHistorique>> {
+  public search(searchRequest: AutomaticSearchQuery): Observable<SearchResult<PieceHistorique>> {
     return this.internalSearch('search', searchRequest);
   }
 

@@ -2,11 +2,12 @@
   <div class="header">
     <h2>{{ this.title() }}</h2>
 
-    @if (this.actionColumnInfo().created && this.haveEditAccessRole()) {
       <div class="header-actions">
-        <button mat-flat-button (click)="openDialog(null, DialogType.CREATE)">Créer</button>
+        @if (this.actionColumnInfo().created && this.haveEditAccessRole()) {
+          <button mat-flat-button (click)="this.openDialog(null, DialogType.CREATE)">Créer</button>
+        }
+        <app-column-chooser [(columns)]="this.columns"/>
       </div>
-    }
   </div>
 }
 
@@ -30,13 +31,13 @@
         <th mat-header-cell
             *matHeaderCellDef
             [mat-sort-header]="column.field"
-            [disabled]="!column.sortable"
-            [style.width]="column.width">
+            [disabled]="!column.isSortable()"
+            [style.width]="column.width*100/this.columnsWidth() + '%'">
           {{ column.label }}
         </th>
         <td mat-cell
             *matCellDef="let element"
-            [style.width]="column.width">
+            [style.width]="column.width*100/this.columnsWidth() + '%'">
           @if (LinkColumn.isInstanceOf(column)) {
             @if (column.getValue(element)) {
               @if (column.getValue(element).startsWith('http')) {
@@ -68,7 +69,7 @@
     <ng-container [matColumnDef]="'actions'">
       <th mat-header-cell
           *matHeaderCellDef
-          [style.width]="'10%'"
+          [style.width]="this.actionsColumnWidth()*100/this.columnsWidth() + '%'"
           [style.text-align]="'right'">
         @if (this.viewFilter()) {
           <button mat-icon-button
@@ -120,16 +121,16 @@
     <ng-container [matColumnDef]="'filters'">
       <th mat-header-cell
           *matHeaderCellDef
-          [colSpan]="this.displayedColumns().length"
+          [colSpan]="this.allColumnsToDisplayAsString().length"
           class="filters-cell">
 
-        @for (column of columns(); track column.field) {
-          <div [style.width]="column.width">
-            @for (columnFilter of column.filters; track columnFilter.filterField) {
+        @for (column of this.columnsToDisplay(); track column.field) {
+          <div [style.width]="column.width*100/this.columnsWidth() + '%'">
+            @for (columnFilter of column.filters; track columnFilter) {
               @if (InputFilter.isInstanceOf(columnFilter)) {
                 <mat-form-field>
                   <input matInput
-                         [(ngModel)]="columnFilter.filterValue"
+                         [(ngModel)]="columnFilter.value"
                          (input)="filter()">
                 </mat-form-field>
               } @else if (AutocompleteFilter.isInstanceOf(columnFilter)) {
@@ -137,18 +138,18 @@
                   [autocompleteMethod]="AutocompleteFilter.cast(columnFilter)!.autocompleteMethod"
                   [autocompleteIdField]="AutocompleteFilter.cast(columnFilter)!.autocompleteIdField"
                   [autocompleteNameField]="AutocompleteFilter.cast(columnFilter)!.autocompleteNameField"
-                  [(value)]="columnFilter.filterValue"
+                  [(value)]="columnFilter.value"
                   (valueChange)="filter()"/>
               } @else if (AutocompleteEnumFilter.isInstanceOf(columnFilter)) {
                 <app-autocomplete-enum
                   [mapOfElements]="AutocompleteEnumFilter.cast(columnFilter)!.mapOfElements"
-                  [(value)]="columnFilter.filterValue"
+                  [(value)]="columnFilter.value"
                   (valueChange)="filter()"/>
               }
             }
           </div>
         }
-        <div [style.width]="'10%'"
+        <div [style.width]="this.actionsColumnWidth()*100/this.columnsWidth() + '%'"
              [style.text-align]="'right'">
           <button mat-icon-button
                   (click)="this.clearAllFilters()">
@@ -160,19 +161,19 @@
 
     <ng-content></ng-content>
 
-    <tr mat-header-row *matHeaderRowDef="this.displayedColumns()"></tr>
+    <tr mat-header-row *matHeaderRowDef="this.allColumnsToDisplayAsString()"></tr>
     <tr mat-header-row
         *matHeaderRowDef="['filters']"
         [ngClass]="{'closed': !this.viewFilter()}"></tr>
 
     @if (this.actionColumnInfo().clicOnLine) {
       <tr mat-row
-          *matRowDef="let row; columns: this.displayedColumns();"
+          *matRowDef="let row; columns: this.allColumnsToDisplayAsString();"
           class="mat-row-clickable"
           (keydown.enter)="openDialog(row, DialogType.READ)"
           (click)="openDialog(row, DialogType.READ)"></tr>
     } @else {
-      <tr mat-row *matRowDef="let ignored; columns: this.displayedColumns();"></tr>
+      <tr mat-row *matRowDef="let _; columns: this.allColumnsToDisplayAsString();"></tr>
     }
   </table>
   @if (this.tableLength() === 0) {

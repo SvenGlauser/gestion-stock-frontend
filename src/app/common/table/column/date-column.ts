@@ -1,7 +1,8 @@
 import {Column} from './column';
 import {getValueFromAttributeInCascade} from '../../utils/function.utils';
+import {SearchQuery} from '../../search/custom/search-query';
 
-export class DateColumn extends Column {
+export class DateColumn<R extends SearchQuery> extends Column<R> {
   private time: boolean = false;
 
   /**
@@ -10,7 +11,7 @@ export class DateColumn extends Column {
    * @param field Nom du champ
    * @param width Largeur de la colonne
    */
-  public static of(label: string, field: string, width: string): DateColumn {
+  public static of<R extends SearchQuery>(label: string, field: string, width: number): DateColumn<R> {
     return new DateColumn(label, field, width)
   }
 

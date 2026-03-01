@@ -1,5 +1,6 @@
 <app-table title="Liste des pays"
-           [columns]="this.columns"
+           [(columns)]="this.columns"
+           [initSearchQueryMethod]="this.getSearchQueryMethod.bind(this)"
            [updateMethod]="this.getUpdateMethod.bind(this)"
            [actionColumnInfo]="actionColumnInfo"
            [readAccessRole]="Roles.R_PAYS_LECTEUR"
