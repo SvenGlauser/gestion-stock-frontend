@@ -10,7 +10,7 @@ export abstract class GestionStockApiService<T extends Record<string, any>> {
   protected readonly URL: string;
 
   protected constructor(protected http: HttpClient, url: string) {
-    this.URL = GestionStockApiService.separateWithSlash(buildUrlFromInterface(environment.api), url);
+    this.URL = GestionStockApiService.separateWithSlash(buildUrlFromInterface(environment.api), "api", "v1", url);
   }
 
   protected internalGet(url: string, id: number): Observable<T> {

@@ -7,6 +7,7 @@ import {MatDrawer, MatDrawerContainer, MatSidenavModule} from '@angular/material
 import {MenuComponent} from './menu/menu.component';
 import {AuthentificationService} from './security/authentification.service';
 import {ProfilComponent} from './layout/profil/profil.component';
+import {LayoutService} from './layout/service/layout.service';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,8 @@ import {ProfilComponent} from './layout/profil/profil.component';
 export class AppComponent {
   protected isLoggedIn: Signal<boolean> = computed((): boolean => this.authentificationService.authenticated());
 
-  constructor(private readonly authentificationService: AuthentificationService) {}
+  constructor(private readonly authentificationService: AuthentificationService,
+              protected readonly layoutService: LayoutService) {}
 
   protected login(): void {
     this.authentificationService.login();

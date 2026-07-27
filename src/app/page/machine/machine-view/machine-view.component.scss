@@ -1,0 +1,49 @@
+:host {
+  display: block;
+
+  --piece-light-table-box-shadow: none;
+}
+
+.fiche-machine {
+  display: grid;
+  grid-template-columns: min(100px, 20%) min(250px, 20%) min(100px, 20%) auto;
+  grid-gap: 10px 20px;
+  align-items: center;
+
+  padding: 10px 20px;
+
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+
+  &>div>* {
+    width: 100%;
+  }
+
+  .label {
+    font-weight: bold;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+
+  h3 {
+    font: var(--mat-sys-title-large);
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    button {
+      box-shadow: var(--mat-sys-level2);
+    }
+  }
+}

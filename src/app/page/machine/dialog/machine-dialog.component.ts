@@ -38,6 +38,9 @@ export class MachineDialogComponent extends AbstractFormDialogComponent<MachineD
         InputFormField
           .ofValue(Machine.NOM_LABEL, Machine.NOM)
           .setColspan(2),
+        InputFormField
+          .ofValue(Machine.NUMERO_CHASSIS_LABEL, Machine.NUMERO_CHASSIS)
+          .setColspan(2),
         TextAreaFormField
           .ofValue(Machine.DESCRIPTION_LABEL, Machine.DESCRIPTION)
           .setColspan(2),

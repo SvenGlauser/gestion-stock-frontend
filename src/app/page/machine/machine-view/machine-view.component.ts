@@ -1,0 +1,139 @@
+import {
+  Component,
+  DestroyRef,
+  effect,
+  ElementRef,
+  Signal,
+  signal,
+  viewChild,
+  viewChildren,
+  WritableSignal
+} from '@angular/core';
+import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
+import {Roles} from '../../../security/roles';
+import {LayoutService} from '../../../layout/service/layout.service';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ActivatedRoute, ParamMap} from '@angular/router';
+import {Identite} from '../../identite/identite.model';
+import {Machine} from '../machine.model';
+import {MachineService} from '../machine.service';
+import {Adresse} from '../../adresse/adresse';
+import {FormsModule} from '@angular/forms';
+import {MatFormField, MatInput} from '@angular/material/input';
+import {DialogData, DialogType} from '../../../common/form/dialog/dialog-data';
+import {MatDialog} from '@angular/material/dialog';
+import {MachineDialogComponent} from '../dialog/machine-dialog.component';
+import {MatTab, MatTabGroup} from '@angular/material/tabs';
+import {PieceLightTableComponent} from '../../piece/table-light/piece-light-table.component';
+import {PieceSelectionDialogComponent} from '../../piece/selection-dialog/piece-selection-dialog.component';
+import {MatButton} from '@angular/material/button';
+
+@Component({
+  selector: 'app-machine-view',
+  imports: [
+    FormsModule,
+    MatFormField,
+    MatInput,
+    MatTabGroup,
+    MatTab,
+    PieceLightTableComponent,
+    MatButton
+  ],
+  templateUrl: './machine-view.component.html',
+  styleUrl: './machine-view.component.scss',
+})
+export class MachineViewComponent extends AbstractProtectedComponent {
+
+  protected readonly Adresse = Adresse;
+
+  private readonly currentMachineId: WritableSignal<number | null> = signal<number | null>(null);
+
+  protected readonly proprietaire: WritableSignal<Identite | null> = signal<Identite | null>(null);
+  protected readonly machine: WritableSignal<Machine | null> = signal<Machine | null>(null);
+
+  protected readonly resetFocus: Signal<ElementRef | undefined> = viewChild('resetFocus', {read: ElementRef})
+
+  private readonly piecesLightsTables: Signal<readonly PieceLightTableComponent[]> = viewChildren<PieceLightTableComponent>(PieceLightTableComponent);
+
+  constructor(private readonly machineService: MachineService,
+              private readonly layoutService: LayoutService,
+              private readonly destroyRef: DestroyRef,
+              private readonly route: ActivatedRoute,
+              private readonly matDialog: MatDialog) {
+    super();
+
+    layoutService.isView.set(true);
+    destroyRef.onDestroy(() => layoutService.isView.set(false));
+
+    this.route
+      .paramMap
+      .pipe(takeUntilDestroyed())
+      .subscribe((params: ParamMap) => {
+        this.currentMachineId.set(Number.parseInt(params.get('id') ?? ""));
+      });
+
+    effect(() => {
+      this.updateMachine();
+    })
+  }
+
+  private updateMachine(): void {
+    const currentMachineId: number | null = this.currentMachineId();
+
+    if (currentMachineId) {
+      this.machineService.get(currentMachineId).subscribe(machine => {
+        this.machine.set(machine);
+        this.proprietaire.set(machine.proprietaire);
+      })
+    } else {
+      this.machine.set(null);
+      this.proprietaire.set(null);
+    }
+  }
+
+  protected override readAccess(): Roles {
+    return Roles.R_MACHINE_LECTEUR;
+  }
+
+  protected override editAccess(): Roles {
+    return Roles.R_MACHINE_EDITEUR;
+  }
+
+  protected linkPiece(): void {
+    const dialogRef = this.matDialog.open(PieceSelectionDialogComponent, {
+      maxWidth: 1000,
+      data: this.currentMachineId(),
+    });
+
+    dialogRef.afterClosed().subscribe(modification => {
+      if (modification) {
+        this.updateMachine();
+
+        for (const table of this.piecesLightsTables()) {
+          if (table.machine().id === this.machine()?.id) {
+            table.table().update();
+          }
+        }
+      }
+    });
+  }
+
+  protected editMachine(): void {
+    const dialogRef = this.matDialog.open(MachineDialogComponent, {
+      maxWidth: 1000,
+      data: <DialogData>{
+        type: DialogType.MODIFY,
+        id: this.currentMachineId(),
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(modification => {
+      if (modification) {
+        this.updateMachine();
+      }
+
+      console.log(this.resetFocus())
+      this.resetFocus()?.nativeElement.focus();
+    });
+  }
+}
