@@ -17,7 +17,8 @@
                   [(ngModel)]="column.view"
                   (change)="this.changed()"
                   (click)="$event.stopPropagation()"
-                  (keydown)="$event.stopPropagation()">
+                  (keydown)="$event.stopPropagation()"
+                  [disabled]="column.view && this.isUnselectImpossible()" >
       {{ column.label }}
     </mat-checkbox>
   }
