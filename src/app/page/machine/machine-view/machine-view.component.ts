@@ -1,14 +1,4 @@
-import {
-  Component,
-  DestroyRef,
-  effect,
-  ElementRef,
-  Signal,
-  signal,
-  viewChild,
-  viewChildren,
-  WritableSignal
-} from '@angular/core';
+import {Component, DestroyRef, effect, ElementRef, Signal, signal, viewChild, WritableSignal} from '@angular/core';
 import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
 import {Roles} from '../../../security/roles';
 import {LayoutService} from '../../../layout/service/layout.service';
@@ -17,16 +7,13 @@ import {ActivatedRoute, ParamMap} from '@angular/router';
 import {Identite} from '../../identite/identite.model';
 import {Machine} from '../machine.model';
 import {MachineService} from '../machine.service';
-import {Adresse} from '../../adresse/adresse';
 import {FormsModule} from '@angular/forms';
 import {MatFormField, MatInput} from '@angular/material/input';
 import {DialogData, DialogType} from '../../../common/form/dialog/dialog-data';
 import {MatDialog} from '@angular/material/dialog';
 import {MachineDialogComponent} from '../dialog/machine-dialog.component';
 import {MatTab, MatTabGroup} from '@angular/material/tabs';
-import {PieceLightTableComponent} from '../../piece/table-light/piece-light-table.component';
-import {PieceSelectionDialogComponent} from '../../piece/selection-dialog/piece-selection-dialog.component';
-import {MatButton} from '@angular/material/button';
+import {MachineViewPieceComponent} from './machine-view-piece/machine-view-piece.component';
 
 @Component({
   selector: 'app-machine-view',
@@ -36,24 +23,19 @@ import {MatButton} from '@angular/material/button';
     MatInput,
     MatTabGroup,
     MatTab,
-    PieceLightTableComponent,
-    MatButton
+    MachineViewPieceComponent,
   ],
   templateUrl: './machine-view.component.html',
   styleUrl: './machine-view.component.scss',
 })
 export class MachineViewComponent extends AbstractProtectedComponent {
 
-  protected readonly Adresse = Adresse;
-
   private readonly currentMachineId: WritableSignal<number | null> = signal<number | null>(null);
 
   protected readonly proprietaire: WritableSignal<Identite | null> = signal<Identite | null>(null);
-  protected readonly machine: WritableSignal<Machine | null> = signal<Machine | null>(null);
+  protected machine: WritableSignal<Machine | null> = signal<Machine | null>(null);
 
   protected readonly resetFocus: Signal<ElementRef | undefined> = viewChild('resetFocus', {read: ElementRef})
-
-  private readonly piecesLightsTables: Signal<readonly PieceLightTableComponent[]> = viewChildren<PieceLightTableComponent>(PieceLightTableComponent);
 
   constructor(private readonly machineService: MachineService,
               private readonly layoutService: LayoutService,
@@ -97,25 +79,6 @@ export class MachineViewComponent extends AbstractProtectedComponent {
 
   protected override editAccess(): Roles {
     return Roles.R_MACHINE_EDITEUR;
-  }
-
-  protected linkPiece(): void {
-    const dialogRef = this.matDialog.open(PieceSelectionDialogComponent, {
-      maxWidth: 1000,
-      data: this.currentMachineId(),
-    });
-
-    dialogRef.afterClosed().subscribe(modification => {
-      if (modification) {
-        this.updateMachine();
-
-        for (const table of this.piecesLightsTables()) {
-          if (table.machine().id === this.machine()?.id) {
-            table.table().update();
-          }
-        }
-      }
-    });
   }
 
   protected editMachine(): void {

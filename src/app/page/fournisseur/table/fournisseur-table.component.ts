@@ -37,7 +37,7 @@ export class FournisseurTableComponent {
     LinkColumn
       .of<AutomaticSearchQuery>(Fournisseur.URL_LABEL, Fournisseur.URL, 15, (fournisseur: Fournisseur) => fournisseur.url ?? ""),
     MethodColumn
-      .of<AutomaticSearchQuery>(Fournisseur.ADRESSE_LABEL, Fournisseur.IDENTITE_ADRESSE, 25, Adresse.adresseToString)
+      .of<AutomaticSearchQuery>(Fournisseur.ADRESSE_LABEL, Fournisseur.IDENTITE_ADRESSE, 25, adresse => adresse?.adresseToString())
       .setStylePreWrap(),
   ]
 

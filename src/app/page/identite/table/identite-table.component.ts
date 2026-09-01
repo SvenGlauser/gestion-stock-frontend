@@ -47,7 +47,7 @@ export class IdentiteTableComponent {
       .sort(searchQuery => searchQuery.getFilter(IdentiteLight.TELEPHONE))
       .inputFilter(searchQuery => searchQuery.getFilter(IdentiteLight.TELEPHONE)),
     MethodColumn
-      .of<AutomaticSearchQuery>(IdentiteLight.ADRESSE_LABEL, IdentiteLight.ADRESSE, 20, Adresse.adresseToString)
+      .of<AutomaticSearchQuery>(IdentiteLight.ADRESSE_LABEL, IdentiteLight.ADRESSE, 20, adresse => adresse?.adresseToString())
       .setStylePreWrap(),
     LinkColumn
       .of<AutomaticSearchQuery>(IdentiteLight.MACHINES_LABEL, IdentiteLight.MACHINES, 10, (identite: IdentiteLight) => {

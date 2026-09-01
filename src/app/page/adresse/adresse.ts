@@ -26,32 +26,28 @@ export class Adresse {
     }
   }
 
-  public static adresseToString(adresse: Adresse | null): string {
-    if (!adresse) {
-      return "";
-    }
-
+  public adresseToString(): string {
     let adresseString = "";
 
-    if (adresse.rue) {
-      adresseString = adresseString.concat(adresse.rue, " ");
+    if (this.rue) {
+      adresseString = adresseString.concat(this.rue, " ");
     }
 
-    if (adresse.numero) {
-      adresseString = adresseString.concat(adresse.numero);
+    if (this.numero) {
+      adresseString = adresseString.concat(this.numero);
     }
 
-    if (adresse.localite) {
+    if (this.localite) {
       if (adresseString) {
         adresseString = adresseString.concat("\n")
       }
 
-      if (adresse.localite.npa) {
-        adresseString = adresseString.concat(adresse.localite.npa, " ");
+      if (this.localite.npa) {
+        adresseString = adresseString.concat(this.localite.npa, " ");
       }
 
-      if (adresse.localite.nom) {
-        adresseString = adresseString.concat(adresse.localite.nom);
+      if (this.localite.nom) {
+        adresseString = adresseString.concat(this.localite.nom);
       }
     }
 

@@ -226,21 +226,15 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
    */
   protected abstract deleteDataMethod(id: number): Observable<void>;
 
-  protected override hasAccess(roles: string[]): boolean {
-    let role: Roles;
-
+  protected override hasAccess(): boolean {
     switch (this.data.type) {
       case DialogType.READ:
-        role = this.readAccess();
-        break;
+        return this.hasAccess();
       case DialogType.CREATE:
       case DialogType.MODIFY:
       case DialogType.DELETE:
-        role = this.editAccess();
-        break;
+        return this.hasEditAccess();
     }
-
-    return roles.includes(role.toString());
   }
 
   protected override noAcessAction(): void {

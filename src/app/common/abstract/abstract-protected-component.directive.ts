@@ -5,14 +5,14 @@ import {Router} from '@angular/router';
 
 @Directive()
 export abstract class AbstractProtectedComponent {
-  protected constructor() {
-    const authentificationService: AuthentificationService = inject(AuthentificationService);
+  private authentificationService: AuthentificationService = inject(AuthentificationService);
 
+  protected constructor() {
     effect((): void => {
       let canAccess: boolean = false;
 
-      if (authentificationService.authenticated()) {
-        canAccess = this.hasAccess(authentificationService.roles());
+      if (this.authentificationService.authenticated()) {
+        canAccess = this.hasAccess();
       }
 
       if (!canAccess) {
@@ -24,8 +24,20 @@ export abstract class AbstractProtectedComponent {
   protected abstract readAccess(): Roles;
   protected abstract editAccess(): Roles;
 
-  protected hasAccess(roles: string[]): boolean {
-    return roles.includes(this.readAccess().toString());
+  protected hasAccess(): boolean {
+    return this.hasReadAccess();
+  }
+
+  protected hasReadAccess(): boolean {
+    return this.authentificationService
+      .roles()
+      .includes(this.readAccess().toString());
+  }
+
+  protected hasEditAccess(): boolean {
+    return this.authentificationService
+      .roles()
+      .includes(this.editAccess().toString());
   }
 
   protected noAcessAction(): void {

@@ -1,7 +1,5 @@
 :host {
   display: block;
-
-  --piece-light-table-box-shadow: none;
 }
 
 .fiche-machine {
@@ -23,6 +21,10 @@
   .label {
     font-weight: bold;
   }
+}
+
+.pieces-tab {
+  padding: 10px;
 }
 
 .header {

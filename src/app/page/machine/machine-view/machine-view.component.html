@@ -1,7 +1,7 @@
 <span tabindex="0" #resetFocus></span>
 <div class="fiche-machine">
-  <div class="label">Client :</div>
-  <div>{{ proprietaire()?.getDesignation() }}</div>
+  <div class="label" style="grid-row-start: 1; grid-row-end: 4;">Client :</div>
+  <div style="grid-row-start: 1; grid-row-end: 4; white-space: pre;">{{ proprietaire()?.toAdresseFormat() }}</div>
 
   <div class="label">Machine :</div>
   <div>
@@ -9,9 +9,6 @@
       <input matInput [value]="machine()?.nom" [readonly]="true"/>
     </mat-form-field>
   </div>
-
-  <div class="label" style="grid-row-start: 2; grid-row-end: 4">Adresse :</div>
-  <div style="grid-row-start: 2; grid-row-end: 4">{{ Adresse.adresseToString(proprietaire()?.adresse ?? null) }}</div>
 
   <div class="label">Numero de chassis :</div>
   <div>
@@ -30,19 +27,13 @@
 
 <mat-tab-group>
   <mat-tab label="Pièces">
-    <div class="header">
-      <h3>Liste des pièces liés à la machine</h3>
-
-      <div class="header-actions">
-        @if (this.editAccess()) {
-          <button mat-flat-button (click)="this.linkPiece()">Ajouter</button>
-        }
-      </div>
-    </div>
-
+    <div class="pieces-tab">
     @if (this.machine()) {
-      <app-piece-light-table [machine]="machine()!"></app-piece-light-table>
+      <app-machine-view-piece [machine]="this.machine()!"
+                              (machineChanged)="this.machine.set($event)"
+                              [canEdit]="this.hasEditAccess()"/>
     }
+    </div>
   </mat-tab>
   <mat-tab label="Services">Services</mat-tab>
 </mat-tab-group>

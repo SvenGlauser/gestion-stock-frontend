@@ -6,6 +6,13 @@
         @if (this.actionColumnInfo().created && this.haveEditAccessRole()) {
           <button mat-flat-button (click)="this.openDialog(null, DialogType.CREATE)">Créer</button>
         }
+        @for (button of this.actionColumnInfo().buttons ?? []; track button.name) {
+          @if (!button.condition || button.condition()) {
+            <button mat-flat-button (click)="this.runButton(button.action)">
+              {{ button.name }}
+            </button>
+          }
+        }
         <app-column-chooser [(columns)]="this.columns"/>
       </div>
   </div>
@@ -105,7 +112,7 @@
             }
             @for (action of this.actionColumnInfo().actions ?? []; track action.name) {
               @if (!action.condition || action.condition(element)) {
-                <button mat-menu-item (click)="this.run(action.action, element)">
+                <button mat-menu-item (click)="this.runAction(action.action, element)">
                   {{ action.name }}
                 </button>
               }

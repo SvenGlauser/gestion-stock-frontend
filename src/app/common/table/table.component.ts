@@ -393,9 +393,22 @@ export class TableComponent<T extends Record<string, any>, R extends SearchQuery
    * Lance une méthode et rafraichit si nécessaire
    *
    * @param action Méthode à exécuter
+   */
+  protected runButton(action: () => Observable<boolean>): void {
+    action().subscribe((needToRefresh: boolean) => {
+      if (needToRefresh) {
+        this.update();
+      }
+    })
+  }
+
+  /**
+   * Lance une méthode et rafraichit si nécessaire
+   *
+   * @param action Méthode à exécuter
    * @param element Elément
    */
-  protected run(action: (value: any) => Observable<boolean>, element: T): void {
+  protected runAction(action: (value: any) => Observable<boolean>, element: T): void {
     action(element).subscribe((needToRefresh: boolean) => {
       if (needToRefresh) {
         this.update();

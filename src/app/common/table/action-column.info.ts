@@ -14,6 +14,7 @@ export interface ActionColumnInfo {
   created: boolean;
   modify: boolean;
   actions?: Action[];
+  buttons?: Button[];
   delete: boolean;
   clicOnLine: boolean;
 }
@@ -22,4 +23,10 @@ export interface Action {
   name: string;
   action: (value: any) => Observable<boolean>;
   condition?: (value: any) => boolean;
+}
+
+export interface Button {
+  name: string;
+  action: () => Observable<boolean>;
+  condition?: () => boolean;
 }
