@@ -22,7 +22,7 @@ import {
   MatHeaderCell,
   MatHeaderCellDef,
   MatHeaderRow,
-  MatHeaderRowDef,
+  MatHeaderRowDef, MatNoDataRow,
   MatRow,
   MatRowDef,
   MatTable
@@ -89,7 +89,8 @@ import {ColumnChooserComponent} from './column-chooser/column-chooser.component'
     MatButton,
     RouterLink,
     AutocompleteEnumComponent,
-    ColumnChooserComponent
+    ColumnChooserComponent,
+    MatNoDataRow
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'

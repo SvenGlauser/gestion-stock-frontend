@@ -182,14 +182,22 @@
     } @else {
       <tr mat-row *matRowDef="let _; columns: this.allColumnsToDisplayAsString();"></tr>
     }
+
+    <tr *matNoDataRow
+        class="mat-mdc-row mdc-data-table__row">
+      @if (this.haveReadAccessRole()) {
+        <td class="mat-mdc-cell mdc-data-table__cell"
+            [colSpan]="this.allColumnsToDisplayAsString().length">
+          Aucun élément dans la liste
+        </td>
+      } @else {
+        <td class="mat-mdc-cell mdc-data-table__cell"
+            [colSpan]="this.allColumnsToDisplayAsString().length">
+          Vous n'avez pas le droit d'afficher la liste
+        </td>
+      }
+    </tr>
   </table>
-  @if (this.tableLength() === 0) {
-    @if (this.haveReadAccessRole()) {
-      <div class="empty-table">Aucun élément dans la liste</div>
-    } @else {
-      <div class="empty-table">Vous n'avez pas le droit d'afficher la liste</div>
-    }
-  }
   <mat-paginator [pageSizeOptions]="[10, 20, 50]"
                  (page)="changePage($event)"
                  showFirstLastButtons>
