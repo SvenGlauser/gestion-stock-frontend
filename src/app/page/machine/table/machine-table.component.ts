@@ -9,7 +9,7 @@ import {TableComponent} from '../../../common/table/table.component';
 import {MachineDialogComponent} from '../dialog/machine-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
-import {ActivatedRoute, ParamMap} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {
   MatCell,
   MatCellDef,
@@ -77,7 +77,7 @@ export class MachineTableComponent {
     dialogComponent: MachineDialogComponent,
     dialogSpecificData: {proprietaire: null},
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: (machine: Machine) => this.router.navigate(['machines', machine.id]),
     created: true,
     delete: true,
     modify: true,
@@ -96,6 +96,7 @@ export class MachineTableComponent {
               private readonly personnePhysiqueService: PersonnePhysiqueService,
               private readonly personneMoraleService: PersonneMoraleService,
               private readonly route: ActivatedRoute,
+              private readonly router: Router,
               private readonly matDialog: MatDialog) {
     this.route
       .paramMap

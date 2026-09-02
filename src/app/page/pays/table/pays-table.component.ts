@@ -39,7 +39,7 @@ export class PaysTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: PaysDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     created: true,
     delete: true,
     modify: true,

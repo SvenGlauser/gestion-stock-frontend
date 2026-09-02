@@ -73,7 +73,7 @@ export class MachineViewServiceComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: ServiceDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     read: true,
     created: true,
     modify: true,

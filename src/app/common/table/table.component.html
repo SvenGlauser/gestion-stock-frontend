@@ -173,14 +173,21 @@
         *matHeaderRowDef="['filters']"
         [ngClass]="{'closed': !this.viewFilter()}"></tr>
 
-    @if (this.actionColumnInfo().clicOnLine) {
+    @let clicOnLine = this.actionColumnInfo().clicOnLine;
+    @if (clicOnLine === 'none') {
+      <tr mat-row *matRowDef="let _; columns: this.allColumnsToDisplayAsString();"></tr>
+    } @else if (clicOnLine === 'read') {
       <tr mat-row
           *matRowDef="let row; columns: this.allColumnsToDisplayAsString();"
           class="mat-row-clickable"
           (keydown.enter)="openDialog(row, DialogType.READ)"
           (click)="openDialog(row, DialogType.READ)"></tr>
     } @else {
-      <tr mat-row *matRowDef="let _; columns: this.allColumnsToDisplayAsString();"></tr>
+      <tr mat-row
+          *matRowDef="let row; columns: this.allColumnsToDisplayAsString();"
+          class="mat-row-clickable"
+          (keydown.enter)="clicOnLine(row)"
+          (click)="clicOnLine(row)"></tr>
     }
 
     <tr *matNoDataRow

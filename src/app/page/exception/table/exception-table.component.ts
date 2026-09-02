@@ -77,7 +77,7 @@ export class ExceptionTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: null,
     idField: Model.ID,
-    clicOnLine: false,
+    clicOnLine: 'none',
     created: false,
     delete: false,
     modify: false,

@@ -16,7 +16,7 @@ export interface ActionColumnInfo {
   actions?: Action[];
   buttons?: Button[];
   delete: boolean;
-  clicOnLine: boolean;
+  clicOnLine: ((element: any) => void) | 'read' | 'none';
 }
 
 export interface Action {

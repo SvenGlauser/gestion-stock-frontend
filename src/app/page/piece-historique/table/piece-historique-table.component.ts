@@ -62,7 +62,7 @@ export class PieceHistoriqueTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: PieceHistoriqueDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     created: false,
     delete: true,
     modify: false,

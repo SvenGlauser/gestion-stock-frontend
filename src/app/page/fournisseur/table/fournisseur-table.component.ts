@@ -45,7 +45,7 @@ export class FournisseurTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: FournisseurDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     created: true,
     delete: true,
     modify: true,

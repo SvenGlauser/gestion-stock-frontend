@@ -40,7 +40,7 @@ export class CategorieTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: CategorieDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     created: true,
     delete: true,
     modify: true,

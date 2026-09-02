@@ -49,7 +49,7 @@ export class LocaliteTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: LocaliteDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     created: true,
     delete: true,
     modify: true,

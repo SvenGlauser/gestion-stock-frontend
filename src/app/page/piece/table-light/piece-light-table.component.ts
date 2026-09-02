@@ -41,7 +41,7 @@ export class PieceLightTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: PieceDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     read: true,
     created: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB
     modify: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB

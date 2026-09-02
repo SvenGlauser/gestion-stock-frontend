@@ -37,7 +37,7 @@ export class ChangementPieceTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: null,
     idField: Model.ID,
-    clicOnLine: false,
+    clicOnLine: 'none',
     read: false,
     created: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB
     modify: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB
