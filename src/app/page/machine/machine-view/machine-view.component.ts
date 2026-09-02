@@ -98,7 +98,6 @@ export class MachineViewComponent extends AbstractProtectedComponent {
         this.updateMachine();
       }
 
-      console.log(this.resetFocus())
       this.resetFocus()?.nativeElement.focus();
     });
   }

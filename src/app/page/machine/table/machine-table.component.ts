@@ -1,4 +1,13 @@
-import {Component, Signal, viewChild, viewChildren, ChangeDetectionStrategy} from '@angular/core';
+import {
+  Component,
+  Signal,
+  viewChild,
+  viewChildren,
+  ChangeDetectionStrategy,
+  computed,
+  signal,
+  WritableSignal, ChangeDetectorRef
+} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {MachineService} from '../machine.service';
@@ -70,6 +79,9 @@ export class MachineTableComponent {
     MethodColumn.of(Machine.PROPRIETAIRE_LABEL, Machine.PROPRIETAIRE, 20, (identite: Identite) => identite.getDesignation()),
   ]
 
+  protected title: Signal<string> = computed(this.getTableTitle.bind(this));
+  protected proprietaire: WritableSignal<Identite| null> = signal(null);
+
   private readonly matTable: Signal<TableComponent<Machine, AutomaticSearchQuery>> = viewChild.required<TableComponent<Machine, AutomaticSearchQuery>>(TableComponent);
   private readonly piecesLightsTables: Signal<readonly PieceLightTableComponent[]> = viewChildren<PieceLightTableComponent>(PieceLightTableComponent);
 
@@ -90,7 +102,6 @@ export class MachineTableComponent {
 
   private currentProprietaireType: string | null = null;
   private currentProprietaireId: number | null = null;
-  protected proprietaire: Identite | null = null;
   protected extendedRowId: number | null = null;
 
   constructor(private readonly machineService: MachineService,
@@ -98,7 +109,8 @@ export class MachineTableComponent {
               private readonly personneMoraleService: PersonneMoraleService,
               private readonly route: ActivatedRoute,
               private readonly router: Router,
-              private readonly matDialog: MatDialog) {
+              private readonly matDialog: MatDialog,
+              private readonly cd: ChangeDetectorRef,) {
     this.route
       .paramMap
       .pipe(takeUntilDestroyed())
@@ -109,13 +121,13 @@ export class MachineTableComponent {
         if (this.currentProprietaireType && this.currentProprietaireId) {
           if (this.currentProprietaireType == 'morale') {
             this.personneMoraleService.get(this.currentProprietaireId).subscribe(proprietaire => {
-              this.proprietaire = proprietaire;
-              this.actionColumnInfo.dialogSpecificData.proprietaire = this.proprietaire;
+              this.proprietaire.set(proprietaire);
+              this.actionColumnInfo.dialogSpecificData.proprietaire = proprietaire;
             });
           } else if (this.currentProprietaireType == 'physique') {
             this.personnePhysiqueService.get(this.currentProprietaireId).subscribe(proprietaire => {
-              this.proprietaire = proprietaire;
-              this.actionColumnInfo.dialogSpecificData.proprietaire = this.proprietaire;
+              this.proprietaire.set(proprietaire);
+              this.actionColumnInfo.dialogSpecificData.proprietaire = proprietaire;
             });
           }
         }
@@ -139,7 +151,8 @@ export class MachineTableComponent {
    * @param searchRequest SearchRequest
    */
   protected getUpdateMethod(searchRequest: AutomaticSearchQuery): Observable<SearchResult<Machine>> {
-    if (!this.proprietaire) {
+    let proprietaire = this.proprietaire();
+    if (!proprietaire) {
       return of(<SearchResult<Machine>>{
         currentPage: 0,
         pageSize: 10,
@@ -151,7 +164,7 @@ export class MachineTableComponent {
 
     let searchRequestModified: AutomaticSearchQuery = structuredClone(searchRequest);
     let proprietaireIdField: AutomaticSearchField<number | null> = new AutomaticSearchField(Machine.PROPRIETAIRE_ID, FilterType.EQUAL);
-    proprietaireIdField.value = this.proprietaire.id;
+    proprietaireIdField.value = proprietaire.id;
 
     searchRequestModified.combinators.push({
       type: FilterCombinatorType.AND,
@@ -163,12 +176,13 @@ export class MachineTableComponent {
   /**
    * Récupère le nom du tableau
    */
-  protected getTableTitle(): string {
+  private getTableTitle(): string {
     let title: string = 'Liste des machines';
 
-    if (this.proprietaire) {
+    let proprietaire = this.proprietaire();
+    if (proprietaire) {
       title += " - ";
-      title += this.proprietaire.getDesignation();
+      title += proprietaire.getDesignation();
     }
 
     return title;
@@ -219,6 +233,8 @@ export class MachineTableComponent {
                 table.table().update();
               }
             }
+
+            this.cd.markForCheck();
           }
         }),
         map(() => false));

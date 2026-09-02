@@ -1,4 +1,7 @@
-import {Component, effect, input, InputSignal, Signal, viewChild, viewChildren, ChangeDetectionStrategy} from '@angular/core';
+import {
+  Component, effect, input, InputSignal, Signal, viewChild, viewChildren, ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import {Column} from '../../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../../common/table/action-column.info';
 import {map, Observable, of, tap} from 'rxjs';
@@ -100,7 +103,8 @@ export class MachineViewServiceComponent {
   private readonly changementPiecesTables: Signal<readonly ChangementPieceTableComponent[]> = viewChildren<ChangementPieceTableComponent>(ChangementPieceTableComponent);
 
   constructor(private readonly serviceService: ServiceService,
-              private readonly matDialog: MatDialog) {
+              private readonly matDialog: MatDialog,
+              private readonly cd: ChangeDetectorRef) {
     effect(() => {
       this.actionColumnInfo.dialogSpecificData.machine = this.machine();
     })
@@ -198,6 +202,8 @@ export class MachineViewServiceComponent {
                 table.table().update();
               }
             }
+
+            this.cd.markForCheck();
           }
         }),
         map(() => false));

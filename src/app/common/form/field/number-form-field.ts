@@ -31,9 +31,32 @@ export class NumberFormField extends FormField {
                               formControl: FormControl): NumberFormField {
     let formField: NumberFormField = new NumberFormField(label, field, formControl);
 
-    this.addLogicToFormControl(
-      formField.formControl,
-      formField.decimal);
+    formField.formControl.valueChanges
+      .subscribe((initialValue: any) => {
+        let value: any;
+        if (typeof initialValue === 'string') {
+          value = initialValue.replace(/[^0-9.,]/g, '');
+          while (value.match(/[.,]/g)?.length > (formField.decimal ? 1 : 0)) {
+            let regexResult = /.*[.,]/g.exec(value); // .* pour avoir le dernier
+
+            if (regexResult === null) {
+              break;
+            }
+
+            let index = regexResult?.index + regexResult?.input.length - 1;
+
+            value = value.slice(0, index) + value.slice(index + 1);
+          }
+        } else if (typeof initialValue === 'number') {
+          value = initialValue;
+        } else {
+          value = null;
+        }
+
+        if (value !== initialValue) {
+          formControl.setValue(value, {emitEvent: false});
+        }
+      });
 
     return formField;
   }
