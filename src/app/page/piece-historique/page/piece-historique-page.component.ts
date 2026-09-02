@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
 import {Roles} from '../../../security/roles';
 import {PieceHistoriqueTableComponent} from '../table/piece-historique-table.component';
@@ -9,6 +9,7 @@ import {PieceHistoriqueTableComponent} from '../table/piece-historique-table.com
     PieceHistoriqueTableComponent
   ],
   templateUrl: './piece-historique-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './piece-historique-page.component.scss',
 })
 export class PieceHistoriquePageComponent extends AbstractProtectedComponent {

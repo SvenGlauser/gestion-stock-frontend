@@ -229,7 +229,7 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
   protected override hasAccess(): boolean {
     switch (this.data.type) {
       case DialogType.READ:
-        return this.hasAccess();
+        return this.hasReadAccess();
       case DialogType.CREATE:
       case DialogType.MODIFY:
       case DialogType.DELETE:

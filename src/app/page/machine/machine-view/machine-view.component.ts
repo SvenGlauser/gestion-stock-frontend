@@ -1,4 +1,4 @@
-import {Component, DestroyRef, effect, ElementRef, Signal, signal, viewChild, WritableSignal} from '@angular/core';
+import {Component, DestroyRef, effect, ElementRef, Signal, signal, viewChild, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
 import {Roles} from '../../../security/roles';
 import {LayoutService} from '../../../layout/service/layout.service';
@@ -28,6 +28,7 @@ import {MachineViewServiceComponent} from './machine-view-service/machine-view-s
     MachineViewServiceComponent,
   ],
   templateUrl: './machine-view.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './machine-view.component.scss',
 })
 export class MachineViewComponent extends AbstractProtectedComponent {

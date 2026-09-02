@@ -1,9 +1,10 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AuthentificationService} from '../../security/authentification.service';
 
 @Component({
   selector: 'app-logout',
   imports: [],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 export class LogoutComponent {

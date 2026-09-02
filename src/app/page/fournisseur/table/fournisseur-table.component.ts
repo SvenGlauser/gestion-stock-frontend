@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {Model} from '../../../common/model';
@@ -23,6 +23,7 @@ import {Direction} from '../../../common/search/api/search-field';
     TableComponent
   ],
   templateUrl: './fournisseur-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './fournisseur-table.component.scss'
 })
 export class FournisseurTableComponent {

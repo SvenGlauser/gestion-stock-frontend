@@ -1,4 +1,4 @@
-import {Component, input, InputSignal, output, OutputEmitterRef} from '@angular/core';
+import {Component, input, InputSignal, output, OutputEmitterRef, ChangeDetectionStrategy} from '@angular/core';
 import {Column} from '../../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../../common/table/action-column.info';
 import {map, mergeMap, Observable, of, tap} from 'rxjs';
@@ -22,6 +22,7 @@ import {PieceSelectionDialogComponent} from '../../../piece/selection-dialog/pie
     TableComponent
   ],
   templateUrl: './machine-view-piece.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './machine-view-piece.component.scss'
 })
 export class MachineViewPieceComponent {

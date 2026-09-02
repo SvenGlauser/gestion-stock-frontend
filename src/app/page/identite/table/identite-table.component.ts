@@ -1,4 +1,4 @@
-import {Component, signal, Signal, viewChild, WritableSignal} from '@angular/core';
+import {Component, signal, Signal, viewChild, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {IdentiteService} from '../identite.service';
@@ -31,6 +31,7 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
     MatButton
   ],
   templateUrl: './identite-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './identite-table.component.scss'
 })
 export class IdentiteTableComponent {

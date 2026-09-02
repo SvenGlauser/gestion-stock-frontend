@@ -5,8 +5,8 @@
   @if (this.oldObject() != null) {
     <div class="historique">
       <span>Identifiant unique : {{ this.oldObject()?.id }}</span>
-      <span>Modifié le {{ this.oldObject()?.modificationDate | date:'medium' }} par {{ this.oldObject()?.modificationUser }}</span>
-      <span>Créé le {{ this.oldObject()?.creationDate | date:'medium' }} par {{ this.oldObject()?.creationUser }}</span>
+      <span>Modifié le {{ $safeNavigationMigration(this.oldObject()?.modificationDate) | date:'medium' }} par {{ this.oldObject()?.modificationUser }}</span>
+      <span>Créé le {{ $safeNavigationMigration(this.oldObject()?.creationDate) | date:'medium' }} par {{ this.oldObject()?.creationUser }}</span>
     </div>
   }
 </mat-dialog-content>

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {Categorie} from '../categorie.model';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
@@ -21,6 +21,7 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
     TableComponent
   ],
   templateUrl: './categorie-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './categorie-table.component.scss'
 })
 export class CategorieTableComponent {

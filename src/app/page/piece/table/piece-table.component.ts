@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {PieceService} from '../piece.service';
@@ -24,6 +24,7 @@ import {PieceWithHistorique} from '../piece-with-historique.model';
     TableComponent
   ],
   templateUrl: './piece-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './piece-table.component.scss'
 })
 export class PieceTableComponent {

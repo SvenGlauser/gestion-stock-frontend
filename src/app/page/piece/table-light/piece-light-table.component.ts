@@ -1,4 +1,4 @@
-import {Component, input, InputSignal, Signal, viewChild} from '@angular/core';
+import {Component, input, InputSignal, Signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
@@ -22,6 +22,7 @@ import {PieceSearchQuery} from '../piece.searchquery';
     TableComponent
   ],
   templateUrl: './piece-light-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './piece-light-table.component.scss'
 })
 export class PieceLightTableComponent {

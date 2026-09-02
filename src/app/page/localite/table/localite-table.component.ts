@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {TableComponent} from "../../../common/table/table.component";
 import {PaysService} from '../../pays/pays.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
@@ -22,6 +22,7 @@ import {Machine} from '../../machine/machine.model';
     TableComponent
   ],
   templateUrl: './localite-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './localite-table.component.scss'
 })
 export class LocaliteTableComponent {

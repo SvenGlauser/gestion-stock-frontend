@@ -7,7 +7,8 @@ import {
   model,
   ModelSignal,
   Signal,
-  viewChild
+  viewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
@@ -24,6 +25,7 @@ import {MatButton} from '@angular/material/button';
     MatButton
   ],
   templateUrl: './file-uploader.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './file-uploader.component.scss'
 })
 export class FileUploaderComponent {

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {CategorieTableComponent} from '../table/categorie-table.component';
 import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
 import {Roles} from '../../../security/roles';
@@ -9,6 +9,7 @@ import {Roles} from '../../../security/roles';
     CategorieTableComponent
   ],
   templateUrl: './categorie-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './categorie-page.component.scss',
 })
 export class CategoriePageComponent extends AbstractProtectedComponent {

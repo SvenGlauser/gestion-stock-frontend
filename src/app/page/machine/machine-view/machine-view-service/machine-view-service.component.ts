@@ -1,4 +1,4 @@
-import {Component, effect, input, InputSignal, Signal, viewChild, viewChildren} from '@angular/core';
+import {Component, effect, input, InputSignal, Signal, viewChild, viewChildren, ChangeDetectionStrategy} from '@angular/core';
 import {Column} from '../../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../../common/table/action-column.info';
 import {map, Observable, of, tap} from 'rxjs';
@@ -53,6 +53,7 @@ import {
     ChangementPieceTableComponent
   ],
   templateUrl: './machine-view-service.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './machine-view-service.component.scss'
 })
 export class MachineViewServiceComponent {

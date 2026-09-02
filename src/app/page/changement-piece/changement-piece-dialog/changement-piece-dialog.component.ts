@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -50,6 +50,7 @@ import {
     MatExpansionPanelTitle
   ],
   templateUrl: './changement-piece-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './changement-piece-dialog.component.scss'
 })
 export class ChangementPieceDialogComponent {

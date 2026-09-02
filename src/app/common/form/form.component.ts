@@ -1,4 +1,4 @@
-import {afterNextRender, Component, input, InputSignal} from '@angular/core';
+import {afterNextRender, Component, input, InputSignal, ChangeDetectionStrategy} from '@angular/core';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
@@ -55,6 +55,7 @@ import {MatNativeDateModule, provideNativeDateAdapter} from '@angular/material/c
     provideNativeDateAdapter(),
   ],
   templateUrl: './form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './form.component.scss'
 })
 export class FormComponent {

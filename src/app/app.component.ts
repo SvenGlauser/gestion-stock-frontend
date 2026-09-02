@@ -1,4 +1,4 @@
-import {Component, computed, Signal} from '@angular/core';
+import {Component, computed, Signal, ChangeDetectionStrategy} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {MatToolbar} from '@angular/material/toolbar';
 import {MatButton, MatIconButton} from '@angular/material/button';
@@ -13,6 +13,7 @@ import {LayoutService} from './layout/service/layout.service';
   selector: 'app-root',
   imports: [RouterOutlet, MatToolbar, MatIconButton, MatIcon, MatSidenavModule, MatDrawerContainer, MatDrawer, MenuComponent, MatButton, ProfilComponent],
   templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.component.scss'
 })
 export class AppComponent {

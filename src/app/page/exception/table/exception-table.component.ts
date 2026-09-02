@@ -1,4 +1,4 @@
-import {Component, Signal, viewChild} from '@angular/core';
+import {Component, Signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {ExceptionService} from '../exception.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {TableComponent} from '../../../common/table/table.component';
@@ -44,6 +44,7 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
     MatHeaderCellDef
   ],
   templateUrl: './exception-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './exception-table.component.scss'
 })
 export class ExceptionTableComponent {

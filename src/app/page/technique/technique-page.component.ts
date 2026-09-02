@@ -1,4 +1,4 @@
-import {Component, computed, Signal, signal, WritableSignal} from '@angular/core';
+import {Component, computed, Signal, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 import {FileUploaderComponent} from '../../common/form/input/file-uploader/file-uploader.component';
 import {TechniqueService} from './technique.service';
 import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
@@ -12,6 +12,7 @@ import {Roles} from '../../security/roles';
     FileUploaderComponent
   ],
   templateUrl: './technique-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './technique-page.component.scss'
 })
 export class TechniquePageComponent extends AbstractProtectedComponent {

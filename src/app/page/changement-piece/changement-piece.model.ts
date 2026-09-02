@@ -8,6 +8,7 @@ export class ChangementPiece extends Model {
 
   // Field constantes
   public static readonly PIECE = 'piece';
+  public static readonly PIECE_ID = ChangementPiece.PIECE.concat('.', Piece.ID);
   public static readonly PIECE_NOM = ChangementPiece.PIECE.concat('.', Piece.NOM);
   public static readonly QUANTITE = 'quantite';
   public static readonly DESCRIPTION = 'description';

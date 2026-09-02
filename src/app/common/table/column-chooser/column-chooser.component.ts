@@ -1,4 +1,4 @@
-import {Component, computed, model, ModelSignal, Signal, signal, WritableSignal} from '@angular/core';
+import {Component, computed, model, ModelSignal, Signal, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
 import {MatMenu, MatMenuTrigger} from '@angular/material/menu';
@@ -18,6 +18,7 @@ import {SearchQuery} from '../../search/custom/search-query';
     FormsModule
   ],
   templateUrl: './column-chooser.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './column-chooser.component.scss',
 })
 export class ColumnChooserComponent<R extends SearchQuery> {

@@ -1,4 +1,4 @@
-import {Component, input, InputSignal, Signal, viewChild} from '@angular/core';
+import {Component, input, InputSignal, Signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
@@ -13,6 +13,7 @@ import {Roles} from '../../../security/roles';
 import {ChangementPiece} from '../changement-piece.model';
 import {Service} from '../../service/service.model';
 import {ServiceService} from '../../service/service.service';
+import {PieceDialogComponent} from '../../piece/dialog/piece-dialog.component';
 
 @Component({
   selector: 'app-changement-piece-table',
@@ -20,6 +21,7 @@ import {ServiceService} from '../../service/service.service';
     TableComponent
   ],
   templateUrl: './changement-piece-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './changement-piece-table.component.scss'
 })
 export class ChangementPieceTableComponent {
@@ -35,8 +37,8 @@ export class ChangementPieceTableComponent {
 
   // Définition des actions possibles
   protected readonly actionColumnInfo: ActionColumnInfo = {
-    dialogComponent: null,
-    idField: Model.ID,
+    dialogComponent: PieceDialogComponent,
+    idField: ChangementPiece.PIECE_ID,
     clicOnLine: 'none',
     read: false,
     created: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB

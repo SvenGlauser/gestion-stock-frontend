@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-form-dialog.component';
 import {FormField} from '../../../common/form/field/form-field';
 import {Observable, of} from 'rxjs';
@@ -29,6 +29,7 @@ import {DatePipe} from '@angular/common';
     DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
 export class PieceHistoriqueDialogComponent extends AbstractFormDialogComponent<PieceHistoriqueDialogComponent, PieceHistorique> {

@@ -13,7 +13,8 @@ import {
   Signal,
   untracked,
   viewChild,
-  WritableSignal
+  WritableSignal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import {
   MatCell,
@@ -58,6 +59,7 @@ import {AuthentificationService} from '../../security/authentification.service';
 import {SearchQuery} from '../search/custom/search-query';
 import {Direction, SearchField} from '../search/api/search-field';
 import {ColumnChooserComponent} from './column-chooser/column-chooser.component';
+import {getValueFromAttributeInCascade} from '../utils/function.utils';
 
 @Component({
   selector: 'app-table',
@@ -93,6 +95,7 @@ import {ColumnChooserComponent} from './column-chooser/column-chooser.component'
     MatNoDataRow
   ],
   templateUrl: './table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './table.component.scss'
 })
 export class TableComponent<T extends Record<string, any>, R extends SearchQuery> {
@@ -341,7 +344,7 @@ export class TableComponent<T extends Record<string, any>, R extends SearchQuery
       maxWidth: 1000,
       data: <DialogData>{
         type: type,
-        id: element ? element[this.actionColumnInfo().idField] : null,
+        id: element ? getValueFromAttributeInCascade(this.actionColumnInfo().idField, element) : null,
         specificData: this.actionColumnInfo().dialogSpecificData,
       },
     });

@@ -1,4 +1,4 @@
-import {Component, computed, Signal} from '@angular/core';
+import {Component, computed, Signal, ChangeDetectionStrategy} from '@angular/core';
 import {MatNavList} from '@angular/material/list';
 import {MenuLink, menuLinkGroupNameMapper} from './menu-link';
 import {MenuItemComponent} from './menu-item/menu-item.component';
@@ -13,6 +13,7 @@ import {KeyValuePipe} from '@angular/common';
     KeyValuePipe
   ],
   templateUrl: './menu.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './menu.component.scss'
 })
 export class MenuComponent {

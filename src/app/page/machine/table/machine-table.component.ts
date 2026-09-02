@@ -1,4 +1,4 @@
-import {Component, Signal, viewChild, viewChildren} from '@angular/core';
+import {Component, Signal, viewChild, viewChildren, ChangeDetectionStrategy} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {MachineService} from '../machine.service';
@@ -55,6 +55,7 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
     MatBadgeModule
   ],
   templateUrl: './machine-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './machine-table.component.scss'
 })
 export class MachineTableComponent {

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
 import {Roles} from '../../../security/roles';
 import {FournisseurTableComponent} from '../table/fournisseur-table.component';
@@ -9,6 +9,7 @@ import {FournisseurTableComponent} from '../table/fournisseur-table.component';
     FournisseurTableComponent
   ],
   templateUrl: './fournisseur-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './fournisseur-page.component.scss',
 })
 export class FournisseurPageComponent extends AbstractProtectedComponent {
