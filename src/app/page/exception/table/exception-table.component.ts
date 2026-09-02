@@ -50,7 +50,7 @@ export class ExceptionTableComponent {
   // Définition des colonnes
   protected columns: Column<AutomaticSearchQuery>[] = [
     CustomColumn
-      .of<AutomaticSearchQuery>("", ThrownException.ROW_EXTENDER, 5),
+      .ofWithoutChooser<AutomaticSearchQuery>("", ThrownException.ROW_EXTENDER, 5),
     ClassicColumn
       .of<AutomaticSearchQuery>(ThrownException.CLASS_NAME_LABEL, ThrownException.CLASS_NAME, 35)
       .inputFilter(searchQuery => searchQuery.getFilter(ThrownException.CLASS_NAME))

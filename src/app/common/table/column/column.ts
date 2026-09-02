@@ -15,15 +15,17 @@ export abstract class Column<R extends SearchQuery> {
   public filters: ColumnFilter<any, R>[] = [];
   public sortableFieldGetter: ((searchQuery: R) => SearchField<any> | null) | null = null;
   public sortOrder: Direction | null = null;
+  public hideInChooser: boolean;
   public view: boolean = true;
   public width: number;
   public style: string;
 
-  protected constructor(label: string, field: string, width: number) {
+  protected constructor(label: string, field: string, width: number, hideInChooser: boolean = false) {
     this.label = label;
     this.field = field;
     this.width = width;
     this.style = "text-wrap: nowrap; text-overflow: ellipsis; overflow: hidden;"
+    this.hideInChooser = hideInChooser;
   }
 
   /**

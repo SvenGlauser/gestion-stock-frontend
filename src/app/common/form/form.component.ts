@@ -1,6 +1,6 @@
 import {afterNextRender, Component, input, InputSignal} from '@angular/core';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {FormField} from './field/form-field';
 import {AutocompleteComponent} from './input/autocomplete/autocomplete.component';
@@ -19,6 +19,14 @@ import {NumberFormField} from './field/number-form-field';
 import {AutocompleteMultipleFormField} from './field/autocomplete-multiple-form-field';
 import {AutocompleteMultipleComponent} from './input/autocomplete/autocomplete-multiple.component';
 import {TextAreaFormField} from './field/textarea-form-field';
+import {DateFormField} from './field/date-form-field';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerModule,
+  MatDatepickerToggle
+} from '@angular/material/datepicker';
+import {MatNativeDateModule, provideNativeDateAdapter} from '@angular/material/core';
 
 @Component({
   selector: 'app-form',
@@ -36,7 +44,15 @@ import {TextAreaFormField} from './field/textarea-form-field';
     MatExpansionPanel,
     MatExpansionPanelTitle,
     NgClass,
-    AutocompleteMultipleComponent
+    AutocompleteMultipleComponent,
+    MatDatepickerInput,
+    MatDatepickerToggle,
+    MatDatepicker,
+    MatDatepickerModule,
+    MatSuffix,
+  ],
+  providers: [
+    provideNativeDateAdapter(),
   ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
@@ -49,6 +65,7 @@ export class FormComponent {
   protected readonly InputFormField: typeof InputFormField = InputFormField;
   protected readonly NumberFormField: typeof NumberFormField = NumberFormField;
   protected readonly TextAreaFormField: typeof TextAreaFormField = TextAreaFormField;
+  protected readonly DateFormField: typeof DateFormField = DateFormField;
 
   public formsMap: InputSignal<Map<string, FormField[]>> = input.required();
 

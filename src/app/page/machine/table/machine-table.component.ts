@@ -60,7 +60,7 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
 export class MachineTableComponent {
   // Définition des colonnes
   protected columns: Column<AutomaticSearchQuery>[] = [
-    CustomColumn.of("", Machine.ROW_EXTENDER, 10),
+    CustomColumn.ofWithoutChooser("", Machine.ROW_EXTENDER, 10),
     ClassicColumn
       .of<AutomaticSearchQuery>(Machine.NOM_LABEL, Machine.NOM, 20)
       .sort(searchQuery => searchQuery.getFilter(Machine.NOM))

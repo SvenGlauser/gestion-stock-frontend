@@ -14,6 +14,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {MachineDialogComponent} from '../dialog/machine-dialog.component';
 import {MatTab, MatTabGroup} from '@angular/material/tabs';
 import {MachineViewPieceComponent} from './machine-view-piece/machine-view-piece.component';
+import {MachineViewServiceComponent} from './machine-view-service/machine-view-service.component';
 
 @Component({
   selector: 'app-machine-view',
@@ -24,6 +25,7 @@ import {MachineViewPieceComponent} from './machine-view-piece/machine-view-piece
     MatTabGroup,
     MatTab,
     MachineViewPieceComponent,
+    MachineViewServiceComponent,
   ],
   templateUrl: './machine-view.component.html',
   styleUrl: './machine-view.component.scss',

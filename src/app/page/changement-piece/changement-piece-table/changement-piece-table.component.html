@@ -1,0 +1,7 @@
+<app-table title="Liste des pièces liées au service"
+           [(columns)]="this.columns"
+           [initSearchQueryMethod]="this.getSearchQueryMethod.bind(this)"
+           [updateMethod]="this.getUpdateMethod.bind(this)"
+           [actionColumnInfo]="actionColumnInfo"
+           [readAccessRole]="Roles.R_SERVICE_LECTEUR"
+           [editAccessRole]="Roles.R_SERVICE_EDITEUR"/>

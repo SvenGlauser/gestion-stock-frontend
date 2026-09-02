@@ -1,0 +1,48 @@
+<h1 mat-dialog-title>Sélection d'une pièce</h1>
+<div mat-dialog-content>
+  <form>
+    <mat-accordion multi>
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header tabIndex="-1">
+          <mat-panel-title></mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="grid">
+          <app-autocomplete-multiple class="colspan-2"
+                                     label="Pièce"
+                                     [autocompleteIdField]="this.FIELD_ID"
+                                     [autocompleteNameFields]="this.FIELDS_NAME"
+                                     [separator]="this.FIELDS_SEPARATOR"
+                                     [autocompleteMethod]="this.autocompletePiece.bind(this)"
+                                     [autocompleteFormControl]="this.pieceFormControl"/>
+          <mat-form-field class="colspan-2">
+            <mat-label>Quantité</mat-label>
+            <input matInput
+                   [formControl]="this.quantiteFormControl"/>
+            @if (this.quantiteFormControl.hasError("validation")) {
+              <mat-error class="error">
+                {{ this.quantiteFormControl.getError("validation") }}
+              </mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field class="colspan-2">
+            <mat-label>Description</mat-label>
+            <textarea matInput
+                      [rows]="2"
+                      [formControl]="this.descriptionFormControl">
+            </textarea>
+            @if (this.descriptionFormControl.hasError("validation")) {
+              <mat-error class="error">
+                {{ this.descriptionFormControl.getError("validation") }}
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="save()">Sélectionner</button>
+  <button mat-button [matDialogClose]="null">Annuler</button>
+</div>

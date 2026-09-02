@@ -35,5 +35,12 @@
     }
     </div>
   </mat-tab>
-  <mat-tab label="Services">Services</mat-tab>
+  <mat-tab label="Services">
+    <div class="service-tab">
+      @if (this.machine()) {
+        <app-machine-view-service [machine]="this.machine()!"
+                                  [canEdit]="this.hasEditAccess()"/>
+      }
+    </div>
+  </mat-tab>
 </mat-tab-group>
