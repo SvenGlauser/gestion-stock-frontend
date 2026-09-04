@@ -1,4 +1,4 @@
-import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -12,7 +12,6 @@ import {Observable} from 'rxjs';
 import {Model} from '../../../common/model';
 import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
-import {ValidationException} from '../../../common/utils/validation-exception';
 import {AutocompleteMultipleComponent} from '../../../common/form/input/autocomplete/autocomplete-multiple.component';
 import {ServiceService} from '../../service/service.service';
 import {Service} from '../../service/service.model';
@@ -22,7 +21,6 @@ import {Piece} from '../../piece/piece.model';
 import {MatError, MatFormField, MatInput, MatLabel} from '@angular/material/input';
 import {TextAreaFormField} from '../../../common/form/field/textarea-form-field';
 import {NumberFormField} from '../../../common/form/field/number-form-field';
-import {KeyValuePipe} from '@angular/common';
 import {
   MatAccordion,
   MatExpansionPanel,

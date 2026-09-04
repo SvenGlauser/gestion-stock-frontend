@@ -1,4 +1,4 @@
-import {Component, effect, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, effect, signal, WritableSignal} from '@angular/core';
 import {NgxEchartsDirective} from 'ngx-echarts';
 import * as echarts from 'echarts/core';
 import {PieceService} from '../piece.service';

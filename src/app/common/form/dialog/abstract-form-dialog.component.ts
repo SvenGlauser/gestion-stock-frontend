@@ -8,7 +8,6 @@ import {FormComponent} from '../form.component';
 import {getValueFromAttributeInCascade, setValueOfAttributeInCascade} from '../../utils/function.utils';
 import {ValidationException} from '../../utils/validation-exception';
 import {AbstractProtectedComponent} from '../../abstract/abstract-protected-component.directive';
-import {Roles} from '../../../security/roles';
 import {Model} from '../../model';
 
 @Directive()

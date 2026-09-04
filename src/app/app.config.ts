@@ -1,8 +1,8 @@
-import {ApplicationConfig, LOCALE_ID, provideZoneChangeDetection, provideZonelessChangeDetection} from '@angular/core';
+import {ApplicationConfig, provideZonelessChangeDetection} from '@angular/core';
 import {provideRouter} from '@angular/router';
 
 import {routes} from './app.routes';
-import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
+import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {MatPaginatorIntl} from '@angular/material/paginator';
 import {AppPaginatorIntl} from './config/paginator-intl';

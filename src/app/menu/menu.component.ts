@@ -1,4 +1,4 @@
-import {Component, computed, Signal, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, Signal} from '@angular/core';
 import {MatNavList} from '@angular/material/list';
 import {MenuLink, menuLinkGroupNameMapper} from './menu-link';
 import {MenuItemComponent} from './menu-item/menu-item.component';

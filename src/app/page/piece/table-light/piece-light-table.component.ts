@@ -1,7 +1,6 @@
-import {Component, input, InputSignal, Signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, InputSignal, Signal, viewChild} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
-import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {map, mergeMap, Observable, of, tap} from 'rxjs';
 import {SearchResult} from '../../../common/search/search-result';
 import {TableComponent} from '../../../common/table/table.component';

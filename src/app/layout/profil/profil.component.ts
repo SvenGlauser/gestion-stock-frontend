@@ -1,4 +1,4 @@
-import {Component, computed, Signal, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, Signal} from '@angular/core';
 import {AuthentificationService} from '../../security/authentification.service';
 import {MatIconButton} from '@angular/material/button';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';

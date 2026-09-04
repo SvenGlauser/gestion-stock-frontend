@@ -1,4 +1,13 @@
-import {Component, computed, model, ModelSignal, Signal, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  model,
+  ModelSignal,
+  signal,
+  Signal,
+  WritableSignal
+} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
 import {MatMenu, MatMenuTrigger} from '@angular/material/menu';

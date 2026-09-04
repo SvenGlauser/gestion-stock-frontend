@@ -1,4 +1,4 @@
-import {Component, computed, Signal, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, Signal} from '@angular/core';
 import {WidgetComponent} from '../../common/widget/widget.component';
 import {MenuLink} from '../../menu/menu-link';
 import {MenuService} from '../../menu/menu.service';

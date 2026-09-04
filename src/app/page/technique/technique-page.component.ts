@@ -1,4 +1,4 @@
-import {Component, computed, Signal, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, signal, Signal, WritableSignal} from '@angular/core';
 import {FileUploaderComponent} from '../../common/form/input/file-uploader/file-uploader.component';
 import {TechniqueService} from './technique.service';
 import {HttpErrorResponse, HttpStatusCode} from '@angular/common/http';

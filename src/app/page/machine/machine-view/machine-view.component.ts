@@ -1,4 +1,14 @@
-import {Component, DestroyRef, effect, ElementRef, Signal, signal, viewChild, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  effect,
+  ElementRef,
+  signal,
+  Signal,
+  viewChild,
+  WritableSignal
+} from '@angular/core';
 import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
 import {Roles} from '../../../security/roles';
 import {LayoutService} from '../../../layout/service/layout.service';

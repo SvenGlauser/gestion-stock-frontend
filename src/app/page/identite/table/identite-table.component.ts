@@ -1,4 +1,4 @@
-import {Component, signal, Signal, viewChild, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Signal, signal, viewChild, WritableSignal} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {IdentiteService} from '../identite.service';
@@ -11,7 +11,6 @@ import {MethodColumn} from '../../../common/table/column/method-column';
 import {PersonnePhysiqueDialogComponent} from '../dialog/personne-physique-dialog.component';
 import {LinkColumn} from '../../../common/table/column/link-column';
 import {IdentiteLight, IdentiteType} from '../identite.model';
-import {Adresse} from '../../adresse/adresse';
 import {Model} from '../../../common/model';
 import {PersonneMoraleDialogComponent} from '../dialog/personne-morale-dialog.component';
 import {MatButton} from '@angular/material/button';

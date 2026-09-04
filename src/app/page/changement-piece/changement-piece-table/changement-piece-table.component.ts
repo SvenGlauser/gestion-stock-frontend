@@ -1,4 +1,4 @@
-import {Component, input, InputSignal, Signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, InputSignal, Signal, viewChild} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
@@ -8,7 +8,6 @@ import {TableComponent} from '../../../common/table/table.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmationDialogComponent} from '../../../common/confirmation-dialog/confirmation-dialog.component';
-import {Model} from '../../../common/model';
 import {Roles} from '../../../security/roles';
 import {ChangementPiece} from '../changement-piece.model';
 import {Service} from '../../service/service.model';

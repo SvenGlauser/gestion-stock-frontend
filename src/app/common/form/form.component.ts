@@ -1,4 +1,4 @@
-import {afterNextRender, Component, input, InputSignal, ChangeDetectionStrategy} from '@angular/core';
+import {afterNextRender, ChangeDetectionStrategy, Component, input, InputSignal} from '@angular/core';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
@@ -26,7 +26,7 @@ import {
   MatDatepickerModule,
   MatDatepickerToggle
 } from '@angular/material/datepicker';
-import {MatNativeDateModule, provideNativeDateAdapter} from '@angular/material/core';
+import {provideNativeDateAdapter} from '@angular/material/core';
 
 @Component({
   selector: 'app-form',

@@ -1,5 +1,6 @@
 import {
   afterNextRender,
+  ChangeDetectionStrategy,
   Component,
   computed,
   contentChildren,
@@ -13,8 +14,7 @@ import {
   Signal,
   untracked,
   viewChild,
-  WritableSignal,
-  ChangeDetectionStrategy
+  WritableSignal
 } from '@angular/core';
 import {
   MatCell,
@@ -23,7 +23,8 @@ import {
   MatHeaderCell,
   MatHeaderCellDef,
   MatHeaderRow,
-  MatHeaderRowDef, MatNoDataRow,
+  MatHeaderRowDef,
+  MatNoDataRow,
   MatRow,
   MatRowDef,
   MatTable

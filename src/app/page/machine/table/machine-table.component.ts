@@ -1,12 +1,13 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  computed,
+  signal,
   Signal,
   viewChild,
   viewChildren,
-  ChangeDetectionStrategy,
-  computed,
-  signal,
-  WritableSignal, ChangeDetectorRef
+  WritableSignal
 } from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';

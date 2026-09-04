@@ -1,4 +1,4 @@
-import {Component, Signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Signal, viewChild} from '@angular/core';
 import {ExceptionService} from '../exception.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {TableComponent} from '../../../common/table/table.component';

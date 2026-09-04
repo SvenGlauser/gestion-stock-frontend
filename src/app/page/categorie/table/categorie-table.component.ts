@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {Categorie} from '../categorie.model';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';

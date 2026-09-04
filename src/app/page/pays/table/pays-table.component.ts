@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {PaysService} from '../pays.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {TableComponent} from '../../../common/table/table.component';

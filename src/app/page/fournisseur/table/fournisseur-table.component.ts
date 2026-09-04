@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {Model} from '../../../common/model';
@@ -12,7 +12,6 @@ import {MethodColumn} from '../../../common/table/column/method-column';
 import {FournisseurDialogComponent} from '../dialog/fournisseur-dialog.component';
 import {LinkColumn} from '../../../common/table/column/link-column';
 import {Fournisseur} from '../fournisseur.model';
-import {Adresse} from '../../adresse/adresse';
 import {Roles} from '../../../security/roles';
 import {AutomaticSearchField, FilterType} from '../../../common/search/automatic/automatic-search-field';
 import {Direction} from '../../../common/search/api/search-field';

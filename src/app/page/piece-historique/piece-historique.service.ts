@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SearchResult} from '../../common/search/search-result';
 import {PieceHistorique} from './piece-historique.model';
-import {map, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {AutomaticSearchQuery} from '../../common/search/automatic/automatic-search-query';
 import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 

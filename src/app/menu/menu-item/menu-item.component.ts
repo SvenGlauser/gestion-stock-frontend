@@ -1,4 +1,4 @@
-import {Component, input, InputSignal, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, InputSignal} from '@angular/core';
 import {MenuLink} from '../menu-link';
 import {MatIcon} from '@angular/material/icon';
 import {MatListItem, MatListItemTitle} from '@angular/material/list';
