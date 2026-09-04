@@ -51,9 +51,6 @@ import {provideNativeDateAdapter} from '@angular/material/core';
     MatDatepickerModule,
     MatSuffix,
   ],
-  providers: [
-    provideNativeDateAdapter(),
-  ],
   templateUrl: './form.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './form.component.scss'

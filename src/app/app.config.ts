@@ -16,6 +16,7 @@ import {CanvasRenderer} from 'echarts/renderers';
 import {includeBearerTokenInterceptor} from 'keycloak-angular';
 import {provideKeycloakAndInterceptor} from './security/keycloak.initializer';
 import {catchHttpExceptionInterceptor} from './config/catch-http-exception.interceptor';
+import {provideNativeDateAdapter} from '@angular/material/core';
 
 echarts.use([
   BarChart,
@@ -31,6 +32,7 @@ echarts.use([
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
+    provideNativeDateAdapter(),
     provideRouter(routes),
     provideHttpClient(
       withInterceptors([
