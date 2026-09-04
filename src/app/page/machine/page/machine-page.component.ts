@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
 import {Roles} from '../../../security/roles';
 import {MachineTableComponent} from '../table/machine-table.component';
@@ -9,6 +9,7 @@ import {MachineTableComponent} from '../table/machine-table.component';
     MachineTableComponent
   ],
   templateUrl: './machine-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './machine-page.component.scss',
 })
 export class MachinePageComponent extends AbstractProtectedComponent {

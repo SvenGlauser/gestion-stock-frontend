@@ -8,7 +8,6 @@ import {FormComponent} from '../form.component';
 import {getValueFromAttributeInCascade, setValueOfAttributeInCascade} from '../../utils/function.utils';
 import {ValidationException} from '../../utils/validation-exception';
 import {AbstractProtectedComponent} from '../../abstract/abstract-protected-component.directive';
-import {Roles} from '../../../security/roles';
 import {Model} from '../../model';
 
 @Directive()
@@ -226,21 +225,15 @@ export abstract class AbstractFormDialogComponent<T extends AbstractFormDialogCo
    */
   protected abstract deleteDataMethod(id: number): Observable<void>;
 
-  protected override hasAccess(roles: string[]): boolean {
-    let role: Roles;
-
+  protected override hasAccess(): boolean {
     switch (this.data.type) {
       case DialogType.READ:
-        role = this.readAccess();
-        break;
+        return this.hasReadAccess();
       case DialogType.CREATE:
       case DialogType.MODIFY:
       case DialogType.DELETE:
-        role = this.editAccess();
-        break;
+        return this.hasEditAccess();
     }
-
-    return roles.includes(role.toString());
   }
 
   protected override noAcessAction(): void {

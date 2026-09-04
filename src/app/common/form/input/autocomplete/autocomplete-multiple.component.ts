@@ -1,4 +1,4 @@
-import {Component, input, InputSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, InputSignal} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {AutocompleteMethod} from './autocomplete';
@@ -21,6 +21,7 @@ import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from '@angular/mater
     MatLabel
   ],
   templateUrl: './abstract/abstract-autocomplete.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './abstract/abstract-autocomplete.component.scss'
 })
 export class AutocompleteMultipleComponent<T extends Record<string, any>> extends AbstractAutocompleteComponent<T> {

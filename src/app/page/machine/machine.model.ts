@@ -12,6 +12,7 @@ export class Machine extends Model {
   // Field constantes
   public static readonly NOM = 'nom';
   public static readonly DESCRIPTION = 'description';
+  public static readonly NUMERO_CHASSIS = 'numeroChassis';
   public static readonly PROPRIETAIRE = 'proprietaire';
   public static readonly PROPRIETAIRE_ID = this.PROPRIETAIRE.concat(".", Model.ID);
   public static readonly PIECES = 'pieces';
@@ -19,6 +20,7 @@ export class Machine extends Model {
   // Label constantes
   public static readonly NOM_LABEL = 'Nom';
   public static readonly DESCRIPTION_LABEL = 'Description';
+  public static readonly NUMERO_CHASSIS_LABEL = 'Numéro de chassis';
   public static readonly PROPRIETAIRE_LABEL = 'Propriétaire';
   public static readonly PIECES_LABEL = 'Pièces';
 
@@ -27,6 +29,7 @@ export class Machine extends Model {
 
   public nom: string | null = null;
   public description: string | null = null;
+  public numeroChassis: string | null = null;
   public proprietaire: Identite | null = null;
   public pieces: Piece[] = [];
 
@@ -36,6 +39,7 @@ export class Machine extends Model {
     if (machine) {
       this.nom = machine.nom;
       this.description = machine.description;
+      this.numeroChassis = machine.numeroChassis;
       if (machine.proprietaire) {
         if (machine.proprietaire.identiteType == IdentiteType.PERSONNE_MORALE) {
           this.proprietaire = new PersonneMorale(machine.proprietaire as PersonneMorale);

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {map, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {PersonnePhysique} from './personne-physique.model';
 import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 

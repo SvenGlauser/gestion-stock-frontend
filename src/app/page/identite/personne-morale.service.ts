@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {map, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {PersonneMorale} from './personne-morale.model';
 import {GestionStockApiService} from '../../config/gestion-stock-api.service';
-import {PersonnePhysique} from './personne-physique.model';
 
 @Injectable({
   providedIn: 'root'

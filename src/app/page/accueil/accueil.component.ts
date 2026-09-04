@@ -1,4 +1,4 @@
-import {Component, computed, Signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, Signal} from '@angular/core';
 import {WidgetComponent} from '../../common/widget/widget.component';
 import {MenuLink} from '../../menu/menu-link';
 import {MenuService} from '../../menu/menu.service';
@@ -9,6 +9,7 @@ import {MenuService} from '../../menu/menu.service';
     WidgetComponent
   ],
   templateUrl: './accueil.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './accueil.component.scss'
 })
 export class AccueilComponent {

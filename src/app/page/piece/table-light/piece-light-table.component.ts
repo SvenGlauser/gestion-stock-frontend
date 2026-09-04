@@ -1,7 +1,6 @@
-import {Component, input, InputSignal, Signal, viewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, InputSignal, Signal, viewChild} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
-import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {map, mergeMap, Observable, of, tap} from 'rxjs';
 import {SearchResult} from '../../../common/search/search-result';
 import {TableComponent} from '../../../common/table/table.component';
@@ -22,6 +21,7 @@ import {PieceSearchQuery} from '../piece.searchquery';
     TableComponent
   ],
   templateUrl: './piece-light-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './piece-light-table.component.scss'
 })
 export class PieceLightTableComponent {
@@ -41,7 +41,7 @@ export class PieceLightTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: PieceDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     read: true,
     created: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB
     modify: false, // Ne pas activer comme ça simplement, car la recherche ne recherche pas les nouvelles valeurs en DB

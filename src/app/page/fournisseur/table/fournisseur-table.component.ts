@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {Model} from '../../../common/model';
@@ -12,7 +12,6 @@ import {MethodColumn} from '../../../common/table/column/method-column';
 import {FournisseurDialogComponent} from '../dialog/fournisseur-dialog.component';
 import {LinkColumn} from '../../../common/table/column/link-column';
 import {Fournisseur} from '../fournisseur.model';
-import {Adresse} from '../../adresse/adresse';
 import {Roles} from '../../../security/roles';
 import {AutomaticSearchField, FilterType} from '../../../common/search/automatic/automatic-search-field';
 import {Direction} from '../../../common/search/api/search-field';
@@ -23,6 +22,7 @@ import {Direction} from '../../../common/search/api/search-field';
     TableComponent
   ],
   templateUrl: './fournisseur-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './fournisseur-table.component.scss'
 })
 export class FournisseurTableComponent {
@@ -37,7 +37,7 @@ export class FournisseurTableComponent {
     LinkColumn
       .of<AutomaticSearchQuery>(Fournisseur.URL_LABEL, Fournisseur.URL, 15, (fournisseur: Fournisseur) => fournisseur.url ?? ""),
     MethodColumn
-      .of<AutomaticSearchQuery>(Fournisseur.ADRESSE_LABEL, Fournisseur.IDENTITE_ADRESSE, 25, Adresse.adresseToString)
+      .of<AutomaticSearchQuery>(Fournisseur.ADRESSE_LABEL, Fournisseur.IDENTITE_ADRESSE, 25, adresse => adresse?.adresseToString())
       .setStylePreWrap(),
   ]
 
@@ -45,7 +45,7 @@ export class FournisseurTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: FournisseurDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     created: true,
     delete: true,
     modify: true,

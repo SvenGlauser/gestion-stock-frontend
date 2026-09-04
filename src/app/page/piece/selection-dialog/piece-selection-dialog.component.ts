@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {MatButton} from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -30,6 +30,7 @@ import {AutocompleteMultipleComponent} from '../../../common/form/input/autocomp
     AutocompleteMultipleComponent
   ],
   templateUrl: './piece-selection-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './piece-selection-dialog.component.scss'
 })
 export class PieceSelectionDialogComponent {

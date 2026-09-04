@@ -1,4 +1,4 @@
-import {Component, input, InputSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, InputSignal} from '@angular/core';
 import {MatCard, MatCardContent} from '@angular/material/card';
 import {MatIcon} from '@angular/material/icon';
 import {RouterLink} from '@angular/router';
@@ -12,6 +12,7 @@ import {RouterLink} from '@angular/router';
     RouterLink
   ],
   templateUrl: './widget.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './widget.component.scss'
 })
 export class WidgetComponent {

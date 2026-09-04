@@ -8,7 +8,7 @@ import {
   withAutoRefreshToken
 } from 'keycloak-angular';
 import {environment} from '../../environments/environment';
-import {buildUrl, buildUrlFromInterface} from '../common/utils/function.utils';
+import {buildUrlFromInterface} from '../common/utils/function.utils';
 
 export const provideKeycloakAndInterceptor = () => {
   const url: string = buildUrlFromInterface(environment.api);

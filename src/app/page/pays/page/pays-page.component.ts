@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
 import {Roles} from '../../../security/roles';
 import {PaysTableComponent} from '../table/pays-table.component';
@@ -9,6 +9,7 @@ import {PaysTableComponent} from '../table/pays-table.component';
     PaysTableComponent
   ],
   templateUrl: './pays-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pays-page.component.scss',
 })
 export class PaysPageComponent extends AbstractProtectedComponent {

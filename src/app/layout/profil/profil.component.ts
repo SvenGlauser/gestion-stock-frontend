@@ -1,4 +1,4 @@
-import {Component, computed, Signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, Signal} from '@angular/core';
 import {AuthentificationService} from '../../security/authentification.service';
 import {MatIconButton} from '@angular/material/button';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
@@ -16,6 +16,7 @@ import {MatDivider} from '@angular/material/list';
     MatDivider
   ],
   templateUrl: './profil.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './profil.component.scss',
 })
 export class ProfilComponent {

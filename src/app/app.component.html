@@ -14,7 +14,7 @@
   </div>
 </mat-toolbar>
 
-<mat-drawer-container>
+<mat-drawer-container [class.view]="layoutService.isView()">
   <mat-drawer #menu mode="side" opened="true">
     <div class="menu-wrapper">
       <app-menu></app-menu>

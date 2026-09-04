@@ -34,6 +34,20 @@
                   </mat-error>
                 }
               </mat-form-field>
+            } @else if (DateFormField.isInstanceOf(formField)) {
+              <mat-form-field [ngClass]="{'colspan-1': formField.colspan === 1, 'colspan-2': formField.colspan === 2}">
+                <mat-label>{{ formField.label }}</mat-label>
+                <input matInput
+                       [formControl]="formField.formControl"
+                       [matDatepicker]="picker"/>
+                <mat-datepicker-toggle matIconSuffix [for]="picker" />
+                <mat-datepicker #picker />
+                @if (formField.formControl.hasError("validation")) {
+                  <mat-error class="error">
+                    {{ formField.formControl.getError("validation") }}
+                  </mat-error>
+                }
+              </mat-form-field>
             } @else if (TextAreaFormField.isInstanceOf(formField)) {
               <mat-form-field [ngClass]="{'colspan-1': formField.colspan === 1, 'colspan-2': formField.colspan === 2}">
                 <mat-label>{{ formField.label }}</mat-label>

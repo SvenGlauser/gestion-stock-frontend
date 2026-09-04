@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {LocaliteTableComponent} from '../table/localite-table.component';
 import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
 import {Roles} from '../../../security/roles';
@@ -9,6 +9,7 @@ import {Roles} from '../../../security/roles';
     LocaliteTableComponent
   ],
   templateUrl: './localite-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './localite-page.component.scss',
 })
 export class LocalitePageComponent extends AbstractProtectedComponent {

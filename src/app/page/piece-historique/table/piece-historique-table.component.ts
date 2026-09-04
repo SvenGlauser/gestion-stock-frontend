@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {PieceHistoriqueService} from '../piece-historique.service';
@@ -29,6 +29,7 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
     TableComponent
   ],
   templateUrl: './piece-historique-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './piece-historique-table.component.scss'
 })
 export class PieceHistoriqueTableComponent {
@@ -62,7 +63,7 @@ export class PieceHistoriqueTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: PieceHistoriqueDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     created: false,
     delete: true,
     modify: false,

@@ -1,4 +1,14 @@
-import {Component, Signal, viewChild, viewChildren} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  computed,
+  signal,
+  Signal,
+  viewChild,
+  viewChildren,
+  WritableSignal
+} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {MachineService} from '../machine.service';
@@ -9,7 +19,7 @@ import {TableComponent} from '../../../common/table/table.component';
 import {MachineDialogComponent} from '../dialog/machine-dialog.component';
 import {ClassicColumn} from '../../../common/table/column/classic-column';
 import {MethodColumn} from '../../../common/table/column/method-column';
-import {ActivatedRoute, ParamMap} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {
   MatCell,
   MatCellDef,
@@ -55,12 +65,13 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
     MatBadgeModule
   ],
   templateUrl: './machine-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './machine-table.component.scss'
 })
 export class MachineTableComponent {
   // Définition des colonnes
   protected columns: Column<AutomaticSearchQuery>[] = [
-    CustomColumn.of("", Machine.ROW_EXTENDER, 10),
+    CustomColumn.ofWithoutChooser("", Machine.ROW_EXTENDER, 10),
     ClassicColumn
       .of<AutomaticSearchQuery>(Machine.NOM_LABEL, Machine.NOM, 20)
       .sort(searchQuery => searchQuery.getFilter(Machine.NOM))
@@ -68,6 +79,9 @@ export class MachineTableComponent {
     ClassicColumn.of(Machine.DESCRIPTION_LABEL, Machine.DESCRIPTION, 45),
     MethodColumn.of(Machine.PROPRIETAIRE_LABEL, Machine.PROPRIETAIRE, 20, (identite: Identite) => identite.getDesignation()),
   ]
+
+  protected title: Signal<string> = computed(this.getTableTitle.bind(this));
+  protected proprietaire: WritableSignal<Identite| null> = signal(null);
 
   private readonly matTable: Signal<TableComponent<Machine, AutomaticSearchQuery>> = viewChild.required<TableComponent<Machine, AutomaticSearchQuery>>(TableComponent);
   private readonly piecesLightsTables: Signal<readonly PieceLightTableComponent[]> = viewChildren<PieceLightTableComponent>(PieceLightTableComponent);
@@ -77,7 +91,7 @@ export class MachineTableComponent {
     dialogComponent: MachineDialogComponent,
     dialogSpecificData: {proprietaire: null},
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: (machine: Machine) => this.router.navigate(['machines', machine.id]),
     created: true,
     delete: true,
     modify: true,
@@ -89,14 +103,15 @@ export class MachineTableComponent {
 
   private currentProprietaireType: string | null = null;
   private currentProprietaireId: number | null = null;
-  protected proprietaire: Identite | null = null;
   protected extendedRowId: number | null = null;
 
   constructor(private readonly machineService: MachineService,
               private readonly personnePhysiqueService: PersonnePhysiqueService,
               private readonly personneMoraleService: PersonneMoraleService,
               private readonly route: ActivatedRoute,
-              private readonly matDialog: MatDialog) {
+              private readonly router: Router,
+              private readonly matDialog: MatDialog,
+              private readonly cd: ChangeDetectorRef,) {
     this.route
       .paramMap
       .pipe(takeUntilDestroyed())
@@ -107,13 +122,13 @@ export class MachineTableComponent {
         if (this.currentProprietaireType && this.currentProprietaireId) {
           if (this.currentProprietaireType == 'morale') {
             this.personneMoraleService.get(this.currentProprietaireId).subscribe(proprietaire => {
-              this.proprietaire = proprietaire;
-              this.actionColumnInfo.dialogSpecificData.proprietaire = this.proprietaire;
+              this.proprietaire.set(proprietaire);
+              this.actionColumnInfo.dialogSpecificData.proprietaire = proprietaire;
             });
           } else if (this.currentProprietaireType == 'physique') {
             this.personnePhysiqueService.get(this.currentProprietaireId).subscribe(proprietaire => {
-              this.proprietaire = proprietaire;
-              this.actionColumnInfo.dialogSpecificData.proprietaire = this.proprietaire;
+              this.proprietaire.set(proprietaire);
+              this.actionColumnInfo.dialogSpecificData.proprietaire = proprietaire;
             });
           }
         }
@@ -137,7 +152,8 @@ export class MachineTableComponent {
    * @param searchRequest SearchRequest
    */
   protected getUpdateMethod(searchRequest: AutomaticSearchQuery): Observable<SearchResult<Machine>> {
-    if (!this.proprietaire) {
+    let proprietaire = this.proprietaire();
+    if (!proprietaire) {
       return of(<SearchResult<Machine>>{
         currentPage: 0,
         pageSize: 10,
@@ -149,7 +165,7 @@ export class MachineTableComponent {
 
     let searchRequestModified: AutomaticSearchQuery = structuredClone(searchRequest);
     let proprietaireIdField: AutomaticSearchField<number | null> = new AutomaticSearchField(Machine.PROPRIETAIRE_ID, FilterType.EQUAL);
-    proprietaireIdField.value = this.proprietaire.id;
+    proprietaireIdField.value = proprietaire.id;
 
     searchRequestModified.combinators.push({
       type: FilterCombinatorType.AND,
@@ -161,12 +177,13 @@ export class MachineTableComponent {
   /**
    * Récupère le nom du tableau
    */
-  protected getTableTitle(): string {
+  private getTableTitle(): string {
     let title: string = 'Liste des machines';
 
-    if (this.proprietaire) {
+    let proprietaire = this.proprietaire();
+    if (proprietaire) {
       title += " - ";
-      title += this.proprietaire.getDesignation();
+      title += proprietaire.getDesignation();
     }
 
     return title;
@@ -217,6 +234,8 @@ export class MachineTableComponent {
                 table.table().update();
               }
             }
+
+            this.cd.markForCheck();
           }
         }),
         map(() => false));

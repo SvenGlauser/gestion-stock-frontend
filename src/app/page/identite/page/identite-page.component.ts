@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {IdentiteTableComponent} from '../table/identite-table.component';
 import {AbstractProtectedComponent} from '../../../common/abstract/abstract-protected-component.directive';
 import {Roles} from '../../../security/roles';
@@ -9,6 +9,7 @@ import {Roles} from '../../../security/roles';
     IdentiteTableComponent
   ],
   templateUrl: './identite-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './identite-page.component.scss',
 })
 export class IdentitePageComponent extends AbstractProtectedComponent {

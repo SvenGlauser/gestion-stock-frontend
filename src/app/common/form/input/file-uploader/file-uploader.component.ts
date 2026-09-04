@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   ElementRef,
@@ -24,6 +25,7 @@ import {MatButton} from '@angular/material/button';
     MatButton
   ],
   templateUrl: './file-uploader.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './file-uploader.component.scss'
 })
 export class FileUploaderComponent {

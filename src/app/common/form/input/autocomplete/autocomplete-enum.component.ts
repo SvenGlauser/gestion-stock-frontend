@@ -1,4 +1,4 @@
-import {Component, input, InputSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, InputSignal} from '@angular/core';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from '@angular/material/autocomplete';
@@ -20,6 +20,7 @@ import {AbstractAutocompleteComponent} from './abstract/abstract-autocomplete.co
     MatLabel
   ],
   templateUrl: './abstract/abstract-autocomplete.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './abstract/abstract-autocomplete.component.scss'
 })
 export class AutocompleteEnumComponent<T> extends AbstractAutocompleteComponent<T> {

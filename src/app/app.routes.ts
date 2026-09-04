@@ -15,6 +15,7 @@ import {FournisseurPageComponent} from './page/fournisseur/page/fournisseur-page
 import {LocalitePageComponent} from './page/localite/page/localite-page.component';
 import {PaysPageComponent} from './page/pays/page/pays-page.component';
 import {ExceptionPageComponent} from './page/exception/page/exception-page.component';
+import {MachineViewComponent} from './page/machine/machine-view/machine-view.component';
 
 export interface AppRoute extends Route {
   data?: {
@@ -29,7 +30,8 @@ export interface AppRoute extends Route {
       disabledLabel?: string;
       group: MenuLinkGroup;
       order: number;
-    }
+    },
+    layoutType?: 'page' | 'view',
   },
   canActivate: Array<CanActivateFn>,
 }
@@ -98,9 +100,7 @@ export const routes: AppRoute[] = [
     canActivate: [authGuard],
     canActivateChild: [adminChildGuard],
   }, {
-    path: 'machines/:typeIdentite/:id',
-    component: MachinePageComponent,
-    children: [],
+    path: 'machines',
     title: 'Machines',
     data: {
       menu: {
@@ -115,6 +115,25 @@ export const routes: AppRoute[] = [
         roles: [Roles.R_MACHINE_LECTEUR],
       }
     },
+    children: [
+      {
+        path: ':typeIdentite/:id',
+        component: MachinePageComponent,
+        children: [],
+        canActivate: [authGuard],
+        canActivateChild: [adminChildGuard],
+      },
+      {
+        path: ':id',
+        component: MachineViewComponent,
+        children: [],
+        canActivate: [authGuard],
+        canActivateChild: [adminChildGuard],
+        data: {
+          layout: 'view',
+        }
+      }
+    ],
     canActivate: [authGuard],
     canActivateChild: [adminChildGuard],
   }, {

@@ -1,4 +1,13 @@
-import {Component, model, ModelSignal, signal, WritableSignal} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  model,
+  ModelSignal,
+  signal,
+  Signal,
+  WritableSignal
+} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
 import {MatMenu, MatMenuTrigger} from '@angular/material/menu';
@@ -18,12 +27,14 @@ import {SearchQuery} from '../../search/custom/search-query';
     FormsModule
   ],
   templateUrl: './column-chooser.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './column-chooser.component.scss',
 })
 export class ColumnChooserComponent<R extends SearchQuery> {
   public readonly columns: ModelSignal<Column<R>[]> = model.required();
 
   protected readonly isMenuOpen: WritableSignal<boolean> = signal(false);
+  protected readonly isUnselectImpossible: Signal<boolean> = computed(this.isUnselectImpossibleCalcul.bind(this));
 
   /**
    * Informe que le menu est ouvert
@@ -44,5 +55,17 @@ export class ColumnChooserComponent<R extends SearchQuery> {
    */
   protected changed(): void {
     this.columns.set([...this.columns()]);
+  }
+
+  /**
+   * Vérifie s'il est possible de désélectionner un élément de la liste actuelle
+   *
+   * @return True s'il est possible de désélectionner une option
+   */
+  private isUnselectImpossibleCalcul(): boolean {
+    return this.columns()
+      .map((column: Column<R>) => column.view)
+      .filter(view => view)
+      .length <= 1;
   }
 }

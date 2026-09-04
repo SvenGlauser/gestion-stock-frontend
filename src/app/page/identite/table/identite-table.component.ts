@@ -1,4 +1,4 @@
-import {Component, signal, Signal, viewChild, WritableSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Signal, signal, viewChild, WritableSignal} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
 import {IdentiteService} from '../identite.service';
@@ -11,7 +11,6 @@ import {MethodColumn} from '../../../common/table/column/method-column';
 import {PersonnePhysiqueDialogComponent} from '../dialog/personne-physique-dialog.component';
 import {LinkColumn} from '../../../common/table/column/link-column';
 import {IdentiteLight, IdentiteType} from '../identite.model';
-import {Adresse} from '../../adresse/adresse';
 import {Model} from '../../../common/model';
 import {PersonneMoraleDialogComponent} from '../dialog/personne-morale-dialog.component';
 import {MatButton} from '@angular/material/button';
@@ -31,6 +30,7 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
     MatButton
   ],
   templateUrl: './identite-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './identite-table.component.scss'
 })
 export class IdentiteTableComponent {
@@ -47,7 +47,7 @@ export class IdentiteTableComponent {
       .sort(searchQuery => searchQuery.getFilter(IdentiteLight.TELEPHONE))
       .inputFilter(searchQuery => searchQuery.getFilter(IdentiteLight.TELEPHONE)),
     MethodColumn
-      .of<AutomaticSearchQuery>(IdentiteLight.ADRESSE_LABEL, IdentiteLight.ADRESSE, 20, Adresse.adresseToString)
+      .of<AutomaticSearchQuery>(IdentiteLight.ADRESSE_LABEL, IdentiteLight.ADRESSE, 20, adresse => adresse?.adresseToString())
       .setStylePreWrap(),
     LinkColumn
       .of<AutomaticSearchQuery>(IdentiteLight.MACHINES_LABEL, IdentiteLight.MACHINES, 10, (identite: IdentiteLight) => {
@@ -77,7 +77,7 @@ export class IdentiteTableComponent {
       return null;
     },
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     created: false,
     delete: true,
     modify: true,

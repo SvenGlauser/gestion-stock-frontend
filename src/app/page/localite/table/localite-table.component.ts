@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {TableComponent} from "../../../common/table/table.component";
 import {PaysService} from '../../pays/pays.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
@@ -14,7 +14,6 @@ import {Localite} from '../localite.model';
 import {Column} from '../../../common/table/column/column';
 import {Roles} from '../../../security/roles';
 import {AutomaticSearchField, FilterType} from '../../../common/search/automatic/automatic-search-field';
-import {Machine} from '../../machine/machine.model';
 
 @Component({
   selector: 'app-localite-table',
@@ -22,6 +21,7 @@ import {Machine} from '../../machine/machine.model';
     TableComponent
   ],
   templateUrl: './localite-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './localite-table.component.scss'
 })
 export class LocaliteTableComponent {
@@ -49,7 +49,7 @@ export class LocaliteTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: LocaliteDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     created: true,
     delete: true,
     modify: true,

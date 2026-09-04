@@ -64,6 +64,22 @@ export abstract class Identite extends Model {
     }
   }
 
+  public toAdresseFormat(): string {
+    let identiteString = "";
+
+    if (this.getDesignation()) {
+      identiteString = identiteString.concat(this.getDesignation(), " ");
+    }
+
+    let adresseString = this.adresse?.adresseToString();
+
+    if (adresseString) {
+      identiteString = identiteString.concat("\n", adresseString);
+    }
+
+    return identiteString;
+  }
+
   public abstract getDesignation(): string;
 }
 
@@ -80,26 +96,6 @@ export class IdentiteLight extends Identite {
     if (identite) {
       this.designation = identite.designation;
     }
-  }
-
-  public static identiteToString(identite: IdentiteLight | null): string {
-    if (!identite) {
-      return "";
-    }
-
-    let identiteString = "";
-
-    if (identite.designation) {
-      identiteString = identiteString.concat(identite.designation, " ");
-    }
-
-    let adresseString = Adresse.adresseToString(identite.adresse);
-
-    if (adresseString) {
-      identiteString = identiteString.concat("\n", adresseString);
-    }
-
-    return identiteString;
   }
 
   public getDesignation(): string {

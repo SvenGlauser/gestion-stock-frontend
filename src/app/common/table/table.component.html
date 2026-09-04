@@ -6,6 +6,13 @@
         @if (this.actionColumnInfo().created && this.haveEditAccessRole()) {
           <button mat-flat-button (click)="this.openDialog(null, DialogType.CREATE)">Créer</button>
         }
+        @for (button of this.actionColumnInfo().buttons ?? []; track button.name) {
+          @if (!button.condition || button.condition()) {
+            <button mat-flat-button (click)="this.runButton(button.action)">
+              {{ button.name }}
+            </button>
+          }
+        }
         <app-column-chooser [(columns)]="this.columns"/>
       </div>
   </div>
@@ -105,7 +112,7 @@
             }
             @for (action of this.actionColumnInfo().actions ?? []; track action.name) {
               @if (!action.condition || action.condition(element)) {
-                <button mat-menu-item (click)="this.run(action.action, element)">
+                <button mat-menu-item (click)="this.runAction(action.action, element)">
                   {{ action.name }}
                 </button>
               }
@@ -166,23 +173,38 @@
         *matHeaderRowDef="['filters']"
         [ngClass]="{'closed': !this.viewFilter()}"></tr>
 
-    @if (this.actionColumnInfo().clicOnLine) {
+    @let clicOnLine = this.actionColumnInfo().clicOnLine;
+    @if (clicOnLine === 'none') {
+      <tr mat-row *matRowDef="let _; columns: this.allColumnsToDisplayAsString();"></tr>
+    } @else if (clicOnLine === 'read') {
       <tr mat-row
           *matRowDef="let row; columns: this.allColumnsToDisplayAsString();"
           class="mat-row-clickable"
           (keydown.enter)="openDialog(row, DialogType.READ)"
           (click)="openDialog(row, DialogType.READ)"></tr>
     } @else {
-      <tr mat-row *matRowDef="let _; columns: this.allColumnsToDisplayAsString();"></tr>
+      <tr mat-row
+          *matRowDef="let row; columns: this.allColumnsToDisplayAsString();"
+          class="mat-row-clickable"
+          (keydown.enter)="clicOnLine(row)"
+          (click)="clicOnLine(row)"></tr>
     }
+
+    <tr *matNoDataRow
+        class="mat-mdc-row mdc-data-table__row">
+      @if (this.haveReadAccessRole()) {
+        <td class="mat-mdc-cell mdc-data-table__cell"
+            [colSpan]="this.allColumnsToDisplayAsString().length">
+          Aucun élément dans la liste
+        </td>
+      } @else {
+        <td class="mat-mdc-cell mdc-data-table__cell"
+            [colSpan]="this.allColumnsToDisplayAsString().length">
+          Vous n'avez pas le droit d'afficher la liste
+        </td>
+      }
+    </tr>
   </table>
-  @if (this.tableLength() === 0) {
-    @if (this.haveReadAccessRole()) {
-      <div class="empty-table">Aucun élément dans la liste</div>
-    } @else {
-      <div class="empty-table">Vous n'avez pas le droit d'afficher la liste</div>
-    }
-  }
   <mat-paginator [pageSizeOptions]="[10, 20, 50]"
                  (page)="changePage($event)"
                  showFirstLastButtons>

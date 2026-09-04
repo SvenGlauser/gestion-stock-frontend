@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {PaysService} from '../pays.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {TableComponent} from '../../../common/table/table.component';
@@ -20,6 +20,7 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
     TableComponent
   ],
   templateUrl: './pays-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pays-table.component.scss'
 })
 export class PaysTableComponent {
@@ -39,7 +40,7 @@ export class PaysTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: PaysDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     created: true,
     delete: true,
     modify: true,

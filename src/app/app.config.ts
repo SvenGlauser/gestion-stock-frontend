@@ -1,8 +1,8 @@
-import {ApplicationConfig, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
+import {ApplicationConfig, provideZonelessChangeDetection} from '@angular/core';
 import {provideRouter} from '@angular/router';
 
 import {routes} from './app.routes';
-import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
+import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {MatPaginatorIntl} from '@angular/material/paginator';
 import {AppPaginatorIntl} from './config/paginator-intl';
@@ -16,6 +16,7 @@ import {CanvasRenderer} from 'echarts/renderers';
 import {includeBearerTokenInterceptor} from 'keycloak-angular';
 import {provideKeycloakAndInterceptor} from './security/keycloak.initializer';
 import {catchHttpExceptionInterceptor} from './config/catch-http-exception.interceptor';
+import {provideNativeDateAdapter} from '@angular/material/core';
 
 echarts.use([
   BarChart,
@@ -30,10 +31,10 @@ echarts.use([
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({eventCoalescing: true}),
+    provideZonelessChangeDetection(),
+    provideNativeDateAdapter(),
     provideRouter(routes),
     provideHttpClient(
-      withFetch(),
       withInterceptors([
         includeBearerTokenInterceptor,
         catchHttpExceptionInterceptor

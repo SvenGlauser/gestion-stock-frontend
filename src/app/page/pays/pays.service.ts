@@ -4,7 +4,6 @@ import {SearchResult} from '../../common/search/search-result';
 import {Pays} from './pays.model';
 import {map, Observable} from 'rxjs';
 import {AutomaticSearchQuery} from '../../common/search/automatic/automatic-search-query';
-import {FilterCombinatorType} from '../../common/search/automatic/automatic-search-field-combinaison';
 import {GestionStockApiService} from '../../config/gestion-stock-api.service';
 import {AutomaticSearchField, FilterType} from '../../common/search/automatic/automatic-search-field';
 import {Direction} from '../../common/search/api/search-field';

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Column} from '../../../common/table/column/column';
 import {Categorie} from '../categorie.model';
 import {ActionColumnInfo} from '../../../common/table/action-column.info';
@@ -21,6 +21,7 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
     TableComponent
   ],
   templateUrl: './categorie-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './categorie-table.component.scss'
 })
 export class CategorieTableComponent {
@@ -40,7 +41,7 @@ export class CategorieTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: CategorieDialogComponent,
     idField: Model.ID,
-    clicOnLine: true,
+    clicOnLine: 'read',
     created: true,
     delete: true,
     modify: true,

@@ -1,4 +1,4 @@
-import {Component, effect, signal, WritableSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, effect, signal, WritableSignal} from '@angular/core';
 import {NgxEchartsDirective} from 'ngx-echarts';
 import * as echarts from 'echarts/core';
 import {PieceService} from '../piece.service';
@@ -19,6 +19,7 @@ import {FilterType} from '../../../common/search/automatic/automatic-search-fiel
   selector: 'app-piece-statistique-page',
   imports: [NgxEchartsDirective, AutocompleteComponent],
   templateUrl: './piece-statistique-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './piece-statistique-page.component.scss'
 })
 export class PieceStatistiquePageComponent extends AbstractProtectedComponent {

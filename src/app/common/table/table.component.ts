@@ -1,5 +1,6 @@
 import {
   afterNextRender,
+  ChangeDetectionStrategy,
   Component,
   computed,
   contentChildren,
@@ -23,6 +24,7 @@ import {
   MatHeaderCellDef,
   MatHeaderRow,
   MatHeaderRowDef,
+  MatNoDataRow,
   MatRow,
   MatRowDef,
   MatTable
@@ -58,6 +60,7 @@ import {AuthentificationService} from '../../security/authentification.service';
 import {SearchQuery} from '../search/custom/search-query';
 import {Direction, SearchField} from '../search/api/search-field';
 import {ColumnChooserComponent} from './column-chooser/column-chooser.component';
+import {getValueFromAttributeInCascade} from '../utils/function.utils';
 
 @Component({
   selector: 'app-table',
@@ -89,9 +92,11 @@ import {ColumnChooserComponent} from './column-chooser/column-chooser.component'
     MatButton,
     RouterLink,
     AutocompleteEnumComponent,
-    ColumnChooserComponent
+    ColumnChooserComponent,
+    MatNoDataRow
   ],
   templateUrl: './table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './table.component.scss'
 })
 export class TableComponent<T extends Record<string, any>, R extends SearchQuery> {
@@ -340,7 +345,7 @@ export class TableComponent<T extends Record<string, any>, R extends SearchQuery
       maxWidth: 1000,
       data: <DialogData>{
         type: type,
-        id: element ? element[this.actionColumnInfo().idField] : null,
+        id: element ? getValueFromAttributeInCascade(this.actionColumnInfo().idField, element) : null,
         specificData: this.actionColumnInfo().dialogSpecificData,
       },
     });
@@ -393,9 +398,22 @@ export class TableComponent<T extends Record<string, any>, R extends SearchQuery
    * Lance une méthode et rafraichit si nécessaire
    *
    * @param action Méthode à exécuter
+   */
+  protected runButton(action: () => Observable<boolean>): void {
+    action().subscribe((needToRefresh: boolean) => {
+      if (needToRefresh) {
+        this.update();
+      }
+    })
+  }
+
+  /**
+   * Lance une méthode et rafraichit si nécessaire
+   *
+   * @param action Méthode à exécuter
    * @param element Elément
    */
-  protected run(action: (value: any) => Observable<boolean>, element: T): void {
+  protected runAction(action: (value: any) => Observable<boolean>, element: T): void {
     action(element).subscribe((needToRefresh: boolean) => {
       if (needToRefresh) {
         this.update();

@@ -16,6 +16,16 @@ export class CustomColumn<R extends SearchQuery> extends Column<R> {
   }
 
   /**
+   * Initialise une colonne
+   * @param label Label
+   * @param field Nom du champ
+   * @param width Largeur de la colonne
+   */
+  public static ofWithoutChooser<R extends SearchQuery>(label: string, field: string, width: number): Column<R> {
+    return new CustomColumn(label, field, width, true)
+  }
+
+  /**
    * Indique si l'instance est une instance de CustomColumn
    * @param instance Instance à vérifier
    */

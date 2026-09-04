@@ -1,4 +1,4 @@
-import {Component, Signal, viewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Signal, viewChild} from '@angular/core';
 import {ExceptionService} from '../exception.service';
 import {AutomaticSearchQuery} from '../../../common/search/automatic/automatic-search-query';
 import {TableComponent} from '../../../common/table/table.component';
@@ -44,13 +44,14 @@ import {AutomaticSearchField, FilterType} from '../../../common/search/automatic
     MatHeaderCellDef
   ],
   templateUrl: './exception-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './exception-table.component.scss'
 })
 export class ExceptionTableComponent {
   // Définition des colonnes
   protected columns: Column<AutomaticSearchQuery>[] = [
     CustomColumn
-      .of<AutomaticSearchQuery>("", ThrownException.ROW_EXTENDER, 5),
+      .ofWithoutChooser<AutomaticSearchQuery>("", ThrownException.ROW_EXTENDER, 5),
     ClassicColumn
       .of<AutomaticSearchQuery>(ThrownException.CLASS_NAME_LABEL, ThrownException.CLASS_NAME, 35)
       .inputFilter(searchQuery => searchQuery.getFilter(ThrownException.CLASS_NAME))
@@ -77,7 +78,7 @@ export class ExceptionTableComponent {
   protected readonly actionColumnInfo: ActionColumnInfo = {
     dialogComponent: null,
     idField: Model.ID,
-    clicOnLine: false,
+    clicOnLine: 'none',
     created: false,
     delete: false,
     modify: false,

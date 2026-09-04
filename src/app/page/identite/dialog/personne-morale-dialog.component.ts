@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {AbstractFormDialogComponent} from '../../../common/form/dialog/abstract-form-dialog.component';
 import {Model} from '../../../common/model';
 import {FormField} from '../../../common/form/field/form-field';
@@ -32,6 +32,7 @@ import {DatePipe} from '@angular/common';
     DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
 export class PersonneMoraleDialogComponent extends AbstractFormDialogComponent<PersonneMoraleDialogComponent, PersonneMorale> {

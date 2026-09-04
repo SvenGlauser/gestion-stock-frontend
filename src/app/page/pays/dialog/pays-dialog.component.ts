@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
@@ -26,6 +26,7 @@ import {DatePipe} from '@angular/common';
     DatePipe
   ],
   templateUrl: '../../../common/form/dialog/abstract-form-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../../common/form/dialog/abstract-form-dialog.component.scss'
 })
 export class PaysDialogComponent extends AbstractFormDialogComponent<PaysDialogComponent, Pays> {

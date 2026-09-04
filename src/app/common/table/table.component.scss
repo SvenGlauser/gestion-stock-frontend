@@ -76,7 +76,7 @@
   display: none;
 }
 
-.mdc-data-table__row:last-child > .mat-mdc-cell, .empty-table {
+.mdc-data-table__row:last-child > .mat-mdc-cell {
   border-bottom-color: var(--mat-table-row-item-outline-color, var(--mat-sys-outline, rgba(0, 0, 0, 0.12)));
   border-bottom-width: var(--mat-table-row-item-outline-width, 1px);
   border-bottom-style: solid;
@@ -92,11 +92,6 @@
 
 .multi-lines {
   white-space: pre-wrap;
-}
-
-.empty-table {
-  padding: 10px 16px;
-  font: var(--mat-sys-body-medium);
 }
 
 table {
