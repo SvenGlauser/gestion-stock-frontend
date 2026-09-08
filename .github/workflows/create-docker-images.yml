@@ -1,0 +1,39 @@
+name: Create Docker images
+
+on:
+  workflow_dispatch
+
+jobs:
+  get-version:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Get NPM project version
+        id: get-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version" 2>/dev/null)
+
+          if [ -z "$VERSION" ] || [ "$VERSION" = "undefined" ]; then
+            VERSION="latest"
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+  create-docker-images:
+    needs: get-version
+    permissions:
+      contents: read
+      packages: write
+    uses:  ./.github/workflows/create-push-docker-images.yml
+    with:
+      version: ${{ needs.get-version.outputs.version }}
