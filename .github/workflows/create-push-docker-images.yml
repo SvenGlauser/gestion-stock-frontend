@@ -1,0 +1,67 @@
+name: create-push-docker-images.yml
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version tag for the Docker images'
+        required: true
+        type: string
+      sha:
+        required: false
+        type: string
+        default: ${{ github.sha }}
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  create-push-docker-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Set up QEMU (for multi-arch build)
+        uses: docker/setup-qemu-action@v3.7.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.12.0
+
+      - name: Log in to GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Normalize repo owner to lowercase
+        id: owner
+        run: |
+          # GITHUB_REPOSITORY_OWNER est défini par GitHub Actions; on le met en minuscules
+          owner_username=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
+          echo "owner_username=$owner_username" >> $GITHUB_OUTPUT
+
+      - name: Build and push image (gestion-stock-frontend)
+        uses: docker/build-push-action@v6.18.0
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          platforms: "linux/amd64"
+          build-args: |
+            VERSION=${{ inputs.version }}
+          tags: |
+            ghcr.io/${{ steps.owner.outputs.owner_username }}/gestion-stock-frontend:${{ inputs.version }}
+            ghcr.io/${{ steps.owner.outputs.owner_username }}/gestion-stock-frontend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

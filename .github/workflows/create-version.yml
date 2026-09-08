@@ -1,0 +1,106 @@
+name: Create version
+
+on:
+  workflow_dispatch:
+    inputs:
+      current-version:
+        description: 'Current version. Format (1.0.0)'
+        required: true
+      next-version:
+        description: 'Prochaine version. Format (1.1.0-SNAPSHOT)'
+        required: true
+
+jobs:
+  tag-current-version:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Configure Git
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: NPM update current-version
+        run: npm version ${{ github.event.inputs.current-version }} --no-git-tag-version
+
+      - name: Add git tag and push
+        run: |
+          git commit -a -m "Release v${{ github.event.inputs.current-version }}"
+          git push origin master
+          git tag "v${{ github.event.inputs.current-version }}"
+          git push origin --tags
+
+  sync-repo:
+    needs: tag-current-version
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.sync.outputs.sha }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Fetch latest changes
+        id: sync
+        run: |
+          git fetch origin
+          git checkout master
+          git pull origin master
+          echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+  create-push-docker-images:
+    needs: sync-repo
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/create-push-docker-images.yml
+    with:
+      version: ${{ github.event.inputs.current-version }}
+      sha: ${{ needs.sync-repo.outputs.sha }}
+
+  prepare-next-version:
+    needs: sync-repo
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: master
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Configure Git
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: NPM prepare next-version
+        run: npm version ${{ github.event.inputs.next-version }} --no-git-tag-version
+
+      - name: Push next version
+        run: |
+          git commit -a -m "Setup v${{ github.event.inputs.next-version }}"
+          git push origin master
