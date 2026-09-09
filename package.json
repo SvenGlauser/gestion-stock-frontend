@@ -1,6 +1,6 @@
 {
   "name": "gestion-stock-frontend",
-  "version": "1.0.0",
+  "version": "1.1.0-SNAPSHOT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --configuration development",
